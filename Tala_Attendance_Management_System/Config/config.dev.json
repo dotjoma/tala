@@ -1,0 +1,13 @@
+{
+  "ConnectionString": "Data Source=localhost;Initial Catalog=TalaAttendance_Dev;Integrated Security=True;Connection Timeout=30;",
+  "LogLevel": "Debug",
+  "LogFilePath": "Logs\\dev_app.log",
+  "DatabaseTimeout": 60,
+  "EnableDebugMode": true,
+  "MaxLoginAttempts": 5,
+  "SessionTimeoutMinutes": 60,
+  "ApiBaseUrl": "",
+  "EnableDetailedLogging": true,
+  "CacheExpirationMinutes": 5,
+  "UpdateCheckUrl": "https://drive.google.com/uc?export=download&id=1nNmJTgYLgitxNY73MEKur5AFQ-w3H_N8"
+}

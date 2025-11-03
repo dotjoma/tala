@@ -1,0 +1,13 @@
+{
+  "ConnectionString": "Data Source=staging-server;Initial Catalog=TalaAttendance_Staging;User ID=staging_user;Password=staging_password;Connection Timeout=30;",
+  "LogLevel": "Information",
+  "LogFilePath": "Logs\\staging_app.log",
+  "DatabaseTimeout": 45,
+  "EnableDebugMode": false,
+  "MaxLoginAttempts": 3,
+  "SessionTimeoutMinutes": 45,
+  "ApiBaseUrl": "",
+  "EnableDetailedLogging": false,
+  "CacheExpirationMinutes": 15,
+  "UpdateCheckUrl": "https://drive.google.com/uc?export=download&id=1nNmJTgYLgitxNY73MEKur5AFQ-w3H_N8"
+}

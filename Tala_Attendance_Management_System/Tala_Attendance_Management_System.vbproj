@@ -1,0 +1,809 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Fody/Costura disabled -->
+  <!-- <Import Project="..\packages\Costura.Fody.6.0.0\build\isostura.Fody.props" Condition="Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props')" /> -->
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7042B1EC-A94D-4D8C-8008-4484BB820FA4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Tala_Attendance_Management_System.LoginForm</StartupObject>
+    <RootNamespace>Tala_Attendance_Management_System</RootNamespace>
+    <AssemblyName>TalaAMS</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Tala_Attendance_Management_System.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Tala_Attendance_Management_System.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Costura disabledostura, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">-->
+    <!--
+    <Reference Include="Costura, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Costura.Fody.6.0.0\lib\netstandard2.0\Costura.dll</HintPath>
+    </Reference>
+    -->
+    <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1620.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1620.0\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1620.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1620.0\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1620.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="common\AppConfig.vb" />
+    <Compile Include="common\Controls\SpinningControl.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="common\Controls\SuccessDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="common\Helpers\NameFormatter.vb" />
+    <Compile Include="common\Helpers\NetworkHelper.vb" />
+    <Compile Include="common\Helpers\ValidationHelper.vb" />
+    <Compile Include="Core\Entities\Department.vb" />
+    <Compile Include="Core\Interfaces\IDepartmentService.vb" />
+    <Compile Include="Core\Models\VersionInfo.vb" />
+    <Compile Include="Core\Services\AuditLogger.vb" />
+    <Compile Include="Core\Services\ComPortManager.vb" />
+    <Compile Include="Core\Services\DepartmentService.vb" />
+    <Compile Include="Core\Services\UpdateManager.vb" />
+    <Compile Include="Core\Services\UpdateService.vb" />
+    <Compile Include="infrastructure\Data\Context\DatabaseContext.vb" />
+    <Compile Include="infrastructure\Data\Repositories\DepartmentRepository.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\AddAnnouncement.Designer.vb">
+      <DependentUpon>AddAnnouncement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\AddAnnouncement.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormEditAttendance.Designer.vb">
+      <DependentUpon>FormEditAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormEditAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormManualAttendance.Designer.vb">
+      <DependentUpon>FormManualAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormManualAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\RFIDScanMonitor.Designer.vb">
+      <DependentUpon>RFIDScanMonitor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\RFIDScanMonitor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\AddDepartment.Designer.vb">
+      <DependentUpon>AddDepartment.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\AddDepartment.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\DepartmentSelector.Designer.vb">
+      <DependentUpon>DepartmentSelector.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\DepartmentSelector.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\FormDepartments.Designer.vb">
+      <DependentUpon>FormDepartments.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Departments\FormDepartments.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\AddFaculty.Designer.vb">
+      <DependentUpon>AddFaculty.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\AddFaculty.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormFacultyList.Designer.vb">
+      <DependentUpon>FormFacultyList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormFacultyList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormUserActivityLogs.Designer.vb">
+      <DependentUpon>FormUserActivityLogs.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormUserActivityLogs.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Students\AddStudents.Designer.vb">
+      <DependentUpon>AddStudents.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Students\AddStudents.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AddSections.Designer.vb">
+      <DependentUpon>AddSections.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AddSections.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AddStudentSection.Designer.vb">
+      <DependentUpon>AddStudentSection.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AddStudentSection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\AddTeacherClassSchedule.Designer.vb">
+      <DependentUpon>AddTeacherClassSchedule.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\AddTeacherClassSchedule.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AssignSection.Designer.vb">
+      <DependentUpon>AssignSection.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\AssignSection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\FormAddTeacherSchedule.Designer.vb">
+      <DependentUpon>FormAddTeacherSchedule.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\FormAddTeacherSchedule.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\FormSections.Designer.vb">
+      <DependentUpon>FormSections.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\FormSections.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\SectionLists.Designer.vb">
+      <DependentUpon>SectionLists.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\SectionLists.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\AnnouncementCard.Designer.vb">
+      <DependentUpon>AnnouncementCard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\AnnouncementCard.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\CLassScheduleForm.Designer.vb">
+      <DependentUpon>CLassScheduleForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\CLassScheduleForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\ContainerSection.Designer.vb">
+      <DependentUpon>ContainerSection.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Sections\ContainerSection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Subjects\AddSubjects.Designer.vb">
+      <DependentUpon>AddSubjects.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Subjects\AddSubjects.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormClassAttendance.Designer.vb">
+      <DependentUpon>FormClassAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormClassAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\FormClassSchedule.Designer.vb">
+      <DependentUpon>FormClassSchedule.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\FormClassSchedule.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\FormMyStudents.Designer.vb">
+      <DependentUpon>FormMyStudents.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\TeacherSchedules\FormMyStudents.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Subjects\FormSubjects.Designer.vb">
+      <DependentUpon>FormSubjects.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Subjects\FormSubjects.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormStudentAttendance.Designer.vb">
+      <DependentUpon>FormStudentAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormStudentAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Classrooms\FormClassroom.Designer.vb">
+      <DependentUpon>FormClassroom.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Classrooms\FormClassroom.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Classrooms\FormProcessClassrooms.Designer.vb">
+      <DependentUpon>FormProcessClassrooms.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Classrooms\FormProcessClassrooms.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormTeacherAttendanceReports.Designer.vb">
+      <DependentUpon>FormTeacherAttendanceReports.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormTeacherAttendanceReports.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\StudentSchedule.Designer.vb">
+      <DependentUpon>StudentSchedule.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\StudentSchedule.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\TeacherSchedule.Designer.vb">
+      <DependentUpon>TeacherSchedule.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Schedules\TeacherSchedule.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="common\Constants.vb" />
+    <Compile Include="common\Enums.vb" />
+    <Compile Include="common\Extensions.vb" />
+    <Compile Include="common\LogLevel.vb" />
+    <Compile Include="Core\Interfaces\ILogger.vb" />
+    <Compile Include="DataSet_Attendance.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSet_Attendance.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSet_Attendance.vb">
+      <DependentUpon>DataSet_Attendance.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\FormAnnouncement.Designer.vb">
+      <DependentUpon>FormAnnouncement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Announcements\FormAnnouncement.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendance.Designer.vb">
+      <DependentUpon>FormAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendanceScanner.Designer.vb">
+      <DependentUpon>FormAttendanceScanner.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendanceScanner.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormFaculty.Designer.vb">
+      <DependentUpon>FormFaculty.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormFaculty.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormIDScanner.Designer.vb">
+      <DependentUpon>FormIDScanner.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormIDScanner.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormReportsFaculty.Designer.vb">
+      <DependentUpon>FormReportsFaculty.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormReportsFaculty.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Students\FormStudents.Designer.vb">
+      <DependentUpon>FormStudents.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Students\FormStudents.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="infrastructure\Logging\FileLogger.vb" />
+    <Compile Include="infrastructure\Logging\LoggerFactory.vb" />
+    <Compile Include="Presentation\Forms\Authentication\LoginForm.Designer.vb">
+      <DependentUpon>LoginForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Authentication\LoginForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Main\MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Main\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Update\UpdateDialog.Designer.vb">
+      <DependentUpon>UpdateDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Update\UpdateDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\AddUser.Designer.vb">
+      <DependentUpon>AddUser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\AddUser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\AddUserButton.Designer.vb">
+      <DependentUpon>AddUserButton.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\AddUserButton.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\BatchGenerate.Designer.vb">
+      <DependentUpon>BatchGenerate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\BatchGenerate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\ChangePassword.Designer.vb">
+      <DependentUpon>ChangePassword.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\ChangePassword.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\ManageUser.Designer.vb">
+      <DependentUpon>ManageUser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\ManageUser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\UserSettings.Designer.vb">
+      <DependentUpon>UserSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Users\UserSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Legacy\myModule.vb" />
+    <Compile Include="Presentation\Forms\Students\StudentCard.Designer.vb">
+      <DependentUpon>StudentCard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Students\StudentCard.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Presentation\Helpers\FormHelper.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Presentation\Forms\Announcements\AddAnnouncement.resx">
+      <DependentUpon>AddAnnouncement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormEditAttendance.resx">
+      <DependentUpon>FormEditAttendance.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\RFIDScanMonitor.resx">
+      <DependentUpon>RFIDScanMonitor.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Departments\AddDepartment.resx">
+      <DependentUpon>AddDepartment.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Departments\DepartmentSelector.resx">
+      <DependentUpon>DepartmentSelector.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Departments\FormDepartments.resx">
+      <DependentUpon>FormDepartments.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Faculty\AddFaculty.resx">
+      <DependentUpon>AddFaculty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Reports\FormUserActivityLogs.resx">
+      <DependentUpon>FormUserActivityLogs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Students\AddStudents.resx">
+      <DependentUpon>AddStudents.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\AddSections.resx">
+      <DependentUpon>AddSections.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\AddStudentSection.resx">
+      <DependentUpon>AddStudentSection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\TeacherSchedules\AddTeacherClassSchedule.resx">
+      <DependentUpon>AddTeacherClassSchedule.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\AssignSection.resx">
+      <DependentUpon>AssignSection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\TeacherSchedules\FormAddTeacherSchedule.resx">
+      <DependentUpon>FormAddTeacherSchedule.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\FormSections.resx">
+      <DependentUpon>FormSections.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\SectionLists.resx">
+      <DependentUpon>SectionLists.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Announcements\AnnouncementCard.resx">
+      <DependentUpon>AnnouncementCard.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Schedules\CLassScheduleForm.resx">
+      <DependentUpon>CLassScheduleForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Sections\ContainerSection.resx">
+      <DependentUpon>ContainerSection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Subjects\AddSubjects.resx">
+      <DependentUpon>AddSubjects.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormClassAttendance.resx">
+      <DependentUpon>FormClassAttendance.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Schedules\FormClassSchedule.resx">
+      <DependentUpon>FormClassSchedule.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\TeacherSchedules\FormMyStudents.resx">
+      <DependentUpon>FormMyStudents.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Subjects\FormSubjects.resx">
+      <DependentUpon>FormSubjects.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormStudentAttendance.resx">
+      <DependentUpon>FormStudentAttendance.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Classrooms\FormClassroom.resx">
+      <DependentUpon>FormClassroom.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Classrooms\FormProcessClassrooms.resx">
+      <DependentUpon>FormProcessClassrooms.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormTeacherAttendanceReports.resx">
+      <DependentUpon>FormTeacherAttendanceReports.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Schedules\StudentSchedule.resx">
+      <DependentUpon>StudentSchedule.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Schedules\TeacherSchedule.resx">
+      <DependentUpon>TeacherSchedule.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Announcements\FormAnnouncement.resx">
+      <DependentUpon>FormAnnouncement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormAttendance.resx">
+      <DependentUpon>FormAttendance.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormAttendanceScanner.resx">
+      <DependentUpon>FormAttendanceScanner.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Faculty\FormFaculty.resx">
+      <DependentUpon>FormFaculty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormIDScanner.resx">
+      <DependentUpon>FormIDScanner.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Faculty\FormReportsFaculty.resx">
+      <DependentUpon>FormReportsFaculty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Students\FormStudents.resx">
+      <DependentUpon>FormStudents.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Authentication\LoginForm.resx">
+      <DependentUpon>LoginForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Main\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Update\UpdateDialog.resx">
+      <DependentUpon>UpdateDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\AddUser.resx">
+      <DependentUpon>AddUser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\AddUserButton.resx">
+      <DependentUpon>AddUserButton.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\BatchGenerate.resx">
+      <DependentUpon>BatchGenerate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\ManageUser.resx">
+      <DependentUpon>ManageUser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\UserSettings.resx">
+      <DependentUpon>UserSettings.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Students\StudentCard.resx">
+      <DependentUpon>StudentCard.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Config\config.dev.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\config.prod.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\config.staging.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="DataSet_Attendance.xsc">
+      <DependentUpon>DataSet_Attendance.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet_Attendance.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet_Attendance.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="DataSet_Attendance.xss">
+      <DependentUpon>DataSet_Attendance.xsd</DependentUpon>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="ReportAttendance.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ReportFaculty.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ReportFacultyList.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ReportTeacherAttendance.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ReportUserActivityLogs.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\icons8-users-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-plus-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-users-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-to-do-list-49.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\default-image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\104274389_103234301447836_7116776018632507257_n.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Screenshot 2024-06-03 165943.png" />
+    <None Include="Resources\436226656_438047865499742_4918646709778613771_n.jpg" />
+    <None Include="Resources\gallery %283%29.png" />
+    <None Include="Resources\6.jpg" />
+    <None Include="Resources\parcel.png" />
+    <None Include="Resources\download.jpg" />
+    <None Include="Resources\students.png" />
+    <None Include="Resources\students1.png" />
+    <None Include="Resources\students2.png" />
+    <None Include="Resources\students3.png" />
+    <None Include="Resources\images.png" />
+    <None Include="Resources\60473.png" />
+    <None Include="Resources\logoutpng-removebg-preview.png" />
+    <None Include="Resources\user-management-icon-vector-22989157-removebg-preview.png" />
+    <None Include="Resources\students4.png" />
+    <None Include="Resources\students5.png" />
+    <None Include="Resources\teacher.png" />
+    <None Include="Resources\attendance.png" />
+    <None Include="Resources\classroom.png" />
+    <None Include="Resources\schedule.png" />
+    <None Include="Resources\logout.png" />
+    <None Include="Resources\image.png" />
+    <None Include="Resources\gears.png" />
+    <None Include="Resources\logout2.png" />
+    <None Include="Resources\logout3.png" />
+    <None Include="Resources\61.jpg" />
+    <None Include="Resources\Screenshot 2025-01-05 155332.png" />
+    <None Include="Resources\icons8-student-male-24.png" />
+    <None Include="Resources\icons8-admin-50.png" />
+    <None Include="Resources\icons8-admin-501.png" />
+    <None Include="Resources\icons8-admin-30.png" />
+    <None Include="Resources\icons8-admin-301.png" />
+    <None Include="Resources\icons8-admin-32.png" />
+    <None Include="Resources\icons8-administrator-male-30.png" />
+    <None Include="Resources\icons8-student-male-30.png" />
+    <None Include="Resources\3274764.jpg" />
+    <None Include="Resources\4884273.jpg" />
+    <None Include="Resources\19276.jpg" />
+    <None Include="Resources\Screenshot 2025-01-05 174106.png" />
+    <None Include="Resources\icons8-classroom-50.png" />
+    <None Include="Resources\icons8-book-48.png" />
+    <None Include="Resources\icons8-manage-50.png" />
+    <None Include="Resources\icons8-graph-50.png" />
+    <None Include="Resources\icons8-manage-30.png" />
+    <None Include="Resources\icons8-classroom-30.png" />
+    <None Include="Resources\icons8-schedule-30.png" />
+    <None Include="Resources\icons8-external-link-30.png" />
+    <None Include="Resources\icons8-elective-30.png" />
+    <None Include="Resources\icons8-graph-30.png" />
+    <None Include="Resources\icons8-cog-48.png" />
+    <None Include="Resources\icons8-list-64.png" />
+    <None Include="Resources\icons8-admin-50 %281%29.png" />
+    <None Include="Resources\icons8-student-50.png" />
+    <None Include="Resources\Screenshot 2025-01-05 224517.png" />
+    <None Include="Resources\Screenshot 2025-01-05 224618.png" />
+    <None Include="Resources\icons8-graph-96.png" />
+    <None Include="Resources\icons8-plus-40.png" />
+    <None Include="Resources\icons8-edit-40.png" />
+    <None Include="Resources\icons8-delete-40.png" />
+    <None Include="Resources\icons8-plus-401.png" />
+    <None Include="Resources\icons8-delete-40 %281%29.png" />
+    <None Include="Resources\two-people-icon-in-trendy-flat-style-isolated-on-white-background-people-symbol-users-for-web-and-mobile-apps-free-vector.jpg" />
+    <None Include="Resources\9928186.png" />
+    <None Include="Resources\d07335a92f67a04adc75b402004ad1d7.gif" />
+    <None Include="Resources\attendance icon.png" />
+    <None Include="Resources\image5.png" />
+    <None Include="Resources\image 23.png" />
+    <None Include="Resources\icons8-person-female-skin-type-1-and-2-30.png" />
+    <None Include="Resources\announcements.jpg" />
+    <None Include="Resources\icons8-person-female-skin-type-1-and-2-301.png" />
+    <None Include="Resources\disable.png" />
+    <None Include="Resources\enable.png" />
+    <None Include="Resources\disable_40x40.png" />
+    <None Include="Resources\block_40x40.png" />
+    <None Include="Resources\enable_default_40x40.png" />
+    <Content Include="logo.ico" />
+    <None Include="Resources\reset_password_40x40.png" />
+    <None Include="Resources\reset_password_orange_40x40.png" />
+    <None Include="Resources\copy_16x16.png" />
+    <None Include="Resources\copy_24x24.png" />
+    <None Include="Resources\copied_24x24.png" />
+    <None Include="Resources\gif\loading.gif" />
+    <None Include="Resources\gif\loading_3x.gif" />
+    <None Include="Resources\gif\loading_4x.gif" />
+    <None Include="Resources\gif\loading1.gif" />
+    <None Include="Resources\usb-disconnected.jpeg" />
+    <None Include="Resources\usb-disconnected1.png" />
+    <None Include="Resources\usb-connected.png" />
+    <None Include="Resources\usb-connected1.png" />
+    <None Include="Resources\usb-disconnected.png" />
+    <None Include="Resources\gif\check.gif" />
+    <None Include="Resources\rfid.png" />
+    <None Include="Resources\school.jpg" />
+    <None Include="Resources\rfid-nobg.png" />
+    <None Include="Resources\rfid-100x100.png" />
+    <None Include="Resources\school-low-opacity.jpg" />
+    <Content Include="SqlServerTypes\Loader.cs" />
+    <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="SqlServerTypes\x64\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <PostBuildEvent>
+      REM Only merge in Release mode
+      if "$(ConfigurationName)" == "Release" (
+        call "$(ProjectDir)BuildScripts\MergeAssemblies.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)"
+      )
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- <Import Project="..\packages\Fody.6.8.2\build\Fody.targets" Condition="Exists('..\packages\Fody.6.8.2\build\Fody.targets')" /> -->
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <!-- Fody error checks disabled -->
+    <!-- <Error Condition="!Exists('..\packages\Fody.6.8.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.8.2\build\Fody.targets'))" /> -->
+    <!-- <Error Condition="!Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.6.0.0\build\Costura.Fody.props'))" /> -->
+    <!-- <Error Condition="!Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets'))" /> -->
+  </Target>
+  <!-- <Import Project="..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets')" /> -->
+</Project>
