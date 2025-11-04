@@ -12,6 +12,12 @@ Public Class FormFacultyList
             
             _logger.LogInfo("Loading faculty data...")
             LoadFacultyList()
+            ' Clear any selection on initial load
+            Try
+                dgvFaculty.ClearSelection()
+                dgvFaculty.CurrentCell = Nothing
+            Catch
+            End Try
             
             _logger.LogInfo("========== FormFacultyList Loaded Successfully ==========")
         Catch ex As Exception

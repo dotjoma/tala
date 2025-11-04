@@ -38,8 +38,6 @@ Partial Class MainForm
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsManageAccounts = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.tsAnnouncements = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsReports = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsFaculty = New System.Windows.Forms.ToolStripMenuItem()
@@ -50,10 +48,11 @@ Partial Class MainForm
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.msLogout = New System.Windows.Forms.ToolStripMenuItem()
         Me.msExit = New System.Windows.Forms.ToolStripMenuItem()
-        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AdminToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ManageDepartmentToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.AuditLogsToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SystemBackupToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel5.SuspendLayout()
         Me.toolStripNav.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -139,7 +138,7 @@ Partial Class MainForm
         '
         Me.toolStripNav.BackColor = System.Drawing.SystemColors.ControlLight
         Me.toolStripNav.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.toolStripNav.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnFaculty, Me.ToolStripSeparator2, Me.tsBtnAttendance, Me.ToolStripSeparator1, Me.tsManageAccounts, Me.ToolStripSeparator3, Me.tsAnnouncements, Me.ToolStripSeparator4, Me.tsReports})
+        Me.toolStripNav.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsBtnFaculty, Me.ToolStripSeparator2, Me.tsBtnAttendance, Me.ToolStripSeparator1, Me.tsManageAccounts, Me.ToolStripSeparator3, Me.tsReports})
         Me.toolStripNav.Location = New System.Drawing.Point(0, 24)
         Me.toolStripNav.Name = "toolStripNav"
         Me.toolStripNav.Size = New System.Drawing.Size(1444, 92)
@@ -196,23 +195,6 @@ Partial Class MainForm
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 92)
-        '
-        'tsAnnouncements
-        '
-        Me.tsAnnouncements.Font = New System.Drawing.Font("Tahoma", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.tsAnnouncements.ForeColor = System.Drawing.Color.SteelBlue
-        Me.tsAnnouncements.Image = CType(resources.GetObject("tsAnnouncements.Image"), System.Drawing.Image)
-        Me.tsAnnouncements.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.tsAnnouncements.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.tsAnnouncements.Name = "tsAnnouncements"
-        Me.tsAnnouncements.Size = New System.Drawing.Size(182, 89)
-        Me.tsAnnouncements.Text = "&ANNOUNCEMENT"
-        Me.tsAnnouncements.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 92)
         '
         'tsReports
         '
@@ -298,25 +280,18 @@ Partial Class MainForm
         'msLogout
         '
         Me.msLogout.Name = "msLogout"
-        Me.msLogout.Size = New System.Drawing.Size(180, 22)
+        Me.msLogout.Size = New System.Drawing.Size(119, 22)
         Me.msLogout.Text = "Logout"
         '
         'msExit
         '
         Me.msExit.Name = "msExit"
-        Me.msExit.Size = New System.Drawing.Size(180, 22)
+        Me.msExit.Size = New System.Drawing.Size(119, 22)
         Me.msExit.Text = "Exit"
-        '
-        'HelpToolStripMenuItem
-        '
-        Me.HelpToolStripMenuItem.Font = New System.Drawing.Font("Verdana", 9.75!)
-        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
-        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(47, 20)
-        Me.HelpToolStripMenuItem.Text = "Help"
         '
         'AdminToolStripMenuItem
         '
-        Me.AdminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManageDepartmentToolStripMenuItem1, Me.AuditLogsToolStripMenuItem1})
+        Me.AdminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManageDepartmentToolStripMenuItem1, Me.AuditLogsToolStripMenuItem1, Me.SystemBackupToolStripMenuItem})
         Me.AdminToolStripMenuItem.Font = New System.Drawing.Font("Verdana", 9.75!)
         Me.AdminToolStripMenuItem.Name = "AdminToolStripMenuItem"
         Me.AdminToolStripMenuItem.Size = New System.Drawing.Size(112, 20)
@@ -325,14 +300,27 @@ Partial Class MainForm
         'ManageDepartmentToolStripMenuItem1
         '
         Me.ManageDepartmentToolStripMenuItem1.Name = "ManageDepartmentToolStripMenuItem1"
-        Me.ManageDepartmentToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.ManageDepartmentToolStripMenuItem1.Size = New System.Drawing.Size(202, 22)
         Me.ManageDepartmentToolStripMenuItem1.Text = "ManageDepartment"
         '
         'AuditLogsToolStripMenuItem1
         '
         Me.AuditLogsToolStripMenuItem1.Name = "AuditLogsToolStripMenuItem1"
-        Me.AuditLogsToolStripMenuItem1.Size = New System.Drawing.Size(180, 22)
+        Me.AuditLogsToolStripMenuItem1.Size = New System.Drawing.Size(202, 22)
         Me.AuditLogsToolStripMenuItem1.Text = "Audit Logs"
+        '
+        'SystemBackupToolStripMenuItem
+        '
+        Me.SystemBackupToolStripMenuItem.Name = "SystemBackupToolStripMenuItem"
+        Me.SystemBackupToolStripMenuItem.Size = New System.Drawing.Size(202, 22)
+        Me.SystemBackupToolStripMenuItem.Text = "Backup && Restore"
+        '
+        'HelpToolStripMenuItem
+        '
+        Me.HelpToolStripMenuItem.Font = New System.Drawing.Font("Verdana", 9.75!)
+        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(47, 20)
+        Me.HelpToolStripMenuItem.Text = "Help"
         '
         'MainForm
         '
@@ -384,11 +372,9 @@ Partial Class MainForm
     Friend WithEvents tsLogs As ToolStripMenuItem
     Friend WithEvents tsFaculty As ToolStripMenuItem
     Friend WithEvents tsManageAccounts As ToolStripButton
-    Friend WithEvents tsAnnouncements As ToolStripButton
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
-    Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel2 As Panel
     Friend WithEvents PictureBox1 As PictureBox
@@ -401,4 +387,5 @@ Partial Class MainForm
     Friend WithEvents AdminToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ManageDepartmentToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents AuditLogsToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents SystemBackupToolStripMenuItem As ToolStripMenuItem
 End Class

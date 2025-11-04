@@ -22,25 +22,27 @@ Partial Class FormFaculty
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormFaculty))
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.PictureBox5 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox4 = New System.Windows.Forms.PictureBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.cboStatusFilter = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.cboDepartment = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.PictureBox5 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox4 = New System.Windows.Forms.PictureBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
         Me.txtSearch = New System.Windows.Forms.TextBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.btnToggleStat = New System.Windows.Forms.Button()
         Me.btnEditRecord = New System.Windows.Forms.Button()
         Me.btnAdd = New System.Windows.Forms.Button()
+        Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.btnGenerateReport = New System.Windows.Forms.Button()
         Me.dgvTeachers = New System.Windows.Forms.DataGridView()
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -57,88 +59,26 @@ Partial Class FormFaculty
         CType(Me.PictureBox5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
+        Me.Panel3.SuspendLayout()
         CType(Me.dgvTeachers, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Panel2
         '
-        Me.Panel2.BackColor = System.Drawing.Color.SteelBlue
-        Me.Panel2.Controls.Add(Me.Label5)
-        Me.Panel2.Controls.Add(Me.cboStatusFilter)
-        Me.Panel2.Controls.Add(Me.Label4)
-        Me.Panel2.Controls.Add(Me.cboDepartment)
-        Me.Panel2.Controls.Add(Me.Label3)
+        Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
         Me.Panel2.Controls.Add(Me.PictureBox5)
         Me.Panel2.Controls.Add(Me.PictureBox4)
-        Me.Panel2.Controls.Add(Me.Label1)
         Me.Panel2.Controls.Add(Me.Label2)
-        Me.Panel2.Controls.Add(Me.txtSearch)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(1444, 60)
         Me.Panel2.TabIndex = 15
         '
-        'Label5
-        '
-        Me.Label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.ForeColor = System.Drawing.Color.White
-        Me.Label5.Location = New System.Drawing.Point(650, 20)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(57, 20)
-        Me.Label5.TabIndex = 23
-        Me.Label5.Text = "Status:"
-        '
-        'cboStatusFilter
-        '
-        Me.cboStatusFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboStatusFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboStatusFilter.FormattingEnabled = True
-        Me.cboStatusFilter.Items.AddRange(New Object() {"All", "Active", "Inactive"})
-        Me.cboStatusFilter.Location = New System.Drawing.Point(712, 17)
-        Me.cboStatusFilter.Name = "cboStatusFilter"
-        Me.cboStatusFilter.Size = New System.Drawing.Size(100, 27)
-        Me.cboStatusFilter.TabIndex = 22
-        '
-        'Label4
-        '
-        Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label4.AutoSize = True
-        Me.Label4.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.ForeColor = System.Drawing.Color.White
-        Me.Label4.Location = New System.Drawing.Point(840, 20)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(98, 20)
-        Me.Label4.TabIndex = 21
-        Me.Label4.Text = "Department:"
-        '
-        'cboDepartment
-        '
-        Me.cboDepartment.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cboDepartment.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboDepartment.FormattingEnabled = True
-        Me.cboDepartment.Location = New System.Drawing.Point(944, 17)
-        Me.cboDepartment.Name = "cboDepartment"
-        Me.cboDepartment.Size = New System.Drawing.Size(128, 27)
-        Me.cboDepartment.TabIndex = 20
-        '
-        'Label3
-        '
-        Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.Color.White
-        Me.Label3.Location = New System.Drawing.Point(1093, 20)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(59, 20)
-        Me.Label3.TabIndex = 19
-        Me.Label3.Text = "Search:"
-        '
         'PictureBox5
         '
-        Me.PictureBox5.Location = New System.Drawing.Point(8, 13)
+        Me.PictureBox5.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.teacher
+        Me.PictureBox5.Location = New System.Drawing.Point(8, 10)
         Me.PictureBox5.Name = "PictureBox5"
         Me.PictureBox5.Size = New System.Drawing.Size(50, 41)
         Me.PictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
@@ -154,35 +94,92 @@ Partial Class FormFaculty
         Me.PictureBox4.TabIndex = 18
         Me.PictureBox4.TabStop = False
         '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.BackColor = System.Drawing.Color.Transparent
+        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.ForeColor = System.Drawing.Color.White
+        Me.Label2.Location = New System.Drawing.Point(59, 8)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(248, 45)
+        Me.Label2.TabIndex = 5
+        Me.Label2.Text = "FACULTY DATA"
+        '
+        'Label5
+        '
+        Me.Label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Label5.Location = New System.Drawing.Point(466, 19)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(67, 20)
+        Me.Label5.TabIndex = 23
+        Me.Label5.Text = "STATUS:"
+        '
+        'cboStatusFilter
+        '
+        Me.cboStatusFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboStatusFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboStatusFilter.FormattingEnabled = True
+        Me.cboStatusFilter.Items.AddRange(New Object() {"All", "Active", "Inactive"})
+        Me.cboStatusFilter.Location = New System.Drawing.Point(539, 16)
+        Me.cboStatusFilter.Name = "cboStatusFilter"
+        Me.cboStatusFilter.Size = New System.Drawing.Size(100, 27)
+        Me.cboStatusFilter.TabIndex = 22
+        '
+        'Label4
+        '
+        Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.ForeColor = System.Drawing.Color.SteelBlue
+        Me.Label4.Location = New System.Drawing.Point(652, 19)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(113, 20)
+        Me.Label4.TabIndex = 21
+        Me.Label4.Text = "DEPARTMENT:"
+        '
+        'cboDepartment
+        '
+        Me.cboDepartment.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboDepartment.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboDepartment.FormattingEnabled = True
+        Me.cboDepartment.Location = New System.Drawing.Point(771, 16)
+        Me.cboDepartment.Name = "cboDepartment"
+        Me.cboDepartment.Size = New System.Drawing.Size(128, 27)
+        Me.cboDepartment.TabIndex = 20
+        '
+        'Label3
+        '
+        Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.ForeColor = System.Drawing.Color.White
+        Me.Label3.Location = New System.Drawing.Point(915, 25)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(70, 20)
+        Me.Label3.TabIndex = 19
+        Me.Label3.Text = "SEARCH:"
+        '
         'Label1
         '
         Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.SteelBlue
-        Me.Label1.Location = New System.Drawing.Point(1088, 25)
+        Me.Label1.Location = New System.Drawing.Point(915, 20)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(64, 19)
         Me.Label1.TabIndex = 6
         Me.Label1.Text = "SEARCH:"
         '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.BackColor = System.Drawing.Color.SteelBlue
-        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.ForeColor = System.Drawing.Color.White
-        Me.Label2.Location = New System.Drawing.Point(59, 7)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(248, 45)
-        Me.Label2.TabIndex = 5
-        Me.Label2.Text = "FACULTY DATA"
-        '
         'txtSearch
         '
         Me.txtSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtSearch.Location = New System.Drawing.Point(1158, 17)
+        Me.txtSearch.Location = New System.Drawing.Point(985, 16)
         Me.txtSearch.Name = "txtSearch"
         Me.txtSearch.Size = New System.Drawing.Size(268, 26)
         Me.txtSearch.TabIndex = 0
@@ -251,49 +248,79 @@ Partial Class FormFaculty
         Me.btnAdd.Text = "&Add New"
         Me.btnAdd.UseVisualStyleBackColor = False
         '
+        'Panel3
+        '
+        Me.Panel3.Controls.Add(Me.Label5)
+        Me.Panel3.Controls.Add(Me.btnGenerateReport)
+        Me.Panel3.Controls.Add(Me.cboStatusFilter)
+        Me.Panel3.Controls.Add(Me.txtSearch)
+        Me.Panel3.Controls.Add(Me.Label4)
+        Me.Panel3.Controls.Add(Me.Label1)
+        Me.Panel3.Controls.Add(Me.cboDepartment)
+        Me.Panel3.Controls.Add(Me.Label3)
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel3.Location = New System.Drawing.Point(0, 60)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(1444, 58)
+        Me.Panel3.TabIndex = 18
+        '
+        'btnGenerateReport
+        '
+        Me.btnGenerateReport.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnGenerateReport.BackColor = System.Drawing.Color.FromArgb(CType(CType(155, Byte), Integer), CType(CType(89, Byte), Integer), CType(CType(182, Byte), Integer))
+        Me.btnGenerateReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnGenerateReport.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGenerateReport.ForeColor = System.Drawing.Color.White
+        Me.btnGenerateReport.Location = New System.Drawing.Point(1286, 14)
+        Me.btnGenerateReport.Name = "btnGenerateReport"
+        Me.btnGenerateReport.Size = New System.Drawing.Size(140, 30)
+        Me.btnGenerateReport.TabIndex = 7
+        Me.btnGenerateReport.Text = "Generate Report"
+        Me.btnGenerateReport.UseVisualStyleBackColor = False
+        '
         'dgvTeachers
         '
         Me.dgvTeachers.AllowUserToAddRows = False
         Me.dgvTeachers.AllowUserToDeleteRows = False
         Me.dgvTeachers.AllowUserToResizeColumns = False
         Me.dgvTeachers.AllowUserToResizeRows = False
-        DataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvTeachers.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvTeachers.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvTeachers.BackgroundColor = System.Drawing.Color.White
         Me.dgvTeachers.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvTeachers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvTeachers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvTeachers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvTeachers.ColumnHeadersHeight = 45
         Me.dgvTeachers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvTeachers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3, Me.email, Me.Column4, Me.Column5, Me.Column6, Me.Column9, Me.Column7, Me.ColumnDepartment, Me.ColumnStatus})
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle9.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvTeachers.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvTeachers.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvTeachers.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvTeachers.EnableHeadersVisualStyles = False
-        Me.dgvTeachers.Location = New System.Drawing.Point(0, 60)
+        Me.dgvTeachers.Location = New System.Drawing.Point(0, 118)
         Me.dgvTeachers.MultiSelect = False
         Me.dgvTeachers.Name = "dgvTeachers"
         Me.dgvTeachers.ReadOnly = True
         Me.dgvTeachers.RowHeadersVisible = False
         Me.dgvTeachers.RowHeadersWidth = 51
         Me.dgvTeachers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvTeachers.Size = New System.Drawing.Size(1444, 499)
-        Me.dgvTeachers.TabIndex = 17
+        Me.dgvTeachers.Size = New System.Drawing.Size(1444, 441)
+        Me.dgvTeachers.TabIndex = 19
         Me.dgvTeachers.TabStop = False
         '
         'Column1
@@ -410,6 +437,7 @@ Partial Class FormFaculty
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(1444, 628)
         Me.Controls.Add(Me.dgvTeachers)
+        Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Panel2)
         Me.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -427,6 +455,8 @@ Partial Class FormFaculty
         CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
+        Me.Panel3.ResumeLayout(False)
+        Me.Panel3.PerformLayout()
         CType(Me.dgvTeachers, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
@@ -441,6 +471,13 @@ Partial Class FormFaculty
     Friend WithEvents btnAdd As Button
     Friend WithEvents PictureBox4 As PictureBox
     Friend WithEvents PictureBox5 As PictureBox
+    Friend WithEvents Label5 As Label
+    Friend WithEvents cboStatusFilter As ComboBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents cboDepartment As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents btnToggleStat As Button
+    Friend WithEvents Panel3 As Panel
     Public WithEvents dgvTeachers As DataGridView
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
@@ -451,12 +488,7 @@ Partial Class FormFaculty
     Friend WithEvents Column6 As DataGridViewTextBoxColumn
     Friend WithEvents Column9 As DataGridViewTextBoxColumn
     Friend WithEvents Column7 As DataGridViewTextBoxColumn
-    Friend WithEvents Label5 As Label
-    Friend WithEvents cboStatusFilter As ComboBox
-    Friend WithEvents Label4 As Label
-    Friend WithEvents cboDepartment As ComboBox
-    Friend WithEvents Label3 As Label
     Friend WithEvents ColumnDepartment As DataGridViewTextBoxColumn
     Friend WithEvents ColumnStatus As DataGridViewTextBoxColumn
-    Friend WithEvents btnToggleStat As Button
+    Friend WithEvents btnGenerateReport As Button
 End Class

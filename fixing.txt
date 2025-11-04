@@ -1,1 +1,0 @@
-baka may nag ooverwrite ng design sa FormAttendance.cs, ManageUser.cs, FormFaculty.cs, paki tanggal, at isama ang grid style sa dgv dahil naka ganun ang FormUserActivityLogs.vb

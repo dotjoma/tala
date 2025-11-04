@@ -99,20 +99,9 @@ Public Class FormFaculty
             dgvTeachers.AllowUserToAddRows = False
             dgvTeachers.ReadOnly = True
             dgvTeachers.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            dgvTeachers.RowTemplate.Height = 40
-            dgvTeachers.CellBorderStyle = DataGridViewCellBorderStyle.None
+            ' Use styles defined in Designer; avoid overriding at runtime
 
-            ' Set column header style
-            With dgvTeachers.ColumnHeadersDefaultCellStyle
-                .Font = New Font("Segoe UI Semibold", 12)
-                .Alignment = DataGridViewContentAlignment.MiddleLeft
-            End With
-
-            dgvTeachers.DefaultCellStyle.Font = New Font("Segoe UI", 11)
-            dgvTeachers.AlternatingRowsDefaultCellStyle = dgvTeachers.DefaultCellStyle
-
-            ' Add event handler for row formatting
-            AddHandler dgvTeachers.DataBindingComplete, AddressOf dgvTeachers_DataBindingComplete_FormatRows
+            ' Remove status-based row formatting to preserve Designer styles
 
             ' Initialize status filter
             LoadStatusFilter()
@@ -354,64 +343,7 @@ Public Class FormFaculty
         End Try
     End Sub
 
-    Private Sub dgvTeachers_DataBindingComplete_FormatRows(sender As Object, e As DataGridViewBindingCompleteEventArgs)
-        Try
-            ' Format rows based on faculty status
-            For i As Integer = 0 To dgvTeachers.Rows.Count - 1
-                Dim row As DataGridViewRow = dgvTeachers.Rows(i)
-                
-                If row.Cells("ColumnStatus") IsNot Nothing AndAlso row.Cells("ColumnStatus").Value IsNot Nothing Then
-                    Dim status As String = row.Cells("ColumnStatus").Value.ToString()
-                    Dim isAlternatingRow As Boolean = (i Mod 2 = 1)
-
-                    If status = "Inactive" Then
-                        ' Set light gray background for inactive faculty, respecting alternating rows
-                        If isAlternatingRow Then
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(235, 235, 235) ' Slightly darker gray for alternating
-                        Else
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245) ' Very light gray
-                        End If
-                        row.DefaultCellStyle.ForeColor = Color.FromArgb(128, 128, 128) ' Medium gray text
-                        row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(180, 180, 180) ' Darker gray for selection
-                        row.DefaultCellStyle.SelectionForeColor = Color.White
-
-                        ' Make the status cell more prominent
-                        If row.Cells("ColumnStatus") IsNot Nothing Then
-                            row.Cells("ColumnStatus").Style.BackColor = Color.FromArgb(220, 220, 220)
-                            row.Cells("ColumnStatus").Style.ForeColor = Color.FromArgb(100, 100, 100)
-                            row.Cells("ColumnStatus").Style.Font = New Font("Segoe UI", 10, FontStyle.Bold)
-                        End If
-
-                        _logger.LogInfo($"FormFaculty - Row formatted as inactive for Faculty ID: {row.Cells(0).Value}")
-                    Else
-                        ' For active faculty, use alternating colors
-                        If isAlternatingRow Then
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240) ' Light gray for alternating
-                        Else
-                            row.DefaultCellStyle.BackColor = Color.White
-                        End If
-                        row.DefaultCellStyle.ForeColor = Color.DimGray
-                        row.DefaultCellStyle.SelectionBackColor = Color.DeepSkyBlue
-                        row.DefaultCellStyle.SelectionForeColor = Color.White
-
-                        ' Make the active status more prominent
-                        If row.Cells("ColumnStatus") IsNot Nothing Then
-                            row.Cells("ColumnStatus").Style.BackColor = Color.FromArgb(230, 255, 230) ' Very light green
-                            row.Cells("ColumnStatus").Style.ForeColor = Color.FromArgb(0, 128, 0) ' Dark green
-                            row.Cells("ColumnStatus").Style.Font = New Font("Segoe UI", 10, FontStyle.Bold)
-                        End If
-                    End If
-                End If
-            Next
-
-            ' Reset toggle button to default state when data refreshes
-            ResetToggleButtonToDefault()
-
-            _logger.LogInfo($"FormFaculty - Row formatting completed for {dgvTeachers.Rows.Count} rows")
-        Catch ex As Exception
-            _logger.LogError($"FormFaculty - Error formatting rows: {ex.Message}")
-        End Try
-    End Sub
+    ' Removed: status-based row formatting to preserve Designer-defined grid styles
 
     Private Sub UpdateToggleButtonState(rowIndex As Integer)
         Try
@@ -690,11 +622,11 @@ Public Class FormFaculty
                     con.Close()
 
                     Dim newStatus As String = If(currentStatus = 1, "disabled", "enabled")
-                    
+
                     ' Log audit trail for faculty status change
                     _auditLogger.LogUpdate(MainForm.currentUsername, "Faculty",
                         $"{If(currentStatus = 1, "Disabled", "Enabled")} faculty member '{facultyName}' (ID: {facultyId})")
-                    
+
                     _logger.LogInfo($"FormFaculty - Faculty status toggled successfully - Faculty ID: {facultyId}, Status: {newStatus}")
                     MessageBox.Show($"Faculty member has been {newStatus} successfully.", "Status Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -721,4 +653,214 @@ Public Class FormFaculty
             GC.Collect()
         End Try
     End Sub
+
+    Private Sub btnGenerateReport_Click(sender As Object, e As EventArgs) Handles btnGenerateReport.Click
+        Try
+            If dgvTeachers.Rows.Count = 0 Then
+                MessageBox.Show("No data to generate report.", "Generate Report", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' Build query aligned with ReportFacultyList.rdlc (same schema as FormFacultyList)
+            Dim query As String = "
+                SELECT 
+                    t.teacherID,
+                    t.employeeID,
+                    CONCAT(t.lastname, ', ', t.firstname, ' ', IFNULL(t.middlename, '')) AS fullname,
+                    IFNULL(d.department_name, 'N/A') AS department,
+                    t.email,
+                    t.contactNo,
+                    CASE WHEN t.isActive = 1 THEN 'Active' ELSE 'Inactive' END AS status
+                FROM teacherinformation t
+                LEFT JOIN departments d ON t.department_id = d.department_id
+                WHERE 1=1"
+
+            ' Apply current filters from this form
+            Dim parameters As New List(Of Object)
+
+            ' Status filter
+            If cboStatusFilter.SelectedItem IsNot Nothing Then
+                Dim statusFilter As String = cboStatusFilter.SelectedItem.ToString()
+                If statusFilter = "Active" Then
+                    query &= " AND t.isActive = 1"
+                ElseIf statusFilter = "Inactive" Then
+                    query &= " AND t.isActive = 0"
+                End If
+            End If
+
+            ' Department filter
+            If cboDepartment.SelectedValue IsNot Nothing Then
+                Dim departmentFilter As String = cboDepartment.SelectedValue.ToString()
+                If departmentFilter <> "ALL" AndAlso IsNumeric(departmentFilter) Then
+                    query &= $" AND t.department_id = {departmentFilter}"
+                End If
+            End If
+
+            ' Search filter (name, employeeID, email, department)
+            If Not String.IsNullOrWhiteSpace(txtSearch.Text) Then
+                query &= " AND (CONCAT(t.firstname, ' ', t.lastname) LIKE ? OR t.employeeID LIKE ? OR t.email LIKE ? OR d.department_name LIKE ?)"
+                Dim searchTerm As String = "%" & txtSearch.Text.Trim() & "%"
+                parameters.Add(searchTerm)
+                parameters.Add(searchTerm)
+                parameters.Add(searchTerm)
+                parameters.Add(searchTerm)
+            End If
+
+            query &= " ORDER BY t.lastname, t.firstname"
+
+            ' Execute and fetch DataTable
+            Dim dt As DataTable = Nothing
+            connectDB()
+            Dim cmd As New OdbcCommand(query, con)
+            For Each p In parameters
+                cmd.Parameters.AddWithValue("?", p)
+            Next
+            Dim da As New OdbcDataAdapter(cmd)
+            dt = New DataTable()
+            da.Fill(dt)
+            con.Close()
+
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                MessageBox.Show("No data matched the current filters.", "Generate Report", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+
+            ' Prepare Report Viewer window
+            Dim reportForm As New Form()
+            reportForm.Text = "Faculty List Report"
+            reportForm.Size = New Size(1024, 768)
+            reportForm.StartPosition = FormStartPosition.CenterScreen
+            reportForm.WindowState = FormWindowState.Maximized
+            reportForm.TopMost = True
+
+            Dim reportViewer As New Microsoft.Reporting.WinForms.ReportViewer()
+            reportViewer.Dock = DockStyle.Fill
+            reportForm.Controls.Add(reportViewer)
+
+            ' Hook detailed logging for ReportViewer and Report Form
+            Try
+                AddHandler reportViewer.ReportError, Sub(sender2 As Object, e2 As Microsoft.Reporting.WinForms.ReportErrorEventArgs)
+                                                         Try
+                                                             Dim ex = e2.Exception
+                                                             If ex IsNot Nothing Then
+                                                                 _logger.LogError($"ReportViewer.ReportError: {BuildExceptionDetails(ex)}")
+                                                             Else
+                                                                 _logger.LogError("ReportViewer.ReportError triggered with no exception details.")
+                                                                 _logger.LogError("ReportViewer.ReportError triggered with no exception details.")
+                                                             End If
+                                                         Catch handlerEx As Exception
+                                                             _logger.LogError($"ReportViewer.ReportError handler failure: {handlerEx.Message}")
+                                                         End Try
+                                                     End Sub
+
+                AddHandler reportViewer.RenderingComplete, Sub(sender3 As Object, e3 As Microsoft.Reporting.WinForms.RenderingCompleteEventArgs)
+                                                               Try
+                                                                   If e3 IsNot Nothing AndAlso e3.Exception IsNot Nothing Then
+                                                                       _logger.LogError($"ReportViewer.RenderingComplete exception: {BuildExceptionDetails(e3.Exception)}")
+                                                                   Else
+                                                                       _logger.LogInfo("ReportViewer.RenderingComplete successful")
+                                                                   End If
+                                                               Catch handlerEx As Exception
+                                                                   _logger.LogError($"ReportViewer.RenderingComplete handler failure: {handlerEx.Message}")
+                                                               End Try
+                                                           End Sub
+
+                AddHandler reportForm.Shown, Sub()
+                                                 _logger.LogInfo("Report form shown")
+                                             End Sub
+                AddHandler reportForm.FormClosed, Sub()
+                                                      _logger.LogInfo("Report form closed")
+                                                  End Sub
+            Catch hookEx As Exception
+                _logger.LogError($"Error attaching ReportViewer/Form handlers: {hookEx.Message}")
+            End Try
+
+            ' Use the existing RDLC for faculty list
+            Dim rdlcPath As String = System.IO.Path.Combine(Application.StartupPath, "ReportFaculty.rdlc")
+            If Not System.IO.File.Exists(rdlcPath) Then
+                ' Fallbacks if running from different working dir
+                Dim alt1 As String = System.IO.Path.Combine(Application.StartupPath, "ReportFacultyList.rdlc")
+                Dim alt2 As String = "ReportFaculty.rdlc"
+                Dim alt3 As String = "ReportFacultyList.rdlc"
+                If System.IO.File.Exists(alt1) Then
+                    rdlcPath = alt1
+                ElseIf System.IO.File.Exists(alt2) Then
+                    rdlcPath = alt2
+                Else
+                    rdlcPath = alt3
+                End If
+            End If
+
+            reportViewer.LocalReport.ReportPath = rdlcPath
+            reportViewer.LocalReport.DataSources.Clear()
+            Dim rds As New Microsoft.Reporting.WinForms.ReportDataSource("DataSetFacultyList", dt)
+            reportViewer.LocalReport.DataSources.Add(rds)
+            Try
+                Dim total As String = dt.Rows.Count.ToString()
+                Dim p As New List(Of Microsoft.Reporting.WinForms.ReportParameter)
+                p.Add(New Microsoft.Reporting.WinForms.ReportParameter("TotalRecords", total))
+                reportViewer.LocalReport.SetParameters(p)
+            Catch setParamEx As Exception
+                _logger.LogError($"Setting report parameters failed: {BuildExceptionDetails(setParamEx)}")
+            End Try
+
+            ' Extra diagnostics before rendering
+            Try
+                _logger.LogInfo($"Report RDLC path: {rdlcPath}, exists: {System.IO.File.Exists(rdlcPath)}")
+                _logger.LogInfo($"Report dataset rows: {dt.Rows.Count}")
+                Dim cols = String.Join(", ", dt.Columns.Cast(Of DataColumn)().Select(Function(c) c.ColumnName))
+                _logger.LogInfo($"Report dataset columns: {cols}")
+            Catch diagEx As Exception
+                _logger.LogError($"Diagnostics logging failed: {diagEx.Message}")
+            End Try
+
+            Try
+                reportViewer.RefreshReport()
+            Catch rvEx As Exception
+                _logger.LogError($"ReportViewer.RefreshReport error: {BuildExceptionDetails(rvEx)}")
+                Throw
+            End Try
+
+            Try
+                reportForm.ShowDialog()
+            Catch formEx As Exception
+                _logger.LogError($"Report form ShowDialog error: {BuildExceptionDetails(formEx)}")
+                Throw
+            End Try
+
+        Catch ex As Exception
+            _logger.LogError($"FormFaculty - Error generating report: {BuildExceptionDetails(ex)}")
+        End Try
+    End Sub
+
+    Private Function BuildExceptionDetails(ex As Exception) As String
+        Try
+            Dim sb As New System.Text.StringBuilder()
+            Dim level As Integer = 0
+            Dim cur As Exception = ex
+            While cur IsNot Nothing AndAlso level < 10 ' avoid infinite loops
+                If level = 0 Then
+                    sb.AppendLine($"Message: {cur.Message}")
+                Else
+                    sb.AppendLine($"Inner[{level}] Message: {cur.Message}")
+                End If
+                If cur.StackTrace IsNot Nothing Then
+                    sb.AppendLine("StackTrace:")
+                    sb.AppendLine(cur.StackTrace)
+                End If
+                If cur.Data IsNot Nothing AndAlso cur.Data.Count > 0 Then
+                    sb.AppendLine("Data:")
+                    For Each key In cur.Data.Keys
+                        sb.AppendLine($"  {key}: {cur.Data(key)}")
+                    Next
+                End If
+                cur = cur.InnerException
+                level += 1
+                If cur IsNot Nothing Then sb.AppendLine("---")
+            End While
+            Return sb.ToString().TrimEnd()
+        Catch
+            Return ex.ToString()
+        End Try
+    End Function
 End Class

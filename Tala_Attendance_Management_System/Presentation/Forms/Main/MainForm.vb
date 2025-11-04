@@ -490,7 +490,7 @@ Public Class MainForm
         FormAttendace.Close()
     End Sub
 
-    Private Sub tsAnnouncements_Click(sender As Object, e As EventArgs) Handles tsAnnouncements.Click
+    Private Sub tsAnnouncements_Click(sender As Object, e As EventArgs)
         FormAnnouncement.Show()
     End Sub
 
@@ -717,5 +717,16 @@ Public Class MainForm
 
     Private Sub AuditLogsToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles AuditLogsToolStripMenuItem1.Click
         FormUserActivityLogs.ShowDialog()
+    End Sub
+
+    Private Sub SystemBackupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SystemBackupToolStripMenuItem.Click
+        Try
+            Using frm As New FormBackup()
+                frm.ShowDialog(Me)
+            End Using
+        Catch ex As Exception
+            _logger.LogError($"Error opening Backup/Restore form: {ex.Message}")
+            MessageBox.Show("Unable to open Backup/Restore form: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

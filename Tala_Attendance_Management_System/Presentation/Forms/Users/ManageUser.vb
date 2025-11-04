@@ -11,17 +11,7 @@ Public Class ManageUser
         dgvManageUser.AllowUserToAddRows = False
         dgvManageUser.ReadOnly = True
         dgvManageUser.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgvManageUser.RowTemplate.Height = 40
-        dgvManageUser.CellBorderStyle = DataGridViewCellBorderStyle.None
-
-        ' Set column header style
-        With dgvManageUser.ColumnHeadersDefaultCellStyle
-            .Font = New Font("Segoe UI Semibold", 12)
-            .Alignment = DataGridViewContentAlignment.MiddleLeft
-        End With
-
-        dgvManageUser.DefaultCellStyle.Font = New Font("Segoe UI", 11)
-        dgvManageUser.AlternatingRowsDefaultCellStyle = dgvManageUser.DefaultCellStyle
+        ' Use styles defined in Designer; avoid overriding at runtime
 
         dgvManageUser.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader)
 
@@ -45,7 +35,7 @@ Public Class ManageUser
     Private Sub dgvManageUser_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvManageUser.DataBindingComplete
         dgvManageUser.CurrentCell = Nothing
         dgvManageUser.Tag = 0 ' Reset tag when data is reloaded
-        btnDelete.BackgroundImage = My.Resources.enable_default_40x40
+        'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
         btnDelete.Text = "&Set User" ' Reset button text
         btnDelete.ForeColor = Color.Black
     End Sub
@@ -64,14 +54,14 @@ Public Class ManageUser
             Else
                 dgvManageUser.Tag = 0
                 btnDelete.Text = "&Set User"
-                btnDelete.BackgroundImage = My.Resources.enable_default_40x40
+                'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
                 btnDelete.ForeColor = Color.Black
             End If
         Catch ex As Exception
             ' Ignore errors during initial load
             dgvManageUser.Tag = 0
             btnDelete.Text = "&Set User"
-            btnDelete.BackgroundImage = My.Resources.enable_default_40x40
+            'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
             btnDelete.ForeColor = Color.Black
         End Try
     End Sub
@@ -208,14 +198,14 @@ Public Class ManageUser
                 If Not IsDBNull(isActiveValue) Then
                     Dim isActive As Boolean = Convert.ToBoolean(isActiveValue)
                     If isActive Then
-                        btnDelete.BackgroundImage = My.Resources.block_40x40
+                        'btnDelete.BackgroundImage = My.Resources.block_40x40
                         btnDelete.Text = "&Disable User"
                         btnDelete.ForeColor = Color.Red
                         ' Keep existing icon or use default delete icon
                     Else
-                        btnDelete.BackgroundImage = My.Resources.enable
+                        'btnDelete.BackgroundImage = My.Resources.enable
                         btnDelete.Text = "&Enable User"
-                        btnDelete.ForeColor = Color.Green
+                        btnDelete.ForeColor = Color.LimeGreen
                         ' Keep existing icon or use default delete icon
                     End If
                 End If
@@ -223,7 +213,7 @@ Public Class ManageUser
         Catch ex As Exception
             btnDelete.Text = "&Set User"
             btnDelete.ForeColor = Color.Black
-            btnDelete.BackgroundImage = My.Resources.enable_default_40x40
+            'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
         End Try
     End Sub
 

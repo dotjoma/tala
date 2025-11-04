@@ -13,6 +13,12 @@ Public Class FormUserActivityLogs
     Private Sub FormUserActivityLogs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         InitializeForm()
         LoadActivityLogs()
+        ' Clear any selection on initial load
+        Try
+            dgvLogs.ClearSelection()
+            dgvLogs.CurrentCell = Nothing
+        Catch
+        End Try
     End Sub
 
     Private Sub InitializeForm()

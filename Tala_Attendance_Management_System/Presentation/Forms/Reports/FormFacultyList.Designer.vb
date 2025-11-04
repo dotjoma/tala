@@ -17,20 +17,19 @@ Partial Class FormFacultyList
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormFacultyList))
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.pnlTop = New System.Windows.Forms.Panel()
         Me.lblTitle = New System.Windows.Forms.Label()
         Me.pnlFilters = New System.Windows.Forms.Panel()
         Me.btnGenerateReport = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.cboStatusFilter = New System.Windows.Forms.ComboBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtSearch = New System.Windows.Forms.TextBox()
-        Me.btnRefresh = New System.Windows.Forms.Button()
         Me.btnExport = New System.Windows.Forms.Button()
+        Me.btnRefresh = New System.Windows.Forms.Button()
+        Me.txtSearch = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.cboStatusFilter = New System.Windows.Forms.ComboBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.dgvFaculty = New System.Windows.Forms.DataGridView()
         Me.colTeacherID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colEmployeeID = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -69,11 +68,11 @@ Partial Class FormFacultyList
         Me.lblTitle.ForeColor = System.Drawing.Color.White
         Me.lblTitle.Location = New System.Drawing.Point(0, 0)
         Me.lblTitle.Name = "lblTitle"
+        Me.lblTitle.Padding = New System.Windows.Forms.Padding(20, 0, 0, 0)
         Me.lblTitle.Size = New System.Drawing.Size(1200, 60)
         Me.lblTitle.TabIndex = 0
         Me.lblTitle.Text = "Faculty List"
         Me.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.lblTitle.Padding = New System.Windows.Forms.Padding(20, 0, 0, 0)
         '
         'pnlFilters
         '
@@ -91,57 +90,6 @@ Partial Class FormFacultyList
         Me.pnlFilters.Padding = New System.Windows.Forms.Padding(20, 10, 20, 10)
         Me.pnlFilters.Size = New System.Drawing.Size(1200, 70)
         Me.pnlFilters.TabIndex = 1
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label1.Location = New System.Drawing.Point(20, 25)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(50, 19)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Status:"
-        '
-        'cboStatusFilter
-        '
-        Me.cboStatusFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboStatusFilter.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.cboStatusFilter.FormattingEnabled = True
-        Me.cboStatusFilter.Location = New System.Drawing.Point(80, 22)
-        Me.cboStatusFilter.Name = "cboStatusFilter"
-        Me.cboStatusFilter.Size = New System.Drawing.Size(150, 25)
-        Me.cboStatusFilter.TabIndex = 1
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label2.Location = New System.Drawing.Point(250, 25)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(54, 19)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Search:"
-        '
-        'txtSearch
-        '
-        Me.txtSearch.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.txtSearch.Location = New System.Drawing.Point(310, 22)
-        Me.txtSearch.Name = "txtSearch"
-        Me.txtSearch.Size = New System.Drawing.Size(300, 25)
-        Me.txtSearch.TabIndex = 3
-        '
-        'btnRefresh
-        '
-        Me.btnRefresh.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        Me.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnRefresh.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.btnRefresh.ForeColor = System.Drawing.Color.White
-        Me.btnRefresh.Location = New System.Drawing.Point(630, 20)
-        Me.btnRefresh.Name = "btnRefresh"
-        Me.btnRefresh.Size = New System.Drawing.Size(100, 30)
-        Me.btnRefresh.TabIndex = 4
-        Me.btnRefresh.Text = "Refresh"
-        Me.btnRefresh.UseVisualStyleBackColor = False
         '
         'btnGenerateReport
         '
@@ -171,38 +119,89 @@ Partial Class FormFacultyList
         Me.btnExport.Text = "Export to Excel"
         Me.btnExport.UseVisualStyleBackColor = False
         '
+        'btnRefresh
+        '
+        Me.btnRefresh.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        Me.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnRefresh.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.btnRefresh.ForeColor = System.Drawing.Color.White
+        Me.btnRefresh.Location = New System.Drawing.Point(630, 20)
+        Me.btnRefresh.Name = "btnRefresh"
+        Me.btnRefresh.Size = New System.Drawing.Size(100, 30)
+        Me.btnRefresh.TabIndex = 4
+        Me.btnRefresh.Text = "Refresh"
+        Me.btnRefresh.UseVisualStyleBackColor = False
+        '
+        'txtSearch
+        '
+        Me.txtSearch.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.txtSearch.Location = New System.Drawing.Point(310, 22)
+        Me.txtSearch.Name = "txtSearch"
+        Me.txtSearch.Size = New System.Drawing.Size(300, 25)
+        Me.txtSearch.TabIndex = 3
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.Label2.Location = New System.Drawing.Point(250, 25)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(62, 19)
+        Me.Label2.TabIndex = 2
+        Me.Label2.Text = "SEARCH:"
+        '
+        'cboStatusFilter
+        '
+        Me.cboStatusFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboStatusFilter.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.cboStatusFilter.FormattingEnabled = True
+        Me.cboStatusFilter.Location = New System.Drawing.Point(80, 22)
+        Me.cboStatusFilter.Name = "cboStatusFilter"
+        Me.cboStatusFilter.Size = New System.Drawing.Size(150, 25)
+        Me.cboStatusFilter.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.Label1.Location = New System.Drawing.Point(20, 25)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(57, 19)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "STATUS:"
+        '
         'dgvFaculty
         '
         Me.dgvFaculty.AllowUserToAddRows = False
         Me.dgvFaculty.AllowUserToDeleteRows = False
         Me.dgvFaculty.AllowUserToResizeColumns = False
         Me.dgvFaculty.AllowUserToResizeRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvFaculty.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvFaculty.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle4
         Me.dgvFaculty.BackgroundColor = System.Drawing.Color.White
         Me.dgvFaculty.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvFaculty.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvFaculty.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle5.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvFaculty.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.dgvFaculty.ColumnHeadersHeight = 45
         Me.dgvFaculty.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvFaculty.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTeacherID, Me.colEmployeeID, Me.colFullName, Me.colDepartment, Me.colEmail, Me.colContactNumber, Me.colStatus})
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvFaculty.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvFaculty.DefaultCellStyle = DataGridViewCellStyle6
         Me.dgvFaculty.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvFaculty.EnableHeadersVisualStyles = False
         Me.dgvFaculty.Location = New System.Drawing.Point(0, 130)
@@ -387,6 +386,7 @@ Partial Class FormFacultyList
         Me.pnlFilters.PerformLayout()
         CType(Me.dgvFaculty, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlBottom.ResumeLayout(False)
+        Me.pnlBottom.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub

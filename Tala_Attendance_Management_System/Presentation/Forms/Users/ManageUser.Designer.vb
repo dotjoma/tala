@@ -23,11 +23,11 @@ Partial Class ManageUser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ManageUser))
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.panelHeader = New System.Windows.Forms.Panel()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.PictureBox4 = New System.Windows.Forms.PictureBox()
@@ -66,7 +66,6 @@ Partial Class ManageUser
         'panelHeader
         '
         Me.panelHeader.BackColor = System.Drawing.Color.White
-        Me.panelHeader.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.panelHeader.Controls.Add(Me.Label2)
         Me.panelHeader.Controls.Add(Me.PictureBox4)
         Me.panelHeader.Controls.Add(Me.Label3)
@@ -87,9 +86,9 @@ Partial Class ManageUser
         Me.Label2.ForeColor = System.Drawing.Color.SteelBlue
         Me.Label2.Location = New System.Drawing.Point(809, 30)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(48, 21)
+        Me.Label2.Size = New System.Drawing.Size(53, 21)
         Me.Label2.TabIndex = 34
-        Me.Label2.Text = "Role:"
+        Me.Label2.Text = "ROLE:"
         '
         'PictureBox4
         '
@@ -97,7 +96,7 @@ Partial Class ManageUser
         Me.PictureBox4.Image = CType(resources.GetObject("PictureBox4.Image"), System.Drawing.Image)
         Me.PictureBox4.Location = New System.Drawing.Point(1391, 26)
         Me.PictureBox4.Name = "PictureBox4"
-        Me.PictureBox4.Size = New System.Drawing.Size(40, 29)
+        Me.PictureBox4.Size = New System.Drawing.Size(29, 29)
         Me.PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.PictureBox4.TabIndex = 33
         Me.PictureBox4.TabStop = False
@@ -108,11 +107,11 @@ Partial Class ManageUser
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.Color.SteelBlue
-        Me.Label3.Location = New System.Drawing.Point(1041, 30)
+        Me.Label3.Location = New System.Drawing.Point(1031, 30)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(65, 21)
+        Me.Label3.Size = New System.Drawing.Size(75, 21)
         Me.Label3.TabIndex = 31
-        Me.Label3.Text = "Search:"
+        Me.Label3.Text = "SEARCH:"
         '
         'cbFilter
         '
@@ -145,7 +144,7 @@ Partial Class ManageUser
         Me.Label1.ForeColor = System.Drawing.Color.White
         Me.Label1.Location = New System.Drawing.Point(58, 14)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(232, 32)
+        Me.Label1.Size = New System.Drawing.Size(223, 32)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "User Management"
         '
@@ -233,32 +232,32 @@ Partial Class ManageUser
         Me.dgvManageUser.AllowUserToDeleteRows = False
         Me.dgvManageUser.AllowUserToResizeColumns = False
         Me.dgvManageUser.AllowUserToResizeRows = False
-        DataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvManageUser.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvManageUser.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvManageUser.BackgroundColor = System.Drawing.Color.White
         Me.dgvManageUser.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvManageUser.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle12.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle12.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvManageUser.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle12
-        Me.dgvManageUser.ColumnHeadersHeight = 70
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvManageUser.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        Me.dgvManageUser.ColumnHeadersHeight = 45
         Me.dgvManageUser.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvManageUser.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.login_id, Me.full_name, Me.username, Me.password, Me.email, Me.location, Me.created_at, Me.role, Me.status, Me.isActive, Me.EditBtn, Me.deleteBtn})
-        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle15.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle15.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvManageUser.DefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvManageUser.DefaultCellStyle = DataGridViewCellStyle5
         Me.dgvManageUser.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvManageUser.EnableHeadersVisualStyles = False
         Me.dgvManageUser.Location = New System.Drawing.Point(0, 140)
@@ -357,13 +356,13 @@ Partial Class ManageUser
         '
         'EditBtn
         '
-        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle13.BackColor = System.Drawing.Color.RoyalBlue
-        DataGridViewCellStyle13.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.RoyalBlue
-        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.White
-        Me.EditBtn.DefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.RoyalBlue
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.RoyalBlue
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
+        Me.EditBtn.DefaultCellStyle = DataGridViewCellStyle3
         Me.EditBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.EditBtn.HeaderText = "Actions"
         Me.EditBtn.Name = "EditBtn"
@@ -374,13 +373,13 @@ Partial Class ManageUser
         '
         'deleteBtn
         '
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle14.BackColor = System.Drawing.Color.Crimson
-        DataGridViewCellStyle14.Font = New System.Drawing.Font("Segoe UI", 9.75!)
-        DataGridViewCellStyle14.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.Crimson
-        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.White
-        Me.deleteBtn.DefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle4.BackColor = System.Drawing.Color.Crimson
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Segoe UI", 9.75!)
+        DataGridViewCellStyle4.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Crimson
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White
+        Me.deleteBtn.DefaultCellStyle = DataGridViewCellStyle4
         Me.deleteBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.deleteBtn.HeaderText = ""
         Me.deleteBtn.Name = "deleteBtn"

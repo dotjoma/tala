@@ -96,6 +96,10 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+  <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -124,6 +128,7 @@
     <Compile Include="Core\Models\VersionInfo.vb" />
     <Compile Include="Core\Services\AuditLogger.vb" />
     <Compile Include="Core\Services\ComPortManager.vb" />
+    <Compile Include="Core\Services\BackupService.vb" />
     <Compile Include="Core\Services\DepartmentService.vb" />
     <Compile Include="Core\Services\UpdateManager.vb" />
     <Compile Include="Core\Services\UpdateService.vb" />
@@ -156,6 +161,12 @@
       <DependentUpon>RFIDScanMonitor.vb</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Forms\Attendance\RFIDScanMonitor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Backup\FormBackup.Designer.vb">
+      <DependentUpon>FormBackup.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Backup\FormBackup.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Presentation\Forms\Departments\AddDepartment.Designer.vb">
@@ -463,6 +474,9 @@
     <EmbeddedResource Include="Presentation\Forms\Attendance\RFIDScanMonitor.resx">
       <DependentUpon>RFIDScanMonitor.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Backup\FormBackup.resx">
+      <DependentUpon>FormBackup.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Departments\AddDepartment.resx">
       <DependentUpon>AddDepartment.vb</DependentUpon>
     </EmbeddedResource>
@@ -474,6 +488,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Faculty\AddFaculty.resx">
       <DependentUpon>AddFaculty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Reports\FormFacultyList.resx">
+      <DependentUpon>FormFacultyList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Reports\FormUserActivityLogs.resx">
       <DependentUpon>FormUserActivityLogs.vb</DependentUpon>

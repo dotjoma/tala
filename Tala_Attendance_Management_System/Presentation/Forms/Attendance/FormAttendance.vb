@@ -17,17 +17,7 @@ Public Class FormAttendace
         dgvAttendance.AllowUserToAddRows = False
         dgvAttendance.ReadOnly = True
         dgvAttendance.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgvAttendance.RowTemplate.Height = 40
-        dgvAttendance.CellBorderStyle = DataGridViewCellBorderStyle.None
-
-        ' Set column header style
-        With dgvAttendance.ColumnHeadersDefaultCellStyle
-            .Font = New Font("Segoe UI Semibold", 12)
-            .Alignment = DataGridViewContentAlignment.MiddleLeft
-        End With
-
-        dgvAttendance.DefaultCellStyle.Font = New Font("Segoe UI", 11)
-        dgvAttendance.AlternatingRowsDefaultCellStyle = dgvAttendance.DefaultCellStyle
+        ' Use styles defined in Designer; avoid overriding at runtime
 
         LoadAttendanceData()
 
@@ -100,13 +90,7 @@ Public Class FormAttendace
         DefaultSettings()
         ApplyRoleBasedAccess()
 
-        Try
-            ' Explicitly set alternating row colors
-            dgvAttendance.RowsDefaultCellStyle.BackColor = Color.White
-            dgvAttendance.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240)
-        Catch ex As Exception
-            ' Ignore errors
-        End Try
+        ' Use styles from Designer for row colors
 
         _logger.LogInfo("FormAttendance loaded")
     End Sub
