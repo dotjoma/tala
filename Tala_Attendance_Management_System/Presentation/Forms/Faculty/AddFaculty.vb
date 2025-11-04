@@ -20,12 +20,60 @@ Public Class AddFaculty
             AddHandler txtContactNo.KeyPress, AddressOf txtContactNo_KeyPress
             AddHandler txtContactNo.TextChanged, AddressOf txtContactNo_TextChanged
 
+            ' Block digits in name-related fields
+            AddHandler txtFirstName.KeyPress, AddressOf NameField_KeyPress
+            AddHandler txtMiddleName.KeyPress, AddressOf NameField_KeyPress
+            AddHandler txtLastName.KeyPress, AddressOf NameField_KeyPress
+            AddHandler txtExtName.KeyPress, AddressOf NameField_KeyPress
+            AddHandler txtEmergencyContact.KeyPress, AddressOf NameField_KeyPress
+
+            AddHandler txtFirstName.TextChanged, AddressOf NameField_TextChanged
+            AddHandler txtMiddleName.TextChanged, AddressOf NameField_TextChanged
+            AddHandler txtLastName.TextChanged, AddressOf NameField_TextChanged
+            AddHandler txtExtName.TextChanged, AddressOf NameField_TextChanged
+            AddHandler txtEmergencyContact.TextChanged, AddressOf NameField_TextChanged
+
             If Val(txtID.Text) > 0 Then
                 LoadFacultyData(Val(txtID.Text))
             End If
 
         Catch ex As Exception
             _logger.LogError("Error in AddFaculty_Load", ex)
+        End Try
+    End Sub
+
+    Private Sub NameField_KeyPress(sender As Object, e As KeyPressEventArgs)
+        Try
+            If Char.IsControl(e.KeyChar) Then Return
+
+            ' Allow letters, space, hyphen, apostrophe, and period
+            Dim isAllowed As Boolean = Char.IsLetter(e.KeyChar) OrElse e.KeyChar = " "c OrElse e.KeyChar = "-"c OrElse e.KeyChar = "'"c OrElse e.KeyChar = "."c
+            If Not isAllowed Then
+                e.Handled = True
+            End If
+        Catch ex As Exception
+            _logger.LogWarning($"AddFaculty - Error in NameField_KeyPress: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Sub NameField_TextChanged(sender As Object, e As EventArgs)
+        Try
+            Dim tb As TextBox = TryCast(sender, TextBox)
+            If tb Is Nothing Then Return
+
+            RemoveHandler tb.TextChanged, AddressOf NameField_TextChanged
+
+            ' Strip digits and disallowed punctuation
+            Dim filtered As String = New String(tb.Text.Where(Function(c) Char.IsLetter(c) OrElse c = " "c OrElse c = "-"c OrElse c = "'"c OrElse c = "."c).ToArray())
+            If tb.Text <> filtered Then
+                Dim selStart As Integer = tb.SelectionStart
+                tb.Text = filtered
+                tb.SelectionStart = Math.Min(selStart, tb.Text.Length)
+            End If
+
+            AddHandler tb.TextChanged, AddressOf NameField_TextChanged
+        Catch ex As Exception
+            _logger.LogWarning($"AddFaculty - Error in NameField_TextChanged: {ex.Message}")
         End Try
     End Sub
 
