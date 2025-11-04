@@ -18,11 +18,7 @@ Public Class LoginForm
         Dim logger As ILogger = LoggerFactory.Instance
         Dim loginSuccess As Boolean = False
         Dim targetForm As Form = Nothing
-
-        ' Show loading
         ShowLoading()
-
-        ' Authenticate in background
         Dim authTask = Task.Run(Sub()
                                     Dim cmd As Odbc.OdbcCommand
                                     Dim da As New OdbcDataAdapter
@@ -32,8 +28,6 @@ Public Class LoginForm
                                     Try
                                         logger.LogInfo($"Login attempt for username: {Trim(ttxtUser.Text)}")
                                         Call connectDB()
-
-                                        ' First check if username and password are correct (regardless of isActive status)
                                         cmd = New OdbcCommand("SELECT * FROM Logins WHERE username = ? AND password = ?", con)
                                         cmd.Parameters.AddWithValue("@username", Trim(ttxtUser.Text))
                                         cmd.Parameters.AddWithValue("@password", Trim(ttxtPass.Text))
@@ -41,10 +35,7 @@ Public Class LoginForm
                                         da.Fill(dt)
 
                                         logger.LogDebug($"Login query returned {dt.Rows.Count} rows")
-
-                                        ' Check if user exists with correct credentials
                                         If dt.Rows.Count > 0 Then
-                                            ' Check if account is active
                                             Dim isActive As Integer = Convert.ToInt32(dt.Rows(0)("isActive"))
                                             If isActive = 0 Then
                                                 logger.LogWarning($"Login attempt for inactive account: {Trim(ttxtUser.Text)}")
@@ -62,15 +53,11 @@ Public Class LoginForm
 
                                             logger.LogInfo($"Login successful for user: {Trim(ttxtUser.Text)}, Role: {userRole}")
 
-                                            ' Log user login activity
                                             AuditLogger.Instance.LogLogin(Trim(ttxtUser.Text), loginId, userRole)
 
                                             Select Case userRole.ToLower()
                                                 Case "admin"
-                                                    ' Get user's full name from logins table
                                                     Dim currentUser As String = dt.Rows(0)("fullname").ToString()
-
-                                                    ' If fullname is empty, try to get from teacherinformation
                                                     If String.IsNullOrWhiteSpace(currentUser) AndAlso Not IsDBNull(userID) AndAlso userID <> "0" Then
                                                         cmd = New OdbcCommand("SELECT CONCAT(firstname, ' ', lastname) AS user_name FROM teacherinformation WHERE user_id = ? AND isActive=1", con)
                                                         cmd.Parameters.AddWithValue("?", userID)
@@ -86,15 +73,10 @@ Public Class LoginForm
                                                         currentUser = "Administrator"
                                                     End If
 
-                                                    ' Set label with format: "Logged in as: Name (Role)"
                                                     MainForm.currentUserRole = "Admin"
-                                                    MainForm.currentUsername = Trim(ttxtUser.Text) ' Store actual username for audit logging
+                                                    MainForm.currentUsername = Trim(ttxtUser.Text)
                                                     MainForm.lblUser.Text = $"Logged in as: {currentUser} (Admin)"
-
-                                                    ' Set user role and apply access control
                                                     MainForm.SetUserRole("Admin")
-
-                                                    ' Show all controls for admin
                                                     MainForm.ToolStripSeparator1.Visible = True
                                                     MainForm.tsManageAccounts.Visible = True
                                                     logger.LogDebug("Opening MainForm for Admin user")
@@ -102,10 +84,8 @@ Public Class LoginForm
                                                     targetForm = MainForm
 
                                                 Case "hr"
-                                                    ' Get user's full name from logins table
                                                     Dim currentUser As String = dt.Rows(0)("fullname").ToString()
 
-                                                    ' If fullname is empty, try to get from teacherinformation
                                                     If String.IsNullOrWhiteSpace(currentUser) AndAlso Not IsDBNull(userID) AndAlso userID <> "0" Then
                                                         cmd = New OdbcCommand("SELECT CONCAT(firstname, ' ', lastname) AS user_name FROM teacherinformation WHERE user_id = ? AND isActive=1", con)
                                                         cmd.Parameters.AddWithValue("?", userID)
@@ -121,15 +101,10 @@ Public Class LoginForm
                                                         currentUser = "HR User"
                                                     End If
 
-                                                    ' Set label with format: "Logged in as: Name (Role)"
                                                     MainForm.currentUserRole = "HR"
-                                                    MainForm.currentUsername = Trim(ttxtUser.Text) ' Store actual username for audit logging
+                                                    MainForm.currentUsername = Trim(ttxtUser.Text)
                                                     MainForm.lblUser.Text = $"Logged in as: {currentUser} (HR)"
-
-                                                    ' Set user role and apply access control
                                                     MainForm.SetUserRole("HR")
-
-                                                    ' Hide Manage Accounts for HR role
                                                     MainForm.ToolStripSeparator1.Visible = False
                                                     MainForm.tsManageAccounts.Visible = False
                                                     logger.LogDebug("Opening MainForm for HR user")
@@ -148,8 +123,6 @@ Public Class LoginForm
                                                                   MessageBox.Show("User role undefined.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                                               End Sub)
                                             End Select
-
-                                            ' Clear password field
                                             ttxtPass.Clear()
                                         Else
                                             logger.LogWarning($"Failed login attempt for username: {Trim(ttxtUser.Text)}")
@@ -173,7 +146,6 @@ Public Class LoginForm
                                     End Try
                                 End Sub)
 
-        ' Wait for authentication to complete, then show target form
         authTask.ContinueWith(Sub(t)
                                   Me.Invoke(Sub()
                                                 HideLoading()

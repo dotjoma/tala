@@ -6,18 +6,15 @@ Public Class FormAttendace
     Private selectedAttendanceId As Integer = 0
     Public Property UserRole As String = ""
     
-    ' Shared instance reference for real-time updates
     Public Shared CurrentInstance As FormAttendace = Nothing
 
     Public Sub DefaultSettings()
         dgvAttendance.CurrentCell = Nothing
 
-        ' Setup DataGridView
         dgvAttendance.AutoGenerateColumns = False
         dgvAttendance.AllowUserToAddRows = False
         dgvAttendance.ReadOnly = True
         dgvAttendance.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        ' Use styles defined in Designer; avoid overriding at runtime
 
         LoadAttendanceData()
 
@@ -48,7 +45,6 @@ Public Class FormAttendace
             
             _logger.LogInfo($"Loaded {dgvAttendance.Rows.Count} attendance records from {dateFrom} to {dateTo}")
 
-            ' Log raw data for each record for debugging (one line per record)
             If TypeOf dgvAttendance.DataSource Is DataTable Then
                 Dim dt As DataTable = CType(dgvAttendance.DataSource, DataTable)
                 For i As Integer = 0 To dt.Rows.Count - 1
@@ -64,45 +60,32 @@ Public Class FormAttendace
         End Try
     End Sub
     Private Sub FormAttendance_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Set current instance for real-time updates
         CurrentInstance = Me
         
-        ' Temporarily remove event handlers to prevent multiple LoadAttendanceData calls
         RemoveHandler dtpDateFrom.ValueChanged, AddressOf dtpDateFrom_ValueChanged
         RemoveHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
 
-        ' Set date constraints - prevent future dates
         dtpDateFrom.MaxDate = DateTime.Today
         dtpDateTo.MaxDate = DateTime.Today
-
-        ' Set reasonable minimum date (e.g., 5 years back)
         dtpDateFrom.MinDate = DateTime.Today.AddYears(-5)
         dtpDateTo.MinDate = DateTime.Today.AddYears(-5)
-
-        ' Set default date range to today
         dtpDateFrom.Value = DateTime.Today
         dtpDateTo.Value = DateTime.Today
-
-        ' Re-attach event handlers
         AddHandler dtpDateFrom.ValueChanged, AddressOf dtpDateFrom_ValueChanged
         AddHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
 
         DefaultSettings()
         ApplyRoleBasedAccess()
 
-        ' Use styles from Designer for row colors
-
         _logger.LogInfo("FormAttendance loaded")
     End Sub
     
     Private Sub FormAttendance_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        ' Clear instance reference when form closes
         If CurrentInstance Is Me Then
             CurrentInstance = Nothing
         End If
     End Sub
     
-    ' Public method to refresh data from external sources (like RFID scanner)
     Public Sub RefreshAttendanceData()
         If InvokeRequired Then
             Invoke(New Action(AddressOf RefreshAttendanceData))
@@ -114,16 +97,12 @@ Public Class FormAttendace
 
     Private Sub ApplyRoleBasedAccess()
         Try
-            ' Try multiple sources for user role
             Dim userRole As String = ""
 
-            ' 1. Check if role was set directly on this form
             If Not String.IsNullOrEmpty(Me.UserRole) Then
                 userRole = Me.UserRole.ToLower()
-                ' 2. Check MainForm.currentUserRole
             ElseIf Not String.IsNullOrEmpty(MainForm.currentUserRole) Then
                 userRole = MainForm.currentUserRole.ToLower()
-                ' 3. Try to parse from MainForm.lblUser label text
             ElseIf MainForm.lblUser IsNot Nothing AndAlso Not String.IsNullOrEmpty(MainForm.lblUser.Text) Then
                 Dim labelText As String = MainForm.lblUser.Text
                 If labelText.Contains("(Admin)") Then
@@ -135,11 +114,9 @@ Public Class FormAttendace
                 End If
             End If
 
-            ' Edit button disabled - manual editing of records not allowed
             btnEdit.Visible = False
             btnEdit.Enabled = False
 
-            ' Manual input button enabled for admin and hr roles only
             Dim canManualInput As Boolean = (userRole = "admin" OrElse userRole = "hr")
             btnManualInput.Visible = canManualInput
             btnManualInput.Enabled = canManualInput
@@ -147,7 +124,6 @@ Public Class FormAttendace
             _logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button disabled, Manual input {If(canManualInput, "enabled", "disabled")}")
         Catch ex As Exception
             _logger.LogError($"Error applying role-based access: {ex.Message}")
-            ' Default to hiding edit button if there's an error
             btnEdit.Visible = False
             btnEdit.Enabled = False
         End Try
@@ -222,32 +198,6 @@ Public Class FormAttendace
         If txtSearch.TextLength > 0 Then
             SearchAllRecords()
         Else
-            'loadDGV("SELECT CONCAT(firstname, ' ', lastname) AS Name, 
-            '         DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-            '         DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-            '         arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-            '         depStatus,'Student' AS TYPE, 
-            '         CONCAT(cr.location, ' ', cr.classroom_name) AS classroom, 
-            '         s.subject_name 
-            '         FROM attendance_record ar 
-            '         JOIN studentrecords sr ON ar.tag_id = sr.tagID 
-            '         JOIN classrooms cr ON ar.classroom_id=cr.classroom_id 
-            '         JOIN subjects s ON ar.subject_id=s.subject_id 
-            '         WHERE logDate = CURDATE() 
-            '         UNION ALL 
-            '         SELECT CONCAT(firstname, ' ', lastname) AS NAME, 
-            '         DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-            '         DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-            '         arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-            '         depStatus,'Teacher' AS TYPE, 
-            '         CONCAT(cr.location, ' ', cr.classroom_name) AS classroom, 
-            '         s.subject_name 
-            '         FROM attendance_record ar 
-            '         JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
-            '         JOIN classrooms cr ON ar.classroom_id=cr.classroom_id 
-            '         JOIN subjects s ON ar.subject_id=s.subject_id 
-            '         WHERE logDate = CURDATE()", dgvAttendance)
-
             loadDGV("SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
                      DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
@@ -323,7 +273,6 @@ Public Class FormAttendace
     Private Sub ValidateDateRange()
         Dim needsCorrection As Boolean = False
 
-        ' Check for future dates (shouldn't happen with MaxDate set, but double-check)
         If dtpDateFrom.Value > DateTime.Today Then
             _logger.LogWarning($"Future date detected in Date From: {dtpDateFrom.Value:yyyy-MM-dd}")
             RemoveHandler dtpDateFrom.ValueChanged, AddressOf dtpDateFrom_ValueChanged
@@ -342,10 +291,8 @@ Public Class FormAttendace
 
         ' Check if date range is valid
         If dtpDateFrom.Value > dtpDateTo.Value Then
-            ' Date From is after Date To - auto-correct
             _logger.LogWarning($"Invalid date range detected: From {dtpDateFrom.Value:yyyy-MM-dd} > To {dtpDateTo.Value:yyyy-MM-dd}")
 
-            ' Auto-correct: Set Date To to match Date From
             RemoveHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
             dtpDateTo.Value = dtpDateFrom.Value
             AddHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
@@ -354,12 +301,10 @@ Public Class FormAttendace
             _logger.LogInfo($"Auto-corrected date range: Both dates set to {dtpDateFrom.Value:yyyy-MM-dd}")
         End If
 
-        ' Visual feedback if correction was needed
         If needsCorrection Then
             dtpDateFrom.BackColor = Color.LightYellow
             dtpDateTo.BackColor = Color.LightYellow
 
-            ' Reset colors after a short delay
             Dim timer As New Timer With {.Interval = 1000}
             AddHandler timer.Tick, Sub()
                                        dtpDateFrom.BackColor = SystemColors.Window
@@ -369,18 +314,15 @@ Public Class FormAttendace
                                    End Sub
             timer.Start()
         Else
-            ' Valid range - ensure normal colors
             dtpDateFrom.BackColor = SystemColors.Window
             dtpDateTo.BackColor = SystemColors.Window
         End If
 
-        ' Warn if date range is too large (more than 1 year)
         Dim daysDiff As Integer = (dtpDateTo.Value - dtpDateFrom.Value).Days
         If daysDiff > 365 Then
             _logger.LogWarning($"Large date range selected: {daysDiff} days")
         End If
 
-        ' Load data with validated range
         LoadAttendanceData()
     End Sub
 
@@ -391,7 +333,6 @@ Public Class FormAttendace
             If e.RowIndex >= 0 Then
                 _logger.LogDebug($"Valid row clicked. Total columns: {dgvAttendance.Columns.Count}")
 
-                ' Check if attendanceID column exists
                 Dim hasAttendanceIdColumn As Boolean = dgvAttendance.Columns.Contains("attendanceID")
                 _logger.LogDebug($"DataGridView has 'attendanceID' column: {hasAttendanceIdColumn}")
 
@@ -401,7 +342,6 @@ Public Class FormAttendace
                     selectedAttendanceId = Convert.ToInt32(cellValue)
                     _logger.LogInfo($"✓ Selected attendance ID from column: {selectedAttendanceId}")
                 Else
-                    ' Column doesn't exist or value is null - try DataTable
                     If hasAttendanceIdColumn Then
                         _logger.LogWarning("attendanceID cell value is null, trying DataTable fallback")
                     End If
@@ -452,10 +392,8 @@ Public Class FormAttendace
         Try
             _logger.LogInfo($"Opening edit dialog for attendance ID: {selectedAttendanceId}")
 
-            ' Connect to database first
             connectDB()
 
-            ' Get current values
             Dim cmd As New OdbcCommand("SELECT arrivalTime, departureTime, CONCAT(ti.firstname, ' ', ti.lastname) AS teacher_name, logDate 
                                         FROM attendance_record ar 
                                         JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
@@ -474,13 +412,11 @@ Public Class FormAttendace
 
                 reader.Close()
 
-                ' Show edit dialog
                 Using editForm As New FormEditAttendance()
                     editForm.AttendanceId = selectedAttendanceId
                     editForm.TeacherName = teacherName
                     editForm.AttendanceDate = logDate
 
-                    ' Handle NULL datetime values - use nullable DateTime or current time as default
                     If Not IsDBNull(currentTimeIn) Then
                         editForm.TimeIn = Convert.ToDateTime(currentTimeIn)
                         _logger.LogDebug($"Setting TimeIn to: {editForm.TimeIn}")
@@ -551,16 +487,13 @@ Public Class FormAttendace
             saveDialog.FilterIndex = 1
             saveDialog.FileName = $"TeacherAttendance_{dtpDateFrom.Value:yyyyMMdd}_to_{dtpDateTo.Value:yyyyMMdd}"
 
-            ' Make dialog topmost
             Dim helper As New NativeWindow()
             helper.AssignHandle(Me.Handle)
 
             If saveDialog.ShowDialog(helper) = DialogResult.OK Then
                 If saveDialog.FilterIndex = 1 Then
-                    ' Export to Excel with auto-sized columns
                     ExportToExcel(saveDialog.FileName)
                 Else
-                    ' Export to CSV
                     ExportToCSV(saveDialog.FileName)
                 End If
 
@@ -578,7 +511,6 @@ Public Class FormAttendace
 
     Private Sub ExportToExcel(filePath As String)
         Try
-            ' Try using Excel Interop if available
             Dim excelApp As Object = Nothing
             Dim workbook As Object = Nothing
             Dim worksheet As Object = Nothing
@@ -588,7 +520,6 @@ Public Class FormAttendace
                 workbook = excelApp.Workbooks.Add()
                 worksheet = workbook.Worksheets(1)
 
-                ' Write headers
                 Dim col As Integer = 1
                 For Each column As DataGridViewColumn In dgvAttendance.Columns
                     If column.Visible AndAlso column.Name <> "attendanceID" Then
@@ -600,7 +531,6 @@ Public Class FormAttendace
                     End If
                 Next
 
-                ' Write data
                 Dim row As Integer = 2
                 For Each dgvRow As DataGridViewRow In dgvAttendance.Rows
                     If dgvRow.IsNewRow Then Continue For
@@ -616,16 +546,13 @@ Public Class FormAttendace
                     row += 1
                 Next
 
-                ' Auto-fit all columns
                 worksheet.Columns.AutoFit()
 
-                ' Add borders
                 Dim lastCol As Integer = col - 1
                 Dim lastRow As Integer = row - 1
                 Dim range = worksheet.Range(worksheet.Cells(1, 1), worksheet.Cells(lastRow, lastCol))
-                range.Borders.LineStyle = 1 ' xlContinuous
+                range.Borders.LineStyle = 1
 
-                ' Save and close
                 workbook.SaveAs(filePath)
                 workbook.Close(False)
                 excelApp.Quit()
@@ -633,7 +560,6 @@ Public Class FormAttendace
                 _logger.LogInfo($"Exported to Excel with auto-sized columns: {filePath}")
 
             Finally
-                ' Clean up COM objects
                 If worksheet IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet)
                 If workbook IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook)
                 If excelApp IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp)
@@ -641,15 +567,12 @@ Public Class FormAttendace
 
         Catch ex As Exception
             _logger.LogWarning($"Excel Interop not available, falling back to CSV: {ex.Message}")
-            ' Fallback to CSV if Excel is not installed
             ExportToCSV(filePath.Replace(".xlsx", ".csv"))
         End Try
     End Sub
 
     Private Sub ExportToCSV(filePath As String)
-        ' Use UTF8 with BOM for better Excel compatibility
         Using writer As New System.IO.StreamWriter(filePath, False, New System.Text.UTF8Encoding(True))
-            ' Define minimum column widths for better Excel display
             Dim columnWidths As New Dictionary(Of String, Integer) From {
                 {"logdate", 20},
                 {"Name", 30},
@@ -659,7 +582,6 @@ Public Class FormAttendace
                 {"depStatus", 12}
             }
 
-            ' Write headers with padding
             Dim headers As New List(Of String)
             Dim visibleColumns As New List(Of DataGridViewColumn)
 
@@ -667,7 +589,6 @@ Public Class FormAttendace
                 If column.Visible AndAlso column.Name <> "attendanceID" Then
                     visibleColumns.Add(column)
                     Dim headerText As String = column.HeaderText
-                    ' Pad header to minimum width to hint Excel about column size
                     Dim minWidth As Integer = If(columnWidths.ContainsKey(column.DataPropertyName), columnWidths(column.DataPropertyName), 15)
                     headerText = headerText.PadRight(Math.Max(headerText.Length, minWidth))
                     headers.Add(EscapeCsvValue(headerText))
@@ -675,16 +596,14 @@ Public Class FormAttendace
             Next
             writer.WriteLine(String.Join(",", headers))
 
-            ' Write data with padding
             For Each row As DataGridViewRow In dgvAttendance.Rows
-                If row.IsNewRow Then Continue For ' Skip the new row placeholder
+                If row.IsNewRow Then Continue For
 
                 Dim values As New List(Of String)
                 For Each column In visibleColumns
                     Dim cellValue = row.Cells(column.Index).Value
                     Dim value As String = If(cellValue Is Nothing OrElse IsDBNull(cellValue), "", cellValue.ToString().Trim())
 
-                    ' Pad value to match header width for consistent column sizing
                     Dim minWidth As Integer = If(columnWidths.ContainsKey(column.DataPropertyName), columnWidths(column.DataPropertyName), 15)
                     value = value.PadRight(Math.Max(value.Length, minWidth))
 
@@ -702,7 +621,6 @@ Public Class FormAttendace
             Return ""
         End If
 
-        ' If value contains comma, quote, or newline, wrap in quotes and escape quotes
         If value.Contains(",") OrElse value.Contains("""") OrElse value.Contains(vbCr) OrElse value.Contains(vbLf) Then
             Return """" & value.Replace("""", """""") & """"
         End If
@@ -720,7 +638,6 @@ Public Class FormAttendace
 
             _logger.LogInfo("Generating Teacher Attendance report")
 
-            ' Create report form
             Dim reportForm As New Form()
             reportForm.Text = "Teacher Attendance Report"
             reportForm.Size = New Size(1024, 768)
@@ -728,12 +645,10 @@ Public Class FormAttendace
             reportForm.WindowState = FormWindowState.Maximized
             reportForm.TopMost = True
 
-            ' Create ReportViewer
             Dim reportViewer As New Microsoft.Reporting.WinForms.ReportViewer()
             reportViewer.Dock = DockStyle.Fill
             reportForm.Controls.Add(reportViewer)
 
-            ' Get data for report
             Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
             Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
 
@@ -745,7 +660,6 @@ Public Class FormAttendace
                      JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
                      WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
 
-            ' Add search filter if provided
             If txtSearch.Text.Trim().Length > 0 Then
                 query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
             End If
@@ -760,14 +674,12 @@ Public Class FormAttendace
             da.Fill(dt)
             con.Close()
 
-            ' Set up report
             reportViewer.LocalReport.ReportPath = "ReportTeacherAttendance.rdlc"
             reportViewer.LocalReport.DataSources.Clear()
 
             Dim rds As New Microsoft.Reporting.WinForms.ReportDataSource("DataSetTeacherAttendance", dt)
             reportViewer.LocalReport.DataSources.Add(rds)
 
-            ' Set report parameters
             Dim reportParams As New List(Of Microsoft.Reporting.WinForms.ReportParameter)
             reportParams.Add(New Microsoft.Reporting.WinForms.ReportParameter("DateFrom", dtpDateFrom.Value.ToString("MMMM dd, yyyy")))
             reportParams.Add(New Microsoft.Reporting.WinForms.ReportParameter("DateTo", dtpDateTo.Value.ToString("MMMM dd, yyyy")))

@@ -1,7 +1,4 @@
-﻿''' <summary>
-''' Logger interface following Interface Segregation Principle
-''' </summary>
-Public Interface ILogger
+﻿Public Interface ILogger
     Sub LogDebug(message As String, Optional ex As Exception = Nothing)
     Sub LogInfo(message As String, Optional ex As Exception = Nothing)
     Sub LogWarning(message As String, Optional ex As Exception = Nothing)

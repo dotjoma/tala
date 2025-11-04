@@ -14,26 +14,22 @@ Public Class FormIDScanner
     Private Sub FormIDScanner_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         _logger.LogInfo("FormIDScanner loading...")
         txtTagID.Text = ""
-        
-        ' Reset button state to default
+
         btnConnect.Text = "Connect"
         btnConnect.BackColor = Color.FromArgb(46, 204, 113) ' Green for connect
         btnConnect.Enabled = False
         cboCOMPort.Enabled = True
         btnRefresh.Enabled = True
 
-        ' Initialize auto-refresh timer
         autoRefreshTimer = New Timer()
         autoRefreshTimer.Interval = 5000
         AddHandler autoRefreshTimer.Tick, AddressOf AutoRefreshTimer_Tick
         autoRefreshTimer.Start()
 
-        ' Initialize inactivity timer (1 second interval for countdown)
         inactivityTimer = New Timer()
         inactivityTimer.Interval = 1000 ' 1 second
         inactivityTimer.Enabled = False
 
-        ' Subscribe to COM Port Manager events
         AddHandler _comPortManager.DataReceived, AddressOf OnDataReceived
         AddHandler _comPortManager.PortDisconnected, AddressOf OnPortDisconnected
 
@@ -42,7 +38,6 @@ Public Class FormIDScanner
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
-        ' Only auto-refresh if not currently connected
         If _comPortManager.CurrentOwner <> FORM_NAME Then
             _logger.LogDebug("Auto-refresh: Checking for Silicon Labs devices...")
             LoadAvailablePorts()
@@ -54,8 +49,7 @@ Public Class FormIDScanner
             _logger.LogInfo("Loading available COM ports...")
 
             cboCOMPort.Items.Clear()
-            
-            ' Get ports from COM Port Manager
+
             Dim ports As List(Of ComPortInfo) = _comPortManager.GetAvailablePorts()
             
             If ports.Count = 0 Then
@@ -69,7 +63,6 @@ Public Class FormIDScanner
                 Return
             End If
 
-            ' Separate Silicon Labs ports from others
             Dim siliconLabsPorts As New List(Of ComPortInfo)
             Dim otherPorts As New List(Of ComPortInfo)
             
@@ -81,19 +74,15 @@ Public Class FormIDScanner
                 End If
             Next
 
-            ' Add Silicon Labs ports first
             For Each portInfo As ComPortInfo In siliconLabsPorts
                 cboCOMPort.Items.Add(portInfo.ToString())
             Next
 
-            ' Then add other ports
             For Each portInfo As ComPortInfo In otherPorts
                 cboCOMPort.Items.Add(portInfo.ToString())
             Next
 
-            ' Update status based on Silicon Labs detection
             If siliconLabsPorts.Count = 0 Then
-                ' No Silicon Labs detected
                 txtComPort.Text = "No RFID receiver connected"
                 txtComPort.ForeColor = Color.Red
                 pbUsbImage.Image = My.Resources.usb_disconnected
@@ -104,7 +93,6 @@ Public Class FormIDScanner
                 End If
                 btnConnect.Enabled = (cboCOMPort.Items.Count > 0)
             ElseIf siliconLabsPorts.Count = 1 Then
-                ' Single Silicon Labs device - auto-select
                 cboCOMPort.SelectedIndex = 0
                 txtComPort.Text = "RFID receiver detected (click Connect)"
                 txtComPort.ForeColor = Color.Blue
@@ -112,7 +100,6 @@ Public Class FormIDScanner
                 btnConnect.Enabled = True
                 _logger.LogInfo($"Single Silicon Labs device detected: {siliconLabsPorts(0).PortName}")
             Else
-                ' Multiple Silicon Labs detected - let user choose
                 cboCOMPort.SelectedIndex = 0
                 txtComPort.Text = $"{siliconLabsPorts.Count} RFID receivers detected"
                 txtComPort.ForeColor = Color.Blue
@@ -129,36 +116,29 @@ Public Class FormIDScanner
     
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
         Try
-            ' Check if we're disconnecting
             If btnConnect.Text = "Disconnect" Then
-                ' Stop inactivity timer
                 StopInactivityTimer()
-                
-                ' Release access
+
                 _comPortManager.ReleaseAccess(FORM_NAME)
                 _logger.LogInfo("User manually disconnected from COM port")
 
-                ' Reset UI
                 txtComPort.Text = "Disconnected"
                 txtComPort.ForeColor = Color.Gray
                 pbUsbImage.Image = My.Resources.usb_disconnected
                 cboCOMPort.Enabled = True
                 btnConnect.Text = "Connect"
-                btnConnect.BackColor = Color.FromArgb(46, 204, 113) ' Green for connect
+                btnConnect.BackColor = Color.FromArgb(46, 204, 113)
                 btnRefresh.Enabled = True
 
-                ' Restart auto-refresh timer
                 If autoRefreshTimer IsNot Nothing Then
                     autoRefreshTimer.Start()
                     _logger.LogDebug("Auto-refresh timer restarted (manual disconnect)")
                 End If
 
-                ' Refresh port list
                 LoadAvailablePorts()
                 Return
             End If
 
-            ' Get selected port
             Dim selectedItem As String = cboCOMPort.SelectedItem?.ToString()
 
             If String.IsNullOrEmpty(selectedItem) OrElse selectedItem = "No ports available" Then
@@ -170,26 +150,22 @@ Public Class FormIDScanner
 
             _logger.LogInfo($"Requesting access to COM port for scanning...")
 
-            ' Request exclusive access to the port
             If _comPortManager.RequestAccess(FORM_NAME, autoConnect:=True) Then
                 _logger.LogInfo($"✓ Successfully connected to {_comPortManager.ConnectedPort}")
                 txtComPort.Text = $"Connected: {_comPortManager.ConnectedPort}"
                 txtComPort.ForeColor = Color.Green
                 pbUsbImage.Image = My.Resources.usb_connected
 
-                ' Disable controls during connection
                 cboCOMPort.Enabled = False
                 btnConnect.Text = "Disconnect"
-                btnConnect.BackColor = Color.FromArgb(231, 76, 60) ' Red for disconnect
+                btnConnect.BackColor = Color.FromArgb(231, 76, 60)
                 btnRefresh.Enabled = False
 
-                ' Stop auto-refresh timer when connected
                 If autoRefreshTimer IsNot Nothing Then
                     autoRefreshTimer.Stop()
                     _logger.LogDebug("Auto-refresh timer stopped (connected)")
                 End If
-                
-                ' Start inactivity timer
+
                 StartInactivityTimer()
                 _logger.LogInfo("Inactivity timer started - form will auto-close in 10 seconds without scan")
             Else
@@ -203,13 +179,11 @@ Public Class FormIDScanner
             pbUsbImage.Image = My.Resources.usb_disconnected
             MessageBox.Show($"Failed to connect: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
-            ' Reset UI on error
             cboCOMPort.Enabled = True
             btnConnect.Text = "Connect"
             btnConnect.BackColor = Color.FromArgb(46, 204, 113) ' Green for connect
             btnRefresh.Enabled = True
 
-            ' Restart auto-refresh
             If autoRefreshTimer IsNot Nothing Then
                 autoRefreshTimer.Start()
             End If
@@ -220,19 +194,14 @@ Public Class FormIDScanner
         LoadAvailablePorts()
     End Sub
 
-    ''' <summary>
-    ''' Called when RFID data is received from COM port
-    ''' </summary>
     Private Sub OnDataReceived(tagData As String)
         _logger.LogInfo($"FormIDScanner.OnDataReceived called with tag: '{tagData}', CurrentOwner: '{_comPortManager.CurrentOwner}', FORM_NAME: '{FORM_NAME}'")
-        
-        ' Only process if we're the current owner
+
         If _comPortManager.CurrentOwner = FORM_NAME Then
             _logger.LogInfo($"✓ Tag ID received: {tagData}, setting txtTagID...")
             Me.Invoke(Sub()
-                          ' Stop inactivity timer since we got a scan
                           StopInactivityTimer()
-                          
+
                           txtTagID.Text = tagData
                           _logger.LogInfo($"txtTagID.Text set to: {txtTagID.Text}")
                       End Sub)
@@ -240,31 +209,24 @@ Public Class FormIDScanner
             _logger.LogWarning($"Not the owner, skipping. Owner is: '{_comPortManager.CurrentOwner}'")
         End If
     End Sub
-
-    ''' <summary>
-    ''' Called when port is disconnected
-    ''' </summary>
     Private Sub OnPortDisconnected(portName As String)
         If _comPortManager.CurrentOwner = FORM_NAME Then
             _logger.LogWarning($"Port {portName} disconnected")
-            
-            ' Handle device unplugged scenario
+
             Me.Invoke(Sub()
                           txtComPort.Text = "Device disconnected"
                           txtComPort.ForeColor = Color.Red
                           pbUsbImage.Image = My.Resources.usb_disconnected
                           cboCOMPort.Enabled = True
                           btnConnect.Text = "Connect"
-                          btnConnect.BackColor = Color.FromArgb(46, 204, 113) ' Green for connect
+                          btnConnect.BackColor = Color.FromArgb(46, 204, 113)
                           btnRefresh.Enabled = True
 
-                          ' Restart auto-refresh timer
                           If autoRefreshTimer IsNot Nothing Then
                               autoRefreshTimer.Start()
                               _logger.LogDebug("Auto-refresh timer restarted after device disconnect")
                           End If
 
-                          ' Refresh port list
                           LoadAvailablePorts()
                       End Sub)
         End If
@@ -274,27 +236,23 @@ Public Class FormIDScanner
         _logger.LogInfo("FormIDScanner closing...")
 
         Try
-            ' Unsubscribe from events
             RemoveHandler _comPortManager.DataReceived, AddressOf OnDataReceived
             RemoveHandler _comPortManager.PortDisconnected, AddressOf OnPortDisconnected
-            
-            ' Stop inactivity timer
+
             If inactivityTimer IsNot Nothing Then
                 inactivityTimer.Stop()
                 inactivityTimer.Dispose()
                 _logger.LogInfo("Inactivity timer stopped")
             End If
-            
-            ' Stop auto-refresh timer
+
             If autoRefreshTimer IsNot Nothing Then
                 autoRefreshTimer.Stop()
                 autoRefreshTimer.Dispose()
                 _logger.LogInfo("Auto-refresh timer stopped")
             End If
 
-            ' Release COM port access
             _comPortManager.ReleaseAccess(FORM_NAME)
-            
+
         Catch ex As Exception
             _logger.LogError($"Error closing FormIDScanner: {ex.Message}")
         End Try
@@ -303,7 +261,6 @@ Public Class FormIDScanner
     End Sub
 
     Private Sub cboCOMPort_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCOMPort.SelectedIndexChanged
-        ' Enable connect button when a port is selected
         If cboCOMPort.SelectedItem IsNot Nothing AndAlso cboCOMPort.SelectedItem.ToString() <> "No ports available" Then
             btnConnect.Enabled = True
         End If
@@ -320,15 +277,13 @@ Public Class FormIDScanner
                 _logger.LogInfo($"Setting tag ID for Faculty: {txtTagID.Text}")
                 AddFaculty.txtTagID.Text = txtTagID.Text
             End If
-            
-            ' Close form first, then show success dialog
+
             _logger.LogDebug("Closing FormIDScanner after successful scan")
             Dim tagId As String = txtTagID.Text
             Me.Close()
-            
-            ' Show success dialog after form closes
+
             Task.Run(Sub()
-                         System.Threading.Thread.Sleep(100) ' Small delay to ensure form is closed
+                         System.Threading.Thread.Sleep(100)
                          Application.OpenForms(0)?.Invoke(Sub()
                                                               SuccessDialog.ShowSuccess($"RFID scanning has been completed!", 1)
                                                           End Sub)
@@ -364,9 +319,6 @@ Public Class FormIDScanner
         End If
     End Sub
 
-    ''' <summary>
-    ''' Starts the inactivity timer countdown
-    ''' </summary>
     Private Sub StartInactivityTimer()
         inactivityCountdown = 10
         UpdateCountdownDisplay()
@@ -374,18 +326,12 @@ Public Class FormIDScanner
         _logger.LogDebug("Inactivity timer started")
     End Sub
 
-    ''' <summary>
-    ''' Resets the inactivity timer (called when there's activity)
-    ''' </summary>
     Private Sub ResetInactivityTimer()
         inactivityCountdown = 10
         UpdateCountdownDisplay()
         _logger.LogDebug("Inactivity timer reset")
     End Sub
 
-    ''' <summary>
-    ''' Stops the inactivity timer
-    ''' </summary>
     Private Sub StopInactivityTimer()
         If inactivityTimer IsNot Nothing Then
             inactivityTimer.Stop()
@@ -393,20 +339,12 @@ Public Class FormIDScanner
             _logger.LogDebug("Inactivity timer stopped")
         End If
     End Sub
-
-    ''' <summary>
-    ''' Updates the countdown display in the status text
-    ''' </summary>
     Private Sub UpdateCountdownDisplay()
         If inactivityCountdown > 0 Then
             txtComPort.Text = $"Auto-close in {inactivityCountdown}s (scan to cancel)"
             txtComPort.ForeColor = If(inactivityCountdown <= 3, Color.Red, Color.Orange)
         End If
     End Sub
-
-    ''' <summary>
-    ''' Handles the inactivity timer tick event
-    ''' </summary>
     Private Sub inactivityTimer_Tick(sender As Object, e As EventArgs) Handles inactivityTimer.Tick
         inactivityCountdown -= 1
         

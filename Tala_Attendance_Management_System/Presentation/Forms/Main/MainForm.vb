@@ -9,9 +9,9 @@ Public Class MainForm
     Private ReadOnly _updateManager As UpdateManager
     Public currentChild As Form
     Public currentButton As Button
-    Public currentUserRole As String = "" ' Store the user's role
-    Public Shared currentUsername As String = "" ' Store the actual username for audit logging
-    Private isLoggingOut As Boolean = False ' Flag to track if user is logging out
+    Public currentUserRole As String = ""
+    Public Shared currentUsername As String = ""
+    Private isLoggingOut As Boolean = False
 
     Public Sub New()
         InitializeComponent()
@@ -51,13 +51,11 @@ Public Class MainForm
     End Sub
 
     Public Sub FacultyAttendanceLineGraph()
-        ' Prepare dictionary for the last 7 days with default count = 0
         Dim attendanceDict As New Dictionary(Of Date, Integer)
         For i As Integer = 8 To 0 Step -1
             attendanceDict.Add(Date.Today.AddDays(-i), 0)
         Next
 
-        ' SQL to get attendance for the past 7 days
         Dim sql As String = "SELECT `logDate`, COUNT(DISTINCT teacherID) AS count " &
                         "FROM attendance_record " &
                         "WHERE `logDate` >= ? " &
@@ -73,7 +71,6 @@ Public Class MainForm
                         Dim logDate As Date = Convert.ToDateTime(reader("logDate"))
                         Dim count As Integer = Convert.ToInt32(reader("count"))
 
-                        ' Update only if date is in our range
                         If attendanceDict.ContainsKey(logDate) Then
                             attendanceDict(logDate) = count
                         End If
@@ -81,11 +78,6 @@ Public Class MainForm
                 End Using
             End Using
 
-            ' Clear chart
-            'attendanceChart.Series.Clear()
-            'attendanceChart.ChartAreas.Clear()
-
-            ' Set up chart area
             Dim chartArea As New ChartArea("MainArea")
             chartArea.AxisX.LabelStyle.Format = "MMM dd"
             chartArea.AxisX.Interval = 1
@@ -93,16 +85,14 @@ Public Class MainForm
             chartArea.AxisY.MajorGrid.LineColor = Color.LightGray
             'attendanceChart.ChartAreas.Add(chartArea)
 
-            ' Create series
             Dim series As New Series("Weekly Attendance")
             series.ChartType = SeriesChartType.Line
             series.XValueType = ChartValueType.Date
             series.BorderWidth = 3
-            series.IsValueShownAsLabel = True ' ✅ Show data labels
+            series.IsValueShownAsLabel = True
             series.MarkerStyle = MarkerStyle.Circle
             series.MarkerSize = 6
 
-            ' Add points
             For Each kvp In attendanceDict
                 series.Points.AddXY(kvp.Key, kvp.Value)
             Next
@@ -125,10 +115,7 @@ Public Class MainForm
 
             Timer1.Enabled = True
 
-            ' Apply role-based access control
             ApplyRoleBasedAccess()
-
-            ' Check for updates on startup (async, non-blocking)
             CheckForUpdatesOnStartup()
 
             _logger.LogInfo($"MainForm loaded for user role: {currentUserRole}")
@@ -137,17 +124,13 @@ Public Class MainForm
         End Try
     End Sub
 
-    ''' <summary>
-    ''' Applies role-based access control to menu items and UI elements
-    ''' </summary>
     Private Sub ApplyRoleBasedAccess()
         Try
             _logger.LogInfo($"Applying role-based access control for role: {currentUserRole}")
 
-            ' Hide Administration menu for non-admin users
             If currentUserRole.ToLower() <> "admin" Then
                 AdminToolStripMenuItem.Visible = False
-                tsManageAccounts.Visible = False ' Hide Manage Accounts toolbar button for HR users
+                tsManageAccounts.Visible = False
                 _logger.LogInfo($"Administration menu hidden for role: {currentUserRole}")
             Else
                 AdminToolStripMenuItem.Visible = True
@@ -160,14 +143,10 @@ Public Class MainForm
         End Try
     End Sub
 
-    ''' <summary>
-    ''' Check for application updates on startup (runs silently in background)
-    ''' </summary>
     Private Async Sub CheckForUpdatesOnStartup()
         Try
             _logger.LogInfo("Starting update check on application startup")
 
-            ' Run update check in background without blocking UI
             Await Task.Run(Sub()
                                Try
                                    _updateManager.CheckForUpdatesOnStartup(Me)
@@ -180,14 +159,10 @@ Public Class MainForm
         End Try
     End Sub
 
-    ''' <summary>
-    ''' Manually check for updates (can be called from menu)
-    ''' </summary>
     Public Async Sub CheckForUpdatesManually()
         Try
             _logger.LogInfo("Manual update check initiated")
 
-            ' Show cursor loading while checking for updates
             Me.Cursor = Cursors.WaitCursor
             Dim hasUpdate As Boolean = Await _updateManager.CheckForUpdatesAsync(Me)
             Me.Cursor = Cursors.Default
@@ -242,22 +217,17 @@ Public Class MainForm
 
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Try
-            ' Extract user name for logging
             Dim userName As String = lblUser.Text.Replace("Logged in as: ", "")
             If userName.Contains("(") Then
                 userName = userName.Substring(0, userName.IndexOf("(")).Trim()
             End If
 
             _logger.LogInfo($"MainForm closing - User: '{userName}' ({currentUserRole})")
-
-            ' If user is logging out, don't show exit confirmation
             If isLoggingOut Then
                 _logger.LogInfo($"User '{userName}' ({currentUserRole}) is logging out - skipping exit confirmation")
-                isLoggingOut = False ' Reset flag
+                isLoggingOut = False
                 Return
             End If
-
-            ' If user is closing via X button, ask for confirmation to exit application
             If e.CloseReason = CloseReason.UserClosing Then
                 Dim result As DialogResult = MessageBox.Show(
                     "Are you sure you want to exit the application?",
@@ -274,60 +244,34 @@ Public Class MainForm
                 _logger.LogInfo($"User '{userName}' ({currentUserRole}) exited application via X button")
             End If
 
-            ' Close database connection if open
             Try
                 If con IsNot Nothing AndAlso con.State = ConnectionState.Open Then
                     con.Close()
                 End If
             Catch
-                ' Ignore connection close errors
             End Try
 
-            ' Close all child forms
             If currentChild IsNot Nothing Then
                 currentChild.Close()
                 currentChild = Nothing
             End If
-            
-            ' Close all other open forms EXCEPT RFIDScanMonitor (it should stay open)
+
             For Each frm As Form In Application.OpenForms.Cast(Of Form)().ToList()
                 If frm IsNot Me AndAlso Not frm.IsDisposed AndAlso Not TypeOf frm Is RFIDScanMonitor Then
                     Try
                         frm.Close()
                     Catch
-                        ' Ignore errors closing forms
                     End Try
                 End If
             Next
 
             _logger.LogInfo("MainForm closed successfully - Application exiting")
 
-            ' Don't call Application.Exit() - let RFIDScanMonitor keep running
-            ' Application.Exit()
         Catch ex As Exception
             _logger.LogError("Error during MainForm closing", ex)
-            ' Force exit even if there's an error
             Application.Exit()
         End Try
     End Sub
-
-    'Private Sub btnFac_Click(sender As Object, e As EventArgs)
-    'HighlightButton(btnFac)
-    '0penForm(New FormFaculty, True)
-    'AttendanceToolStripMenuIt.Hide()
-    ' btnMngUser.Hide()
-    '  btnFac.Hide()
-    '   btnBTR.Hide()
-    'End Sub
-
-    ' Private Sub btnBTR_Click(sender As Object, e As EventArgs)
-    'HighlightButton(btnBTR)
-    'OpenForm(New FormAttendace, True)
-    ' AttendanceToolStripMenuIt.Hide()
-    ' btnMngUser.Hide()
-    '  btnFac.Hide()
-    '   btnBTR.Hide()
-    'End Sub
 
     Private Sub btnAnnouncement_Click(sender As Object, e As EventArgs)
         OpenForm(New FormAnnouncement, True)
@@ -348,27 +292,23 @@ Public Class MainForm
             If MsgBox("Are you sure you want to Log Out?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Log Out") = DialogResult.Yes Then
                 _logger.LogInfo($"User '{labelCurrentUser.Text}' logged out successfully")
 
-                ' Set flag to prevent exit confirmation dialog
                 isLoggingOut = True
 
-                ' Close all child forms
                 If currentChild IsNot Nothing Then
                     currentChild.Close()
                     currentChild = Nothing
                 End If
 
-                ' Close any other open forms EXCEPT RFIDScanMonitor and LoginForm
                 For Each frm As Form In Application.OpenForms.Cast(Of Form).ToList()
                     If frm IsNot Me AndAlso frm IsNot LoginForm AndAlso Not TypeOf frm Is RFIDScanMonitor Then
                         Try
                             frm.Close()
                         Catch
-                            ' Ignore errors closing forms
+
                         End Try
                     End If
                 Next
 
-                ' Hide and show login
                 Me.Hide()
                 LoginForm.Show()
                 LoginForm.ttxtUser.Clear()
@@ -386,37 +326,16 @@ Public Class MainForm
         LogOut()
     End Sub
 
-    'Private Sub btnMngUser_Click(sender As Object, e As EventArgs)
-    'HighlightButton(btnMngUser)
-    'OpenForm(New ManageUser, True)
-    ' AttendanceToolStripMenuIt.Hide()
-    '  btnMngUser.Hide()
-    '   btnFac.Hide()
-    '    btnBTR.Hide()
-    ' End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-        'Label4.Text = Date.Now.ToString("MMMM-dd-yyyy   hh:mm:ss tt")
-
         Dim faculty As Integer = FacultyCount()
         Dim attendance As Integer = AttendanceCount()
-
-        'labelFacultyCount.Text = faculty.ToString()
-        'labelAttendanceCount.Text = attendance.ToString()
         FacultyAttendanceLineGraph()
     End Sub
 
     Private Sub ReportsToolStripMenuItem_Click(sender As Object, e As EventArgs)
 
     End Sub
-
-    ' Private Sub AttendanceToolStripMenuIt_Click(sender As Object, e As EventArgs)
-    ' FormReportsAttendance.ShowDialog()
-    'AttendanceToolStripMenuIt.Hide()
-    'btnMngUser.Hide()
-    'btnFac.Hide()
-    'btnBTR.Hide()
-    'End Sub
 
     Private Sub LogOutToolStripMenuItem_Click(sender As Object, e As EventArgs)
         Me.Close()
@@ -494,45 +413,8 @@ Public Class MainForm
         FormAnnouncement.Show()
     End Sub
 
-    Private Sub Label3_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub labelAttendanceCount_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
-
-    End Sub
-
-    Private Sub Label1_ContextMenuStripChanged(sender As Object, e As EventArgs) Handles Label1.ContextMenuStripChanged
-
-    End Sub
-
-    Private Sub tsReports_Click(sender As Object, e As EventArgs) Handles tsReports.Click
-
-    End Sub
-
-    Private Sub Label2_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub PictureBox2_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub attendanceChart_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
-    Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     Private Sub msLogout_Click(sender As Object, e As EventArgs) Handles msLogout.Click
         Try
-            ' Extract just the user name from the label (remove "Logged in as: " and role)
             Dim userName As String = lblUser.Text.Replace("Logged in as: ", "")
             If userName.Contains("(") Then
                 userName = userName.Substring(0, userName.IndexOf("(")).Trim()
@@ -548,28 +430,21 @@ Public Class MainForm
 
             If result = DialogResult.Yes Then
                 _logger.LogInfo($"User '{userName}' ({currentUserRole}) logged out successfully")
-
-                ' Set flag to prevent exit confirmation dialog
                 isLoggingOut = True
-
-                ' Close all open child forms
                 If currentChild IsNot Nothing Then
                     currentChild.Close()
                     currentChild = Nothing
                 End If
 
-                ' Close any other open forms EXCEPT RFIDScanMonitor and LoginForm
                 For Each frm As Form In Application.OpenForms.Cast(Of Form).ToList()
                     If frm IsNot Me AndAlso frm IsNot LoginForm AndAlso Not TypeOf frm Is RFIDScanMonitor Then
                         Try
                             frm.Close()
                         Catch
-                            ' Ignore errors closing forms
                         End Try
                     End If
                 Next
 
-                ' Hide main form and show login form
                 Me.Hide()
                 LoginForm.Show()
                 LoginForm.ttxtUser.Clear()
@@ -586,7 +461,6 @@ Public Class MainForm
 
     Private Sub msExit_Click(sender As Object, e As EventArgs) Handles msExit.Click
         Try
-            ' Extract just the user name from the label (remove "Logged in as: " and role)
             Dim userName As String = lblUser.Text.Replace("Logged in as: ", "")
             If userName.Contains("(") Then
                 userName = userName.Substring(0, userName.IndexOf("(")).Trim()
@@ -603,16 +477,13 @@ Public Class MainForm
             If result = DialogResult.Yes Then
                 _logger.LogInfo($"User '{userName}' ({currentUserRole}) exited application")
 
-                ' Close database connection if open
                 Try
                     If con IsNot Nothing AndAlso con.State = ConnectionState.Open Then
                         con.Close()
                     End If
                 Catch
-                    ' Ignore connection close errors
                 End Try
 
-                ' Exit application
                 Application.Exit()
             Else
                 _logger.LogInfo($"User '{userName}' ({currentUserRole}) cancelled exit")
@@ -624,21 +495,16 @@ Public Class MainForm
         End Try
     End Sub
 
-    ''' <summary>
-    ''' Opens the Department Management form (Admin only)
-    ''' </summary>
     Private Sub ManageDepartmentToolStripMenuItem_Click(sender As Object, e As EventArgs)
         Try
             _logger.LogInfo($"ManageDepartment menu clicked by user role: {currentUserRole}")
 
-            ' Double-check admin access (should be hidden for non-admins, but extra security)
             If currentUserRole.ToLower() <> "admin" Then
                 _logger.LogWarning($"Unauthorized access attempt to Department Management by role: {currentUserRole}")
                 MessageBox.Show("Access denied. Only administrators can manage departments.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
 
-            ' Open FormDepartments as modal dialog
             Using deptForm As New FormDepartments()
                 _logger.LogInfo("Opening Department Management form")
                 deptForm.ShowDialog(Me)
@@ -651,16 +517,11 @@ Public Class MainForm
         End Try
     End Sub
 
-    ''' <summary>
-    ''' Public method to set user role and apply access control
-    ''' Called from LoginForm after successful login
-    ''' </summary>
     Public Sub SetUserRole(role As String)
         Try
             currentUserRole = role
             _logger.LogInfo($"User role set to: {role}")
 
-            ' Apply role-based access control if form is loaded
             If Me.IsHandleCreated Then
                 ApplyRoleBasedAccess()
             End If
@@ -673,21 +534,11 @@ Public Class MainForm
         FormUserActivityLogs.ShowDialog()
     End Sub
 
-    ''' <summary>
-    ''' Administration menu click handler (parent menu - should just show dropdown)
-    ''' </summary>
     Private Sub AdministrationToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        ' This is a parent menu item - it should automatically show its dropdown items
-        ' No action needed here, but having this handler prevents any potential issues
         _logger.LogDebug("Administration menu clicked - showing dropdown items")
     End Sub
 
-    ''' <summary>
-    ''' Audit Logs menu click handler (parent menu - should just show dropdown)
-    ''' </summary>
     Private Sub AuditLogsToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        ' This is a parent menu item - it should automatically show its dropdown items
-        ' No action needed here
         _logger.LogDebug("Audit Logs menu clicked - showing dropdown items")
     End Sub
 
@@ -695,14 +546,12 @@ Public Class MainForm
         Try
             _logger.LogInfo($"ManageDepartment menu clicked by user role: {currentUserRole}")
 
-            ' Double-check admin access (should be hidden for non-admins, but extra security)
             If currentUserRole.ToLower() <> "admin" Then
                 _logger.LogWarning($"Unauthorized access attempt to Department Management by role: {currentUserRole}")
                 MessageBox.Show("Access denied. Only administrators can manage departments.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
 
-            ' Open FormDepartments as modal dialog
             Using deptForm As New FormDepartments()
                 _logger.LogInfo("Opening Department Management form")
                 deptForm.ShowDialog(Me)

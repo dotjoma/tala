@@ -33,7 +33,6 @@ Public Class SuccessDialog
         Me.ShowInTaskbar = False
         Me.TopMost = True
 
-        ' Checkmark panel (custom painted)
         checkmarkPanel = New Panel()
         checkmarkPanel.Size = New Size(checkmarkSize, checkmarkSize)
         checkmarkPanel.Location = New Point((Me.Width - checkmarkSize) \ 2, 40)
@@ -102,20 +101,17 @@ Public Class SuccessDialog
         btnOk.Visible = False
         AddHandler btnOk.Click, AddressOf BtnOk_Click
         Me.Controls.Add(btnOk)
-
-        ' Add shadow effect
         Me.Region = New Region(CreateRoundedRectangle(Me.ClientRectangle, 10))
     End Sub
 
     Private Sub SetupAnimation()
-        ' Animation timer for checkmark drawing
         animationTimer = New Timer()
         animationTimer.Interval = 20 ' 50 FPS
         AddHandler animationTimer.Tick, AddressOf AnimationTimer_Tick
     End Sub
 
     Private Sub AnimationTimer_Tick(sender As Object, e As EventArgs)
-        animationProgress += 0.15F ' Faster animation (was 0.05)
+        animationProgress += 0.15F
         If animationProgress >= 1.0F Then
             animationProgress = 1.0F
             animationTimer.Stop()
@@ -127,40 +123,30 @@ Public Class SuccessDialog
         Dim g As Graphics = e.Graphics
         g.SmoothingMode = SmoothingMode.AntiAlias
 
-        ' Draw circle background
         Dim circleRect As New Rectangle(10, 10, checkmarkSize - 20, checkmarkSize - 20)
         Using circleBrush As New SolidBrush(Color.FromArgb(46, 204, 113))
             g.FillEllipse(circleBrush, circleRect)
         End Using
 
-        ' Draw animated checkmark
         If animationProgress > 0 Then
             Using pen As New Pen(Color.White, 8)
                 pen.StartCap = LineCap.Round
                 pen.EndCap = LineCap.Round
 
-                ' Checkmark path
                 Dim centerX As Integer = checkmarkSize \ 2
                 Dim centerY As Integer = checkmarkSize \ 2
-
-                ' First line (short part of check)
                 Dim pt1 As New PointF(centerX - 20, centerY)
                 Dim pt2 As New PointF(centerX - 5, centerY + 15)
-
-                ' Second line (long part of check)
                 Dim pt3 As New PointF(centerX + 25, centerY - 20)
-
                 Dim progress1 As Single = Math.Min(animationProgress * 2, 1.0F)
                 Dim progress2 As Single = Math.Max((animationProgress - 0.5F) * 2, 0)
 
-                ' Draw first part
                 If progress1 > 0 Then
                     Dim x As Single = pt1.X + (pt2.X - pt1.X) * progress1
                     Dim y As Single = pt1.Y + (pt2.Y - pt1.Y) * progress1
                     g.DrawLine(pen, pt1, New PointF(x, y))
                 End If
 
-                ' Draw second part
                 If progress2 > 0 Then
                     Dim x As Single = pt2.X + (pt3.X - pt2.X) * progress2
                     Dim y As Single = pt2.Y + (pt3.Y - pt2.Y) * progress2
@@ -198,13 +184,9 @@ Public Class SuccessDialog
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
 
-        ' Update message
         lblMessage.Text = Message
-
-        ' Center Success label
         lblSuccess.Location = New Point((Me.Width - lblSuccess.Width) \ 2, 180)
 
-        ' Show appropriate buttons
         If ShowYesNo Then
             btnYes.Visible = True
             btnNo.Visible = True
@@ -219,11 +201,9 @@ Public Class SuccessDialog
             btnOk.Visible = False
         End If
 
-        ' Start checkmark animation
         animationProgress = 0
         animationTimer.Start()
 
-        ' Setup auto-close timer if specified
         If AutoCloseSeconds > 0 Then
             autoCloseTimer = New Timer()
             autoCloseTimer.Interval = AutoCloseSeconds * 1000
@@ -242,9 +222,6 @@ Public Class SuccessDialog
         MyBase.OnFormClosing(e)
     End Sub
 
-    ''' <summary>
-    ''' Show success dialog with custom message
-    ''' </summary>
     Public Shared Function ShowSuccess(message As String, Optional autoCloseSeconds As Integer = 0) As DialogResult
         Using dialog As New SuccessDialog()
             dialog.Message = message
@@ -254,9 +231,6 @@ Public Class SuccessDialog
         End Using
     End Function
 
-    ''' <summary>
-    ''' Show success dialog with Yes/No buttons
-    ''' </summary>
     Public Shared Function ShowWithYesNo(message As String) As DialogResult
         Using dialog As New SuccessDialog()
             dialog.Message = message
@@ -266,9 +240,6 @@ Public Class SuccessDialog
         End Using
     End Function
 
-    ''' <summary>
-    ''' Show success dialog with OK button
-    ''' </summary>
     Public Shared Function ShowWithOk(message As String) As DialogResult
         Using dialog As New SuccessDialog()
             dialog.Message = message

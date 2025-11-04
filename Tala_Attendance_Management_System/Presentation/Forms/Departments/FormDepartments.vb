@@ -25,13 +25,8 @@ Public Class FormDepartments
 
     Private Sub InitializeDataGridView()
         Try
-            ' Configure DataGridView appearance
             dgvDepartments.AutoGenerateColumns = False
-
-            ' Clear existing columns
             dgvDepartments.Columns.Clear()
-
-            ' Add columns
             dgvDepartments.Columns.Add(New DataGridViewTextBoxColumn() With {
                 .Name = "DepartmentId",
                 .DataPropertyName = "DepartmentId",
@@ -105,8 +100,7 @@ Public Class FormDepartments
 
             Using addForm As New AddDepartment()
                 If addForm.ShowDialog() = DialogResult.OK Then
-                    ' Department was added successfully
-                    LoadDepartments() ' Refresh the list
+                    LoadDepartments()
                     _logger.LogInfo("FormDepartments - Department added, list refreshed")
                 End If
             End Using
@@ -127,8 +121,7 @@ Public Class FormDepartments
 
             Using editForm As New AddDepartment(selectedDepartment.DepartmentId)
                 If editForm.ShowDialog() = DialogResult.OK Then
-                    ' Department was updated successfully
-                    LoadDepartments() ' Refresh the list
+                    LoadDepartments()
                     _logger.LogInfo("FormDepartments - Department edited, list refreshed")
                 End If
             End Using
@@ -152,13 +145,12 @@ Public Class FormDepartments
 
             If result = DialogResult.Yes Then
                 If _departmentService.DeleteDepartment(selectedDepartment.DepartmentId) Then
-                    ' Log audit trail for department deletion
                     _auditLogger.LogDelete(MainForm.currentUsername, "Department",
                         $"Deleted department - Code: '{selectedDepartment.DepartmentCode}', Name: '{selectedDepartment.DepartmentName}' (ID: {selectedDepartment.DepartmentId})")
-                    
+
                     _logger.LogInfo($"FormDepartments - Department deleted successfully: {selectedDepartment.DepartmentName}")
                     MessageBox.Show("Department deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    LoadDepartments() ' Refresh the list
+                    LoadDepartments()
                 Else
                     _logger.LogWarning($"FormDepartments - Failed to delete department: {selectedDepartment.DepartmentName}")
                     MessageBox.Show("Failed to delete department. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -208,7 +200,6 @@ Public Class FormDepartments
 
     Private Sub dgvDepartments_SelectionChanged(sender As Object, e As EventArgs) Handles dgvDepartments.SelectionChanged
         Try
-            ' Enable/disable buttons based on selection
             Dim hasSelection = dgvDepartments.SelectedRows.Count > 0
             btnEdit.Enabled = hasSelection
             btnDelete.Enabled = hasSelection

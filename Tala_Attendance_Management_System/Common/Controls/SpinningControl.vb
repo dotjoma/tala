@@ -17,13 +17,10 @@
                  ControlStyles.ResizeRedraw Or
                  ControlStyles.UserPaint Or
                  ControlStyles.SupportsTransparentBackColor, True)
-        ' Use solid background by default for better performance
         BackColor = Color.White
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        ' Only do expensive transparency rendering if explicitly needed
-        ' For most cases, a solid background is sufficient and much faster
         If Parent IsNot Nothing AndAlso Me.BackColor = Color.Transparent AndAlso Me.Tag?.ToString() = "UseTransparency" Then
             Using bmp = New Bitmap(Parent.Width, Parent.Height)
                 Parent.Controls.Cast(Of Control)().Where(Function(c) Parent.Controls.GetChildIndex(c) > Parent.Controls.GetChildIndex(Me)).
@@ -33,7 +30,6 @@
                 e.Graphics.DrawImage(bmp, -Left, -Top)
             End Using
         ElseIf Me.BackColor <> Color.Transparent Then
-            ' Fast path: just clear with background color
             e.Graphics.Clear(Me.BackColor)
         End If
         e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality

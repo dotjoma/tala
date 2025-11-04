@@ -6,21 +6,15 @@ Public Class ChangePassword
     Private ReadOnly _auditLogger As AuditLogger = AuditLogger.Instance
 
     Private Sub ChangePassword_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Set form properties for professional appearance
         Me.FormBorderStyle = FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.StartPosition = FormStartPosition.CenterParent
-
-        ' Clear all password fields
         txtOldPassword.Clear()
         txtNewPassword.Clear()
         txtConfirmPassword.Clear()
-
-        ' Set focus to old password field
         txtOldPassword.Focus()
 
-        ' Update title with username if provided
         If Not String.IsNullOrEmpty(Username) Then
             Me.Text = $"Change Password - {Username}"
         End If
@@ -30,14 +24,8 @@ Public Class ChangePassword
         Try
             Dim dbContext As New DatabaseContext()
             Dim logger As ILogger = LoggerFactory.Instance
-
-            ' Trim the password to match how it's stored in the database
             Dim trimmedPassword As String = Trim(oldPassword)
-
-            ' Log the validation attempt
             logger.LogDebug($"Validating password for UserID: {UserID}")
-
-            ' First, let's get the actual password from database for comparison
             Dim getPasswordQuery As String = "SELECT password FROM logins WHERE login_id = ?"
             Dim storedPassword As Object = dbContext.ExecuteScalar(getPasswordQuery, UserID)
 
@@ -50,7 +38,6 @@ Public Class ChangePassword
             logger.LogDebug($"Stored password length: {storedPasswordStr.Length}, Input password length (after trim): {trimmedPassword.Length}")
             logger.LogDebug($"Stored password: {storedPasswordStr}")
 
-            ' Direct string comparison
             Dim passwordsMatch As Boolean = (storedPasswordStr = trimmedPassword)
             logger.LogDebug($"Password match result: {passwordsMatch}")
 
@@ -128,7 +115,6 @@ Public Class ChangePassword
             Return
         End If
 
-        ' Validate new password complexity
         Dim passwordError As String = ""
         If Not ValidatePasswordComplexity(txtNewPassword.Text, passwordError) Then
             MessageBox.Show(passwordError, "Password Requirements", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -196,7 +182,6 @@ Public Class ChangePassword
     End Sub
 
     Private Sub txtNewPassword_TextChanged(sender As Object, e As EventArgs) Handles txtNewPassword.TextChanged
-        ' Real-time password strength indicator (optional)
         UpdatePasswordStrengthIndicator()
     End Sub
 
@@ -204,14 +189,12 @@ Public Class ChangePassword
         Dim password As String = txtNewPassword.Text
         Dim strength As Integer = 0
 
-        ' Calculate strength score
         If password.Length >= 13 Then strength += 1
         If password.Any(AddressOf Char.IsLower) Then strength += 1
         If password.Any(AddressOf Char.IsUpper) Then strength += 1
         If password.Any(AddressOf Char.IsDigit) Then strength += 1
         If password.Any(Function(c) Not Char.IsLetterOrDigit(c)) Then strength += 1
 
-        ' Update strength label
         Select Case strength
             Case 0 To 2
                 lblPasswordStrength.Text = "Weak"
@@ -224,7 +207,6 @@ Public Class ChangePassword
                 lblPasswordStrength.ForeColor = Color.Green
         End Select
 
-        ' Show/hide strength indicator
         lblPasswordStrength.Visible = password.Length > 0
     End Sub
 End Class

@@ -47,13 +47,11 @@
 
     Public Function Create(department As Department) As Boolean
         Try
-            ' Log the head teacher ID value for debugging
             _logger.LogInfo($"Creating department: {department.DepartmentCode} - {department.DepartmentName}, Head Teacher ID: {If(department.HeadTeacherId.HasValue, department.HeadTeacherId.Value.ToString(), "NULL")}")
 
             Dim query As String
             Dim result As Integer
 
-            ' Handle NULL head_teacher_id explicitly in the SQL
             If department.HeadTeacherId.HasValue Then
                 query = "
                     INSERT INTO departments (department_code, department_name, description, head_teacher_id, is_active)
@@ -92,7 +90,6 @@
             Dim query As String
             Dim result As Integer
 
-            ' Handle NULL head_teacher_id explicitly in the SQL
             If department.HeadTeacherId.HasValue Then
                 query = "
                     UPDATE departments 
@@ -132,7 +129,6 @@
 
     Public Function Delete(id As Integer) As Boolean
         Try
-            ' Soft delete - set is_active to 0
             Dim query As String = "UPDATE departments SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE department_id = ?"
             Dim result = _dbContext.ExecuteNonQuery(query, id)
 

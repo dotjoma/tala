@@ -22,13 +22,11 @@
     End Function
 
     Public Function CreateDepartment(department As Department) As Boolean Implements IDepartmentService.CreateDepartment
-        ' Validate department
         If String.IsNullOrWhiteSpace(department.DepartmentCode) OrElse String.IsNullOrWhiteSpace(department.DepartmentName) Then
             _logger.LogWarning("Department creation failed - Code and Name are required")
             Return False
         End If
 
-        ' Check code uniqueness
         If Not _repository.IsCodeUnique(department.DepartmentCode) Then
             _logger.LogWarning($"Department creation failed - Code '{department.DepartmentCode}' already exists")
             Return False
@@ -38,13 +36,11 @@
     End Function
 
     Public Function UpdateDepartment(department As Department) As Boolean Implements IDepartmentService.UpdateDepartment
-        ' Validate department
         If String.IsNullOrWhiteSpace(department.DepartmentCode) OrElse String.IsNullOrWhiteSpace(department.DepartmentName) Then
             _logger.LogWarning("Department update failed - Code and Name are required")
             Return False
         End If
 
-        ' Check code uniqueness (excluding current department)
         If Not _repository.IsCodeUnique(department.DepartmentCode, department.DepartmentId) Then
             _logger.LogWarning($"Department update failed - Code '{department.DepartmentCode}' already exists")
             Return False

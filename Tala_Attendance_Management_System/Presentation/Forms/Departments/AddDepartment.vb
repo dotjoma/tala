@@ -38,19 +38,12 @@ Public Class AddDepartment
 
     Private Sub InitializeForm()
         Try
-            ' Set form title
             Me.Text = If(_isEditMode, "Edit Department", "Add New Department")
             lblTitle.Text = If(_isEditMode, "Edit Department", "Add New Department")
-
-            ' Set button text
             btnSave.Text = If(_isEditMode, "Update", "Save")
-
-            ' Configure controls
             txtDepartmentCode.MaxLength = 10
             txtDepartmentName.MaxLength = 100
             txtDescription.MaxLength = 500
-
-            ' Set focus
             txtDepartmentCode.Focus()
 
             _logger.LogInfo("AddDepartment - Form initialized successfully")
@@ -63,24 +56,20 @@ Public Class AddDepartment
         Try
             _logger.LogInfo("AddDepartment - Loading head teachers for ComboBox")
 
-            ' Create a DataTable for the ComboBox (allow nulls in teacherID)
             Dim dt As New DataTable()
             Dim teacherIdColumn As New DataColumn("teacherID", GetType(Integer))
             teacherIdColumn.AllowDBNull = True
             dt.Columns.Add(teacherIdColumn)
             dt.Columns.Add("teacher_name", GetType(String))
 
-            ' Add empty option first with explicit NULL value
             Dim emptyRow As DataRow = dt.NewRow()
             emptyRow("teacherID") = DBNull.Value
             emptyRow("teacher_name") = "-- Select Department Head --"
             dt.Rows.Add(emptyRow)
 
-            ' Load active teachers
             Dim dbContext As New DatabaseContext()
             Dim teacherDt = dbContext.ExecuteQuery("SELECT teacherID, CONCAT(firstname, ' ', lastname) AS teacher_name FROM teacherinformation WHERE isActive = 1 ORDER BY firstname, lastname")
 
-            ' Add teachers to ComboBox DataTable
             For Each row As DataRow In teacherDt.Rows
                 Dim newRow As DataRow = dt.NewRow()
                 newRow("teacherID") = row("teacherID")
@@ -88,7 +77,6 @@ Public Class AddDepartment
                 dt.Rows.Add(newRow)
             Next
 
-            ' Bind to ComboBox
             cboHeadTeacher.DataSource = dt
             cboHeadTeacher.ValueMember = "teacherID"
             cboHeadTeacher.DisplayMember = "teacher_name"
@@ -98,7 +86,6 @@ Public Class AddDepartment
         Catch ex As Exception
             _logger.LogError($"AddDepartment - Error loading head teachers: {ex.Message}")
 
-            ' Create fallback DataTable
             Dim errorDt As New DataTable()
             errorDt.Columns.Add("teacherID", GetType(Integer))
             errorDt.Columns.Add("teacher_name", GetType(String))
@@ -127,7 +114,6 @@ Public Class AddDepartment
                 txtDescription.Text = department.Description
                 chkIsActive.Checked = department.IsActive
 
-                ' Set head teacher
                 If department.HeadTeacherId.HasValue Then
                     cboHeadTeacher.SelectedValue = department.HeadTeacherId.Value
                 Else
@@ -151,12 +137,10 @@ Public Class AddDepartment
         Try
             _logger.LogInfo($"AddDepartment - Save button clicked, Mode: {If(_isEditMode, "Update", "Create")}")
 
-            ' Validate input
             If Not ValidateInput() Then
                 Return
             End If
 
-            ' Get head teacher ID safely
             Dim headTeacherId As Integer? = Nothing
             If cboHeadTeacher.SelectedValue IsNot Nothing AndAlso Not IsDBNull(cboHeadTeacher.SelectedValue) Then
                 Dim selectedValue = cboHeadTeacher.SelectedValue.ToString()
@@ -169,8 +153,7 @@ Public Class AddDepartment
             Else
                 _logger.LogInfo("AddDepartment - No head teacher selected (null/DBNull)")
             End If
-            
-            ' Create department object
+
             Dim department As New Department() With {
                 .DepartmentId = _departmentId,
                 .DepartmentCode = txtDepartmentCode.Text.Trim().ToUpper(),
@@ -192,7 +175,6 @@ Public Class AddDepartment
             End If
 
             If success Then
-                ' Log audit trail
                 If _isEditMode Then
                     _auditLogger.LogUpdate(MainForm.currentUsername, "Department",
                         $"Updated department - Code: '{department.DepartmentCode}', Name: '{department.DepartmentName}' (ID: {department.DepartmentId})")
@@ -200,7 +182,7 @@ Public Class AddDepartment
                     _auditLogger.LogCreate(MainForm.currentUsername, "Department",
                         $"Created department - Code: '{department.DepartmentCode}', Name: '{department.DepartmentName}'")
                 End If
-                
+
                 _logger.LogInfo($"AddDepartment - Department {operation} successfully: {department.DepartmentName}")
                 MessageBox.Show($"Department {operation} successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Me.DialogResult = DialogResult.OK
@@ -218,14 +200,12 @@ Public Class AddDepartment
 
     Private Function ValidateInput() As Boolean
         Try
-            ' Validate department code
             If String.IsNullOrWhiteSpace(txtDepartmentCode.Text) Then
                 MessageBox.Show("Department code is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtDepartmentCode.Focus()
                 Return False
             End If
 
-            ' Check code length
             If txtDepartmentCode.Text.Trim().Length > 10 Then
                 MessageBox.Show("Department code cannot exceed 10 characters.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtDepartmentCode.Focus()
@@ -233,14 +213,12 @@ Public Class AddDepartment
                 Return False
             End If
 
-            ' Validate department name
             If String.IsNullOrWhiteSpace(txtDepartmentName.Text) Then
                 MessageBox.Show("Department name is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtDepartmentName.Focus()
                 Return False
             End If
 
-            ' Check name length
             If txtDepartmentName.Text.Trim().Length > 100 Then
                 MessageBox.Show("Department name cannot exceed 100 characters.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtDepartmentName.Focus()
@@ -248,7 +226,6 @@ Public Class AddDepartment
                 Return False
             End If
 
-            ' Check code uniqueness
             Dim code As String = txtDepartmentCode.Text.Trim().ToUpper()
             If Not _departmentService.IsDepartmentCodeUnique(code, _departmentId) Then
                 MessageBox.Show($"Department code '{code}' already exists. Please use a different code.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -279,7 +256,6 @@ Public Class AddDepartment
 
     Private Sub txtDepartmentCode_Leave(sender As Object, e As EventArgs) Handles txtDepartmentCode.Leave
         Try
-            ' Auto-uppercase department code
             txtDepartmentCode.Text = txtDepartmentCode.Text.Trim().ToUpper()
         Catch ex As Exception
             _logger.LogWarning($"AddDepartment - Error in txtDepartmentCode_Leave: {ex.Message}")
@@ -288,7 +264,6 @@ Public Class AddDepartment
 
     Private Sub txtDepartmentCode_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtDepartmentCode.KeyPress
         Try
-            ' Allow only letters, numbers, and control characters
             If Not Char.IsLetterOrDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then
                 e.Handled = True
                 MessageBox.Show("Department code can only contain letters and numbers.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -300,11 +275,9 @@ Public Class AddDepartment
 
     Private Sub AddDepartment_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         Try
-            ' Handle Escape key to cancel
             If e.KeyCode = Keys.Escape Then
                 btnCancel_Click(sender, e)
             ElseIf e.KeyCode = Keys.Enter AndAlso e.Control Then
-                ' Ctrl+Enter to save
                 btnSave_Click(sender, e)
             End If
         Catch ex As Exception
@@ -320,7 +293,6 @@ Public Class AddDepartment
         End Try
     End Sub
 
-    ' Helper method to clear all fields
     Private Sub ClearFields()
         Try
             txtDepartmentCode.Clear()

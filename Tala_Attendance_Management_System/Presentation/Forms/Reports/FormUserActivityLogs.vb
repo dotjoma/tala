@@ -13,7 +13,6 @@ Public Class FormUserActivityLogs
     Private Sub FormUserActivityLogs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         InitializeForm()
         LoadActivityLogs()
-        ' Clear any selection on initial load
         Try
             dgvLogs.ClearSelection()
             dgvLogs.CurrentCell = Nothing
@@ -22,18 +21,15 @@ Public Class FormUserActivityLogs
     End Sub
 
     Private Sub InitializeForm()
-        ' Set date range to last 7 days by default
         dtpFrom.Value = DateTime.Now.AddDays(-7)
         dtpTo.Value = DateTime.Now
 
-        ' Setup DataGridView
         dgvLogs.AutoGenerateColumns = False
         dgvLogs.AllowUserToAddRows = False
         dgvLogs.ReadOnly = True
         dgvLogs.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvLogs.RowTemplate.Height = 40
 
-        ' Set column header style
         With dgvLogs.ColumnHeadersDefaultCellStyle
             .Font = New Font("Segoe UI Semibold", 12)
             .Alignment = DataGridViewContentAlignment.MiddleLeft
@@ -41,7 +37,6 @@ Public Class FormUserActivityLogs
 
         dgvLogs.DefaultCellStyle.Font = New Font("Segoe UI", 11)
 
-        ' Setup filter combo box
         cboActionFilter.Items.Clear()
         cboActionFilter.Items.AddRange({"All Actions", "LOGIN", "LOGOUT", "CREATE", "UPDATE", "DELETE", "PASSWORD_CHANGE"})
         cboActionFilter.SelectedIndex = 0
@@ -51,7 +46,6 @@ Public Class FormUserActivityLogs
         Try
             _logger.LogInfo($"Loading user activity logs - Page {currentPage}")
 
-            ' First, get total count
             Dim countQuery As String = "
                 SELECT COUNT(*) as total
                 FROM user_activity_logs
@@ -62,13 +56,11 @@ Public Class FormUserActivityLogs
             parameters.Add(dtpFrom.Value.ToString("yyyy-MM-dd 00:00:00"))
             parameters.Add(dtpTo.Value.ToString("yyyy-MM-dd 23:59:59"))
 
-            ' Add action filter
             If cboActionFilter.SelectedIndex > 0 Then
                 countQuery &= " AND action_type = ?"
                 parameters.Add(cboActionFilter.SelectedItem.ToString())
             End If
 
-            ' Add search filter
             If Not String.IsNullOrWhiteSpace(txtSearch.Text) Then
                 countQuery &= " AND (username LIKE ? OR description LIKE ?)"
                 Dim searchTerm As String = "%" & txtSearch.Text.Trim() & "%"
@@ -76,13 +68,11 @@ Public Class FormUserActivityLogs
                 parameters.Add(searchTerm)
             End If
 
-            ' Get total count
             Dim dbContext As New DatabaseContext()
             Dim countDt = dbContext.ExecuteQuery(countQuery, parameters.ToArray())
             totalRecords = If(countDt.Rows.Count > 0, Convert.ToInt32(countDt.Rows(0)("total")), 0)
             totalPages = Math.Ceiling(totalRecords / pageSize)
 
-            ' Now get paginated data
             Dim query As String = "
                 SELECT 
                     log_id,
@@ -95,12 +85,10 @@ Public Class FormUserActivityLogs
                 WHERE timestamp BETWEEN ? AND ?
             "
 
-            ' Reset parameters for data query
             parameters.Clear()
             parameters.Add(dtpFrom.Value.ToString("yyyy-MM-dd 00:00:00"))
             parameters.Add(dtpTo.Value.ToString("yyyy-MM-dd 23:59:59"))
 
-            ' Add filters again
             If cboActionFilter.SelectedIndex > 0 Then
                 query &= " AND action_type = ?"
                 parameters.Add(cboActionFilter.SelectedItem.ToString())
@@ -139,8 +127,7 @@ Public Class FormUserActivityLogs
         Dim endRecord As Integer = Math.Min(currentPage * pageSize, totalRecords)
         
         lblRecordCount.Text = $"Showing {startRecord}-{endRecord} of {totalRecords} records | Page {currentPage} of {totalPages}"
-        
-        ' Enable/disable pagination buttons
+
         btnFirstPage.Enabled = currentPage > 1
         btnPrevPage.Enabled = currentPage > 1
         btnNextPage.Enabled = currentPage < totalPages
@@ -196,10 +183,8 @@ Public Class FormUserActivityLogs
 
             If saveDialog.ShowDialog(helper) = DialogResult.OK Then
                 If saveDialog.FilterIndex = 1 Then
-                    ' Export to Excel with auto-sized columns
                     ExportToExcel(saveDialog.FileName)
                 Else
-                    ' Export to CSV
                     ExportToCSV(saveDialog.FileName)
                 End If
                 
@@ -217,7 +202,6 @@ Public Class FormUserActivityLogs
     
     Private Sub ExportToExcel(filePath As String)
         Try
-            ' Try using Excel Interop if available
             Dim excelApp As Object = Nothing
             Dim workbook As Object = Nothing
             Dim worksheet As Object = Nothing
@@ -227,19 +211,17 @@ Public Class FormUserActivityLogs
                 workbook = excelApp.Workbooks.Add()
                 worksheet = workbook.Worksheets(1)
                 
-                ' Write headers
                 Dim col As Integer = 1
                 For Each column As DataGridViewColumn In dgvLogs.Columns
                     If column.Visible Then
                         worksheet.Cells(1, col).Value = column.HeaderText
                         worksheet.Cells(1, col).Font.Bold = True
-                        worksheet.Cells(1, col).Interior.Color = RGB(52, 73, 94) ' Dark blue-gray
-                        worksheet.Cells(1, col).Font.Color = RGB(255, 255, 255) ' White
+                        worksheet.Cells(1, col).Interior.Color = RGB(52, 73, 94)
+                        worksheet.Cells(1, col).Font.Color = RGB(255, 255, 255)
                         col += 1
                     End If
                 Next
                 
-                ' Write data
                 Dim row As Integer = 2
                 For Each dgvRow As DataGridViewRow In dgvLogs.Rows
                     If dgvRow.IsNewRow Then Continue For
@@ -255,16 +237,13 @@ Public Class FormUserActivityLogs
                     row += 1
                 Next
                 
-                ' Auto-fit all columns
                 worksheet.Columns.AutoFit()
                 
-                ' Add borders
                 Dim lastCol As Integer = col - 1
                 Dim lastRow As Integer = row - 1
                 Dim range = worksheet.Range(worksheet.Cells(1, 1), worksheet.Cells(lastRow, lastCol))
-                range.Borders.LineStyle = 1 ' xlContinuous
+                range.Borders.LineStyle = 1
                 
-                ' Save and close
                 workbook.SaveAs(filePath)
                 workbook.Close(False)
                 excelApp.Quit()
@@ -272,7 +251,6 @@ Public Class FormUserActivityLogs
                 _logger.LogInfo($"Exported to Excel with auto-sized columns: {filePath}")
                 
             Finally
-                ' Clean up COM objects
                 If worksheet IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet)
                 If workbook IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook)
                 If excelApp IsNot Nothing Then System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp)
@@ -280,15 +258,12 @@ Public Class FormUserActivityLogs
             
         Catch ex As Exception
             _logger.LogWarning($"Excel Interop not available, falling back to CSV: {ex.Message}")
-            ' Fallback to CSV if Excel is not installed
             ExportToCSV(filePath.Replace(".xlsx", ".csv"))
         End Try
     End Sub
 
     Private Sub ExportToCSV(filePath As String)
-        ' Use UTF8 with BOM for better Excel compatibility
         Using writer As New System.IO.StreamWriter(filePath, False, New System.Text.UTF8Encoding(True))
-            ' Write headers with proper escaping
             Dim headers As New List(Of String)
             For Each column As DataGridViewColumn In dgvLogs.Columns
                 If column.Visible Then
@@ -297,9 +272,8 @@ Public Class FormUserActivityLogs
             Next
             writer.WriteLine(String.Join(",", headers))
 
-            ' Write data with proper escaping
             For Each row As DataGridViewRow In dgvLogs.Rows
-                If row.IsNewRow Then Continue For ' Skip the new row placeholder
+                If row.IsNewRow Then Continue For
                 
                 Dim values As New List(Of String)
                 For Each column As DataGridViewColumn In dgvLogs.Columns
@@ -321,7 +295,6 @@ Public Class FormUserActivityLogs
             Return ""
         End If
         
-        ' If value contains comma, quote, or newline, wrap in quotes and escape quotes
         If value.Contains(",") OrElse value.Contains("""") OrElse value.Contains(vbCr) OrElse value.Contains(vbLf) Then
             Return """" & value.Replace("""", """""") & """"
         End If
@@ -330,17 +303,16 @@ Public Class FormUserActivityLogs
     End Function
 
     Private Sub cboActionFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboActionFilter.SelectedIndexChanged
-        currentPage = 1 ' Reset to first page when filter changes
+        currentPage = 1
         LoadActivityLogs()
     End Sub
 
     Private Sub cboModuleFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
-        currentPage = 1 ' Reset to first page when filter changes
+        currentPage = 1
         LoadActivityLogs()
     End Sub
 
     Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
-        ' Debounce search
         If searchTimer IsNot Nothing Then
             searchTimer.Stop()
         End If
@@ -348,7 +320,7 @@ Public Class FormUserActivityLogs
         searchTimer.Interval = 500
         AddHandler searchTimer.Tick, Sub()
                                           searchTimer.Stop()
-                                          currentPage = 1 ' Reset to first page when searching
+                                          currentPage = 1
                                           LoadActivityLogs()
                                       End Sub
         searchTimer.Start()
@@ -358,7 +330,7 @@ Public Class FormUserActivityLogs
         If dtpFrom.Value > dtpTo.Value Then
             dtpTo.Value = dtpFrom.Value
         End If
-        currentPage = 1 ' Reset to first page when date changes
+        currentPage = 1
         LoadActivityLogs()
     End Sub
 
@@ -366,7 +338,7 @@ Public Class FormUserActivityLogs
         If dtpTo.Value < dtpFrom.Value Then
             dtpFrom.Value = dtpTo.Value
         End If
-        currentPage = 1 ' Reset to first page when date changes
+        currentPage = 1
         LoadActivityLogs()
     End Sub
     
@@ -374,7 +346,6 @@ Public Class FormUserActivityLogs
         Try
             _logger.LogInfo("Generating User Activity Logs report")
             
-            ' Create report form
             Dim reportForm As New Form()
             reportForm.Text = "User Activity Logs Report"
             reportForm.Size = New Size(1024, 768)
@@ -382,12 +353,10 @@ Public Class FormUserActivityLogs
             reportForm.WindowState = FormWindowState.Maximized
             reportForm.TopMost = True
 
-            ' Create ReportViewer
             Dim reportViewer As New Microsoft.Reporting.WinForms.ReportViewer()
             reportViewer.Dock = DockStyle.Fill
             reportForm.Controls.Add(reportViewer)
             
-            ' Get data for report (all records, not paginated)
             Dim query As String = "
                 SELECT 
                     username,
@@ -402,7 +371,6 @@ Public Class FormUserActivityLogs
             parameters.Add(dtpFrom.Value.ToString("yyyy-MM-dd 00:00:00"))
             parameters.Add(dtpTo.Value.ToString("yyyy-MM-dd 23:59:59"))
             
-            ' Add filters
             If cboActionFilter.SelectedIndex > 0 Then
                 query &= " AND action_type = ?"
                 parameters.Add(cboActionFilter.SelectedItem.ToString())
@@ -420,14 +388,12 @@ Public Class FormUserActivityLogs
             Dim dbContext As New DatabaseContext()
             Dim dt = dbContext.ExecuteQuery(query, parameters.ToArray())
             
-            ' Set up report
             reportViewer.LocalReport.ReportPath = "ReportUserActivityLogs.rdlc"
             reportViewer.LocalReport.DataSources.Clear()
             
             Dim rds As New Microsoft.Reporting.WinForms.ReportDataSource("DataSetUserActivityLogs", dt)
             reportViewer.LocalReport.DataSources.Add(rds)
             
-            ' Set report parameters
             Dim reportParams As New List(Of Microsoft.Reporting.WinForms.ReportParameter)
             reportParams.Add(New Microsoft.Reporting.WinForms.ReportParameter("DateFrom", dtpFrom.Value.ToString("MMMM dd, yyyy")))
             reportParams.Add(New Microsoft.Reporting.WinForms.ReportParameter("DateTo", dtpTo.Value.ToString("MMMM dd, yyyy")))

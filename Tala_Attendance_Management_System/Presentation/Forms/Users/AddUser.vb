@@ -6,13 +6,11 @@ Public Class AddUser
     Private copiedCooldown = 15
     Private ReadOnly _auditLogger As AuditLogger = AuditLogger.Instance
 
-    ' Function to get the maximum user ID
     Function GetUserID() As Integer
         Try
             Dim dbContext As New DatabaseContext()
             Dim result = dbContext.ExecuteScalar("SELECT MAX(login_id) FROM logins")
-            
-            ' Check if result is not null and return it
+
             If Not IsDBNull(result) AndAlso result IsNot Nothing Then
                 Return Convert.ToInt32(result)
             Else
@@ -24,14 +22,12 @@ Public Class AddUser
         End Try
     End Function
 
-    ' Function to check if the username is unique, with an optional userID to exclude from the check
     Private Function IsUsernameUnique(username As String, Optional excludeUserID As Integer = 0) As Boolean
         Try
             Dim dbContext As New DatabaseContext()
-            ' Modify the query to check for uniqueness while excluding the current user's username (if updating)
             Dim query As String = "SELECT COUNT(*) FROM logins WHERE username = ? AND login_id <> ? AND isActive=1"
             Dim result As Integer = Convert.ToInt32(dbContext.ExecuteScalar(query, username, excludeUserID))
-            Return result = 0 ' If count is 0, the username is unique
+            Return result = 0
         Catch ex As Exception
             MessageBox.Show("Error checking for duplicate username: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
@@ -39,34 +35,21 @@ Public Class AddUser
     End Function
 
 
-    ' Method to reset the form state
     Private Sub ResetFormState()
-        ' Clear all the textboxes
         txtUsername.Clear()
         txtPassword.Clear()
         txtID.Text = "0"
-
-        ' Optionally, clear the combo box
-        'cbUsers.SelectedIndex = -1
-
-        ' Reset any other controls as needed (for example, setting default values)
-        'cbPermission.SelectedIndex = 0 ' Set a default permission (if applicable)
         btnCancel.Text = "Cancel"
-
-        ' Set any other flags or controls that need resetting
         userID = 0
     End Sub
 
     Private Sub AddUser_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Initialize role ComboBox
         If cboUserRole.Items.Count = 0 Then
             cboUserRole.Items.Clear()
             cboUserRole.Items.Add("hr")
             cboUserRole.Items.Add("admin")
         End If
 
-
-        ' Set default role to hr if creating new user
         If userID = 0 Then
             btnCopy.Visible = False
 
@@ -134,14 +117,11 @@ Public Class AddUser
         Dim cmd As Odbc.OdbcCommand
         Dim user_id As Integer = GetUserID()
 
-        ' Check if username is unique
-        ' The second parameter (excludeUserID) ensures we don't check the current user's username if updating
         If Not IsUsernameUnique(txtUsername.Text, If(userID = 0, 0, userID)) Then
             MessageBox.Show("Username must be unique.", "Duplicate username", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
-        ' Validate password complexity
         Dim passwordError As String = ""
         If Not ValidatePasswordComplexity(txtPassword.Text, passwordError) Then
             MessageBox.Show(passwordError, "Password Requirements", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -152,13 +132,11 @@ Public Class AddUser
             Try
                 connectDB()
                 If userID = 0 Then
-                    ' Validate role selection
                     If cboUserRole.SelectedIndex = -1 Then
                         MessageBox.Show("Please select a user role.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                         Return
                     End If
 
-                    ' Insert a new record into the logins table
                     cmd = New Odbc.OdbcCommand("INSERT INTO logins(fullname, username, password, email, address, role, created_at) VALUES(?,?,?,?,?,?,?)", con)
                     With cmd.Parameters
                         .AddWithValue("?", Trim(txtName.Text))
@@ -171,25 +149,16 @@ Public Class AddUser
                     End With
                     cmd.ExecuteNonQuery()
 
-                    ' Log audit trail for user creation
                     _auditLogger.LogCreate(MainForm.currentUsername, "User Account",
                         $"Created user account '{Trim(txtUsername.Text)}' with role '{cboUserRole.Text}' for {Trim(txtName.Text)}")
 
-                    ' Update the teacherinformation table with the newly created user_id
-                    'cmd = New Odbc.OdbcCommand("UPDATE teacherinformation SET user_id=? WHERE teacherID=?", con)
-                    'cmd.Parameters.AddWithValue("?", user_id) ' Using the new login ID as the user_id
-                    'cmd.Parameters.AddWithValue("?", cbUsers.SelectedValue)
-                    'cmd.ExecuteNonQuery()
-
                     MsgBox("Created user successfully", MsgBoxStyle.Information, "Success")
                 Else
-                    ' Validate role selection
                     If cboUserRole.SelectedIndex = -1 Then
                         MessageBox.Show("Please select a user role.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                         Return
                     End If
 
-                    ' Update existing user record in the logins table
                     cmd = New Odbc.OdbcCommand("UPDATE logins SET fullname=?, username=?, password=?, email=?, address=?, role=? WHERE login_id=?", con)
                     With cmd.Parameters
                         .AddWithValue("?", Trim(txtName.Text))
@@ -197,12 +166,10 @@ Public Class AddUser
                         .AddWithValue("?", Trim(txtPassword.Text))
                         .AddWithValue("?", Trim(txtEmail.Text))
                         .AddWithValue("?", Trim(txtAddress.Text))
-                        .AddWithValue("?", LCase(cboUserRole.Text)) ' Use selected role
+                        .AddWithValue("?", LCase(cboUserRole.Text))
                         .AddWithValue("?", userID)
                     End With
                     cmd.ExecuteNonQuery()
-
-                    ' Log audit trail for user update
                     _auditLogger.LogUpdate(MainForm.currentUsername, "User Account",
                         $"Updated user account '{Trim(txtUsername.Text)}' (ID: {userID}) - Role: {cboUserRole.Text}")
 
@@ -217,8 +184,6 @@ Public Class AddUser
                 GC.Collect()
             End Try
 
-            ' Reload the combo box and clear fields after save
-            'loadCBO("SELECT teacherID, CONCAT(firstname, ' ', lastname) AS teacher_name FROM teacherinformation WHERE isActive=1 AND user_id IS NULL", "teacherID", "teacher_name", cbUsers)
             ClearFields(panelContainer)
             btnCancel.Text = "Close"
             userID = 0
@@ -239,19 +204,16 @@ Public Class AddUser
         Dim random As New Random()
         Dim password As New System.Text.StringBuilder()
 
-        ' Ensure at least one character from each set
         password.Append(lowercase(random.Next(0, lowercase.Length)))
         password.Append(uppercase(random.Next(0, uppercase.Length)))
         password.Append(digits(random.Next(0, digits.Length)))
         password.Append(specialChars(random.Next(0, specialChars.Length)))
 
-        ' Fill the rest of the password with random characters
         For i As Integer = 5 To passwordLength
             Dim index As Integer = random.Next(0, allChars.Length)
             password.Append(allChars(index))
         Next
 
-        ' Shuffle the password to mix the guaranteed characters
         txtPassword.Text = New String(password.ToString().OrderBy(Function() random.Next()).ToArray())
     End Sub
 
@@ -263,17 +225,12 @@ Public Class AddUser
             If userID > 0 Then
                 'cbUsers.Items.Clear()
             End If
-            'loadCBO("SELECT teacherID, 
-            '    CONCAT(firstname, ' ', lastname) AS teacher_name 
-            '    FROM teacherinformation 
-            '    WHERE isActive=1 AND user_id IS NULL", "teacherID", "teacher_name", cbUsers)
         Catch ex As Exception
             MsgBox(ex.Message.ToString)
         End Try
     End Sub
 
     Private Sub AddUser_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        'cbUsers.Enabled = True
         ClearFields(panelContainer)
         txtID.Text = "0"
         userID = 0

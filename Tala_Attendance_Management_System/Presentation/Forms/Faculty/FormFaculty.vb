@@ -11,16 +11,13 @@ Public Class FormFaculty
         Try
             _logger.LogInfo($"FormFaculty - Loading address ComboBoxes for editing - Region: {regionId}, Province: {provinceId}, City: {cityId}, Barangay: {brgyId}")
 
-            ' Ensure connection is available
             connectDB()
 
-            ' Load Region ComboBox first
             FormHelper.LoadComboBox("SELECT * FROM refregion ORDER BY regDesc", "id", "regDesc", AddFaculty.cbRegion)
             AddFaculty.cbRegion.SelectedValue = regionId
 
-            ' Load Province ComboBox based on selected region (if region has provinces)
             If Not String.IsNullOrEmpty(regionId) Then
-                connectDB() ' Ensure fresh connection
+                connectDB()
                 Dim regionCmd As New OdbcCommand("SELECT regCode, regDesc FROM refregion WHERE id = ?", con)
                 regionCmd.Parameters.AddWithValue("?", regionId)
                 Dim regionReader = regionCmd.ExecuteReader()
@@ -30,15 +27,12 @@ Public Class FormFaculty
                     Dim regionName As String = regionReader("regDesc")?.ToString()
                     regionReader.Close()
 
-                    ' Check if region has provinces
                     If ValidationHelper.RegionHasProvinces(regionName, regionCode) Then
-                        ' Load provinces for regions that have them
                         If Not String.IsNullOrEmpty(regionCode) Then
                             FormHelper.LoadComboBox($"SELECT * FROM refprovince WHERE regCode = {regionCode} ORDER BY provdesc", "id", "provdesc", AddFaculty.cbProvince)
                             AddFaculty.cbProvince.SelectedValue = provinceId
                         End If
                     Else
-                        ' For regions without provinces (like NCR), skip province loading
                         AddFaculty.cbProvince.Visible = False
                         AddFaculty.cbProvince.Enabled = False
                         _logger.LogInfo($"FormFaculty - Province controls hidden for region: {regionName}")
@@ -48,9 +42,8 @@ Public Class FormFaculty
                 End If
             End If
 
-            ' Load City ComboBox based on selected province
             If Not String.IsNullOrEmpty(provinceId) Then
-                connectDB() ' Ensure fresh connection
+                connectDB()
                 Dim provinceCmd As New OdbcCommand("SELECT provCode FROM refprovince WHERE id = ?", con)
                 provinceCmd.Parameters.AddWithValue("?", provinceId)
                 Dim provinceCode As String = provinceCmd.ExecuteScalar()?.ToString()
@@ -61,9 +54,8 @@ Public Class FormFaculty
                 End If
             End If
 
-            ' Load Barangay ComboBox based on selected city
             If Not String.IsNullOrEmpty(cityId) Then
-                connectDB() ' Ensure fresh connection
+                connectDB()
                 Dim cityCmd As New OdbcCommand("SELECT citymunCode FROM refcitymun WHERE id = ?", con)
                 cityCmd.Parameters.AddWithValue("?", cityId)
                 Dim cityCode As String = cityCmd.ExecuteScalar()?.ToString()
@@ -94,25 +86,15 @@ Public Class FormFaculty
             dgvTeachers.Tag = 0
             dgvTeachers.CurrentCell = Nothing
 
-            ' Setup DataGridView
             dgvTeachers.AutoGenerateColumns = False
             dgvTeachers.AllowUserToAddRows = False
             dgvTeachers.ReadOnly = True
             dgvTeachers.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            ' Use styles defined in Designer; avoid overriding at runtime
 
-            ' Remove status-based row formatting to preserve Designer styles
-
-            ' Initialize status filter
             LoadStatusFilter()
 
-            ' Load departments for filtering
             LoadDepartmentFilter()
-
-            ' Load all faculty initially
             LoadFacultyList()
-
-            ' Initialize toggle button to default state
             ResetToggleButtonToDefault()
 
             _logger.LogInfo($"FormFaculty - Faculty list loaded successfully, {dgvTeachers.Rows.Count} records displayed")
@@ -124,7 +106,6 @@ Public Class FormFaculty
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         _logger.LogInfo("FormFaculty - Add Faculty button clicked, opening AddFaculty form")
         AddFaculty.ShowDialog()
-        ' Refresh the list after adding
         DefaultSettings()
         _logger.LogInfo("FormFaculty - Returned from AddFaculty form, faculty list refreshed")
     End Sub
@@ -132,7 +113,6 @@ Public Class FormFaculty
     Private Sub FormFaculty_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         _logger.LogInfo("FormFaculty - Form loaded, initializing default settings")
 
-        ' Show cursor loading while loading faculty data
         Me.Cursor = Cursors.WaitCursor
         Try
             DefaultSettings()
@@ -217,13 +197,11 @@ Public Class FormFaculty
                 AddFaculty.txtExtName.Text = dt.Rows(0)("extName").ToString()
                 AddFaculty.txtEmail.Text = dt.Rows(0)("email").ToString()
                 AddFaculty.cbGender.Text = dt.Rows(0)("gender").ToString()
-                ' Handle birthdate safely
                 If Not IsDBNull(dt.Rows(0)("birthdate")) Then
                     Dim birthDate As DateTime
                     If DateTime.TryParse(dt.Rows(0)("birthdate").ToString(), birthDate) Then
                         AddFaculty.dtpBirthdate.Value = birthDate
                     Else
-                        ' Set to default if invalid date
                         AddFaculty.dtpBirthdate.Value = DateTime.Today.AddYears(-25)
                         _logger.LogWarning($"FormFaculty - Invalid birthdate for Faculty ID {id}, using default")
                     End If
@@ -232,14 +210,12 @@ Public Class FormFaculty
                 End If
                 AddFaculty.txtHome.Text = dt.Rows(0)("homeadd").ToString()
 
-                ' Load and set address ComboBoxes in proper cascade order
                 LoadAddressComboBoxes(dt.Rows(0)("regionID").ToString(), dt.Rows(0)("provinceID").ToString(), dt.Rows(0)("cityID").ToString(), dt.Rows(0)("brgyID").ToString())
 
                 AddFaculty.txtContactNo.Text = dt.Rows(0)("contactNo").ToString()
                 AddFaculty.txtEmergencyContact.Text = dt.Rows(0)("emergencyContact").ToString()
                 AddFaculty.cbRelationship.Text = dt.Rows(0)("relationship").ToString()
 
-                ' Load department selection
                 If Not IsDBNull(dt.Rows(0)("department_id")) Then
                     Dim departmentId As Integer = Convert.ToInt32(dt.Rows(0)("department_id"))
                     AddFaculty.SetDepartmentSelection(departmentId)
@@ -343,8 +319,6 @@ Public Class FormFaculty
         End Try
     End Sub
 
-    ' Removed: status-based row formatting to preserve Designer-defined grid styles
-
     Private Sub UpdateToggleButtonState(rowIndex As Integer)
         Try
             If rowIndex >= 0 AndAlso rowIndex < dgvTeachers.Rows.Count Then
@@ -356,18 +330,14 @@ Public Class FormFaculty
                                                  row.Cells("Column3").Value.ToString(), "Selected Faculty")
 
                     If status = "Active" Then
-                        ' Faculty is active - show disable button
                         btnToggleStat.Text = "&Disable Record"
                         btnToggleStat.ForeColor = Color.Red
                         btnToggleStat.BackgroundImage = GetDisableIcon()
-                        'btnToggleStat.ToolTipText = $"Click to disable {facultyName}"
                         _logger.LogInfo($"FormFaculty - Toggle button set to 'Disable' for active faculty: {facultyName}")
                     Else
-                        ' Faculty is inactive - show enable button
                         btnToggleStat.Text = "&Enable Record"
                         btnToggleStat.ForeColor = Color.Green
                         btnToggleStat.BackgroundImage = GetEnableIcon()
-                        'btnToggleStat.ToolTipText = $"Click to enable {facultyName}"
                         _logger.LogInfo($"FormFaculty - Toggle button set to 'Enable' for inactive faculty: {facultyName}")
                     End If
 
@@ -382,12 +352,10 @@ Public Class FormFaculty
 
     Private Sub ResetToggleButtonToDefault()
         Try
-            ' Reset button to default state when no selection
             btnToggleStat.BackgroundImage = My.Resources.enable_default_40x40
             btnToggleStat.Text = "&Select Faculty"
             btnToggleStat.ForeColor = Color.DimGray
             btnToggleStat.Enabled = False
-            'btnToggleStat.ToolTipText = "Select a faculty member to enable or disable"
             _logger.LogInfo("FormFaculty - Toggle button reset to default state")
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error resetting toggle button: {ex.Message}")
@@ -396,7 +364,6 @@ Public Class FormFaculty
 
     Private Function GetEnableIcon() As Image
         Try
-            ' Use the existing enable resource image
             Return My.Resources.enable
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error loading enable icon from resources: {ex.Message}")
@@ -406,7 +373,6 @@ Public Class FormFaculty
 
     Private Function GetDisableIcon() As Image
         Try
-            ' Use the existing disable resource image
             Return My.Resources.disable_40x40
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error loading disable icon from resources: {ex.Message}")
@@ -418,10 +384,9 @@ Public Class FormFaculty
         Try
             _logger.LogInfo("FormFaculty - Loading status filter")
 
-            ' Initialize status filter ComboBox
             cboStatusFilter.Items.Clear()
             cboStatusFilter.Items.AddRange({"All", "Active", "Inactive"})
-            cboStatusFilter.SelectedIndex = 0 ' Default to "All" to show both active and inactive faculty
+            cboStatusFilter.SelectedIndex = 0
 
             _logger.LogInfo("FormFaculty - Status filter initialized successfully")
         Catch ex As Exception
@@ -433,23 +398,19 @@ Public Class FormFaculty
         Try
             _logger.LogInfo("FormFaculty - Loading departments for filtering")
 
-            ' Create a DataTable for the ComboBox
             Dim dt As New DataTable()
             dt.Columns.Add("department_id", GetType(String))
             dt.Columns.Add("department_display", GetType(String))
 
-            ' Add "All Departments" option first
             Dim allRow As DataRow = dt.NewRow()
             allRow("department_id") = "ALL"
             allRow("department_display") = "All Departments"
             dt.Rows.Add(allRow)
 
-            ' Get departments from service
             Dim departmentService As New DepartmentService()
             Dim departments = departmentService.GetActiveDepartments()
 
             If departments IsNot Nothing AndAlso departments.Count > 0 Then
-                ' Add departments to DataTable
                 For Each dept As Department In departments
                     Dim row As DataRow = dt.NewRow()
                     row("department_id") = dept.DepartmentId.ToString()
@@ -462,18 +423,16 @@ Public Class FormFaculty
                 _logger.LogWarning("FormFaculty - No departments found for filtering")
             End If
 
-            ' Bind to ComboBox
             cboDepartment.DataSource = dt
             cboDepartment.ValueMember = "department_id"
             cboDepartment.DisplayMember = "department_display"
-            cboDepartment.SelectedIndex = 0 ' Select "All Departments" by default
+            cboDepartment.SelectedIndex = 0
 
             _logger.LogInfo("FormFaculty - Department filter ComboBox populated successfully")
 
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error loading department filter: {ex.Message}")
 
-            ' Create fallback DataTable with error message
             Dim errorDt As New DataTable()
             errorDt.Columns.Add("department_id", GetType(String))
             errorDt.Columns.Add("department_display", GetType(String))
@@ -512,7 +471,6 @@ Public Class FormFaculty
                 LEFT JOIN departments d ON ti.department_id = d.department_id
                 WHERE 1=1"
 
-            ' Add status filter
             If statusFilter = "Active" Then
                 baseQuery &= " AND ti.isActive = 1"
                 _logger.LogInfo("FormFaculty - Filtering by status: Active")
@@ -520,11 +478,9 @@ Public Class FormFaculty
                 baseQuery &= " AND ti.isActive = 0"
                 _logger.LogInfo("FormFaculty - Filtering by status: Inactive")
             Else
-                ' "All" - no status filter
                 _logger.LogInfo("FormFaculty - Showing all faculty (Active and Inactive)")
             End If
 
-            ' Add department filter
             If departmentFilter <> "ALL" AndAlso IsNumeric(departmentFilter) Then
                 baseQuery &= $" AND ti.department_id = {departmentFilter}"
                 _logger.LogInfo($"FormFaculty - Filtering by department ID: {departmentFilter}")
@@ -532,7 +488,6 @@ Public Class FormFaculty
                 _logger.LogWarning($"FormFaculty - Invalid department filter: {departmentFilter}")
             End If
 
-            ' Add search filter
             If Not String.IsNullOrWhiteSpace(searchTerm) Then
                 baseQuery &= $" AND (ti.lastname LIKE '%{searchTerm}%' OR ti.firstname LIKE '%{searchTerm}%' OR ti.employeeID LIKE '%{searchTerm}%')"
                 _logger.LogInfo($"FormFaculty - Applying search filter: '{searchTerm}'")
@@ -559,7 +514,6 @@ Public Class FormFaculty
 
                 _logger.LogInfo($"FormFaculty - Department filter changed to: {cboDepartment.Text} (ID: {selectedDepartment})")
 
-                ' Reload faculty list with new department filter
                 LoadFacultyList(selectedDepartment, searchTerm, selectedStatus)
             End If
         Catch ex As Exception
@@ -576,7 +530,6 @@ Public Class FormFaculty
 
                 _logger.LogInfo($"FormFaculty - Status filter changed to: {selectedStatus}")
 
-                ' Reload faculty list with new status filter
                 LoadFacultyList(selectedDepartment, searchTerm, selectedStatus)
             End If
         Catch ex As Exception
@@ -596,12 +549,10 @@ Public Class FormFaculty
             _logger.LogInfo($"FormFaculty - Toggle Status button clicked for Faculty ID: {facultyId}")
 
             If facultyId > 0 Then
-                ' Get current status
                 Dim currentStatus As Integer = GetFacultyStatus(facultyId)
                 Dim action As String = If(currentStatus = 1, "disable", "enable")
                 Dim actionTitle As String = If(currentStatus = 1, "Disable", "Enable")
 
-                ' Get faculty name for confirmation message
                 Dim facultyName As String = GetFacultyName(facultyId)
 
                 Dim result As DialogResult = MessageBox.Show(
@@ -614,7 +565,6 @@ Public Class FormFaculty
                 If result = DialogResult.Yes Then
                     _logger.LogInfo($"FormFaculty - User confirmed {action} for Faculty ID: {facultyId}")
 
-                    ' Toggle the status
                     connectDB()
                     cmd = New Odbc.OdbcCommand("UPDATE teacherinformation SET isActive = IF(isActive = 1, 0, 1) WHERE teacherID = ?", con)
                     cmd.Parameters.Add("?", Odbc.OdbcType.Int).Value = facultyId
@@ -623,14 +573,12 @@ Public Class FormFaculty
 
                     Dim newStatus As String = If(currentStatus = 1, "disabled", "enabled")
 
-                    ' Log audit trail for faculty status change
                     _auditLogger.LogUpdate(MainForm.currentUsername, "Faculty",
                         $"{If(currentStatus = 1, "Disabled", "Enabled")} faculty member '{facultyName}' (ID: {facultyId})")
 
                     _logger.LogInfo($"FormFaculty - Faculty status toggled successfully - Faculty ID: {facultyId}, Status: {newStatus}")
                     MessageBox.Show($"Faculty member has been {newStatus} successfully.", "Status Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                    ' Refresh the list after successful status change
                     DefaultSettings()
                 Else
                     _logger.LogInfo($"FormFaculty - User cancelled {action} for Faculty ID: {facultyId}")
@@ -648,7 +596,6 @@ Public Class FormFaculty
                     con.Close()
                 End If
             Catch
-                ' Ignore connection close errors
             End Try
             GC.Collect()
         End Try
@@ -661,7 +608,6 @@ Public Class FormFaculty
                 Return
             End If
 
-            ' Build query aligned with ReportFacultyList.rdlc (same schema as FormFacultyList)
             Dim query As String = "
                 SELECT 
                     t.teacherID,
@@ -675,10 +621,8 @@ Public Class FormFaculty
                 LEFT JOIN departments d ON t.department_id = d.department_id
                 WHERE 1=1"
 
-            ' Apply current filters from this form
             Dim parameters As New List(Of Object)
 
-            ' Status filter
             If cboStatusFilter.SelectedItem IsNot Nothing Then
                 Dim statusFilter As String = cboStatusFilter.SelectedItem.ToString()
                 If statusFilter = "Active" Then
@@ -688,7 +632,6 @@ Public Class FormFaculty
                 End If
             End If
 
-            ' Department filter
             If cboDepartment.SelectedValue IsNot Nothing Then
                 Dim departmentFilter As String = cboDepartment.SelectedValue.ToString()
                 If departmentFilter <> "ALL" AndAlso IsNumeric(departmentFilter) Then
@@ -696,7 +639,6 @@ Public Class FormFaculty
                 End If
             End If
 
-            ' Search filter (name, employeeID, email, department)
             If Not String.IsNullOrWhiteSpace(txtSearch.Text) Then
                 query &= " AND (CONCAT(t.firstname, ' ', t.lastname) LIKE ? OR t.employeeID LIKE ? OR t.email LIKE ? OR d.department_name LIKE ?)"
                 Dim searchTerm As String = "%" & txtSearch.Text.Trim() & "%"
@@ -708,7 +650,6 @@ Public Class FormFaculty
 
             query &= " ORDER BY t.lastname, t.firstname"
 
-            ' Execute and fetch DataTable
             Dim dt As DataTable = Nothing
             connectDB()
             Dim cmd As New OdbcCommand(query, con)
@@ -725,7 +666,6 @@ Public Class FormFaculty
                 Return
             End If
 
-            ' Prepare Report Viewer window
             Dim reportForm As New Form()
             reportForm.Text = "Faculty List Report"
             reportForm.Size = New Size(1024, 768)
@@ -737,7 +677,6 @@ Public Class FormFaculty
             reportViewer.Dock = DockStyle.Fill
             reportForm.Controls.Add(reportViewer)
 
-            ' Hook detailed logging for ReportViewer and Report Form
             Try
                 AddHandler reportViewer.ReportError, Sub(sender2 As Object, e2 As Microsoft.Reporting.WinForms.ReportErrorEventArgs)
                                                          Try
@@ -775,10 +714,8 @@ Public Class FormFaculty
                 _logger.LogError($"Error attaching ReportViewer/Form handlers: {hookEx.Message}")
             End Try
 
-            ' Use the existing RDLC for faculty list
             Dim rdlcPath As String = System.IO.Path.Combine(Application.StartupPath, "ReportFaculty.rdlc")
             If Not System.IO.File.Exists(rdlcPath) Then
-                ' Fallbacks if running from different working dir
                 Dim alt1 As String = System.IO.Path.Combine(Application.StartupPath, "ReportFacultyList.rdlc")
                 Dim alt2 As String = "ReportFaculty.rdlc"
                 Dim alt3 As String = "ReportFacultyList.rdlc"
@@ -804,7 +741,6 @@ Public Class FormFaculty
                 _logger.LogError($"Setting report parameters failed: {BuildExceptionDetails(setParamEx)}")
             End Try
 
-            ' Extra diagnostics before rendering
             Try
                 _logger.LogInfo($"Report RDLC path: {rdlcPath}, exists: {System.IO.File.Exists(rdlcPath)}")
                 _logger.LogInfo($"Report dataset rows: {dt.Rows.Count}")
@@ -838,7 +774,7 @@ Public Class FormFaculty
             Dim sb As New System.Text.StringBuilder()
             Dim level As Integer = 0
             Dim cur As Exception = ex
-            While cur IsNot Nothing AndAlso level < 10 ' avoid infinite loops
+            While cur IsNot Nothing AndAlso level < 10
                 If level = 0 Then
                     sb.AppendLine($"Message: {cur.Message}")
                 Else

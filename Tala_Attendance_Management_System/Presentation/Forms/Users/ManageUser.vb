@@ -6,12 +6,10 @@ Public Class ManageUser
     Public Sub DefaultSettings()
         dgvManageUser.Tag = 0
 
-        ' Setup DataGridView
         dgvManageUser.AutoGenerateColumns = False
         dgvManageUser.AllowUserToAddRows = False
         dgvManageUser.ReadOnly = True
         dgvManageUser.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        ' Use styles defined in Designer; avoid overriding at runtime
 
         dgvManageUser.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader)
 
@@ -34,22 +32,20 @@ Public Class ManageUser
 
     Private Sub dgvManageUser_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvManageUser.DataBindingComplete
         dgvManageUser.CurrentCell = Nothing
-        dgvManageUser.Tag = 0 ' Reset tag when data is reloaded
+        dgvManageUser.Tag = 0
         'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
-        btnDelete.Text = "&Set User" ' Reset button text
+        btnDelete.Text = "&Set User"
         btnDelete.ForeColor = Color.Black
     End Sub
 
     Private Sub dgvManageUser_SelectionChanged(sender As Object, e As EventArgs) Handles dgvManageUser.SelectionChanged
         Try
             If dgvManageUser.SelectedRows.Count > 0 AndAlso dgvManageUser.SelectedRows(0).Cells("login_id").Value IsNot Nothing Then
-                ' Update Tag with the login_id of the selected row
                 Dim loginIdValue = dgvManageUser.SelectedRows(0).Cells("login_id").Value
                 If Not IsDBNull(loginIdValue) Then
                     dgvManageUser.Tag = Convert.ToInt32(loginIdValue)
                 End If
 
-                ' Update delete button text based on user status
                 UpdateDeleteButtonText()
             Else
                 dgvManageUser.Tag = 0
@@ -58,7 +54,6 @@ Public Class ManageUser
                 btnDelete.ForeColor = Color.Black
             End If
         Catch ex As Exception
-            ' Ignore errors during initial load
             dgvManageUser.Tag = 0
             btnDelete.Text = "&Set User"
             'btnDelete.BackgroundImage = My.Resources.enable_default_40x40
@@ -113,14 +108,12 @@ Public Class ManageUser
             da.SelectCommand = cmd
             da.Fill(dt)
 
-            ' Load user data into AddUser form
             AddUser.txtUsername.Text = dt.Rows(0)("username").ToString
             AddUser.txtPassword.Text = dt.Rows(0)("password").ToString
             AddUser.txtName.Text = dt.Rows(0)("fullname").ToString
             AddUser.txtEmail.Text = dt.Rows(0)("email").ToString
             AddUser.txtAddress.Text = dt.Rows(0)("address").ToString
 
-            ' Set the role in ComboBox
             Dim userRole As String = dt.Rows(0)("role").ToString().ToLower()
             Dim roleIndex As Integer = AddUser.cboUserRole.FindStringExact(userRole)
             If roleIndex >= 0 Then
@@ -146,13 +139,10 @@ Public Class ManageUser
                 Exit Sub
             End If
 
-            ' Get login_id from the selected row by column name, not index
             Dim cellValue = dgvManageUser.Rows(e.RowIndex).Cells("login_id").Value
 
-            ' Log detailed information about the cell value
             _logger.LogDebug($"Cell Value Details - IsNothing: {cellValue Is Nothing}, IsDBNull: {IsDBNull(cellValue)}, Value: {If(cellValue Is Nothing, "NULL", cellValue.ToString())}, Type: {If(cellValue Is Nothing, "NULL", cellValue.GetType().Name)}")
 
-            ' Log all cell values in the row for debugging
             Dim rowData As String = ""
             For Each cell As DataGridViewCell In dgvManageUser.Rows(e.RowIndex).Cells
                 rowData &= $"{cell.OwningColumn.Name}={If(cell.Value Is Nothing, "NULL", cell.Value.ToString())}; "
@@ -167,14 +157,11 @@ Public Class ManageUser
                 _logger.LogWarning($"Cell value is NULL or DBNull, Tag set to 0")
             End If
 
-            ' Handle Edit button click
             If dgvManageUser.Columns(e.ColumnIndex).Name = "EditBtn" Then
                 Dim loginId As Integer = dgvManageUser.Rows(e.RowIndex).Cells("login_id").Value
-                ' Show the EditUserForm with loginId for editing
                 loadUserAccount(loginId)
             End If
 
-            ' Handle Delete/Enable/Disable button click
             If dgvManageUser.Columns(e.ColumnIndex).Name = "deleteBtn" Then
                 Dim loginId As Integer = dgvManageUser.Rows(e.RowIndex).Cells("login_id").Value
                 Dim isActive As Boolean = Convert.ToBoolean(dgvManageUser.Rows(e.RowIndex).Cells("isActive").Value)
@@ -201,12 +188,10 @@ Public Class ManageUser
                         'btnDelete.BackgroundImage = My.Resources.block_40x40
                         btnDelete.Text = "&Disable User"
                         btnDelete.ForeColor = Color.Red
-                        ' Keep existing icon or use default delete icon
                     Else
                         'btnDelete.BackgroundImage = My.Resources.enable
                         btnDelete.Text = "&Enable User"
                         btnDelete.ForeColor = Color.LimeGreen
-                        ' Keep existing icon or use default delete icon
                     End If
                 End If
             End If
@@ -222,8 +207,6 @@ Public Class ManageUser
 
         Try
             connectDB()
-
-            ' Check if this is a protected user (ID < 3)
             cmd = New Odbc.OdbcCommand("SELECT login_id, isActive FROM logins WHERE login_id=?", con)
             cmd.Parameters.AddWithValue("?", loginId)
             Dim myreader As Odbc.OdbcDataReader
@@ -247,7 +230,6 @@ Public Class ManageUser
             Dim newStatus As Integer = If(currentStatus, 0, 1)
             Dim actionText As String = If(currentStatus, "disabled", "enabled")
 
-            ' Get username for audit log
             Dim usernameCmd As New Odbc.OdbcCommand("SELECT username, fullname FROM logins WHERE login_id = ?", con)
             usernameCmd.Parameters.AddWithValue("?", loginId)
             Dim usernameReader = usernameCmd.ExecuteReader()
@@ -320,22 +302,17 @@ Public Class ManageUser
         End If
 
         Try
-            ' Get user information for the selected user
             Dim selectedUserID As Integer = Val(dgvManageUser.Tag)
             Dim username As String = ""
-
-            ' Get username from selected row
             If dgvManageUser.SelectedRows.Count > 0 Then
                 username = dgvManageUser.SelectedRows(0).Cells("username").Value.ToString()
             End If
 
-            ' Create and show change password form
             Dim changePasswordForm As New ChangePassword()
             changePasswordForm.UserID = selectedUserID
             changePasswordForm.Username = username
 
             If changePasswordForm.ShowDialog() = DialogResult.OK Then
-                ' Password was changed successfully, refresh the grid if needed
                 DefaultSettings()
             End If
 

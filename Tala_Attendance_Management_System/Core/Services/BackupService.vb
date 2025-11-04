@@ -15,7 +15,6 @@ Public Class BackupService
 
     Public Sub CreateBackup(owner As IWin32Window)
         Try
-            ' Prompt for path if not provided (legacy flow)
             Dim saveDialog As New SaveFileDialog()
             saveDialog.Title = "Save System Backup"
             saveDialog.Filter = "Backup Files (*.zip)|*.zip"
@@ -74,7 +73,6 @@ Public Class BackupService
         End Try
     End Sub
 
-    ' Progress reporting overloads
     Public Sub RestoreBackup(owner As IWin32Window, sourceZipPath As String, progress As Action(Of Integer, String))
         Try
             If String.IsNullOrWhiteSpace(sourceZipPath) Then
@@ -95,16 +93,9 @@ Public Class BackupService
         Dim dataDir As String = Path.Combine(tempRoot, "data")
         Directory.CreateDirectory(dataDir)
 
-        ' Export database tables to CSV
         ExportAllTablesToCsv(dataDir)
-
-        ' Copy important configuration
         CopyConfiguration(tempRoot)
-
-        ' Write manifest
         WriteManifest(tempRoot)
-
-        ' Create zip
         If File.Exists(targetZipPath) Then
             File.Delete(targetZipPath)
         End If
@@ -123,26 +114,23 @@ Public Class BackupService
         If progress IsNot Nothing Then progress(5, "Extracting backup...")
         ZipFile.ExtractToDirectory(sourceZipPath, extractRoot)
 
-        ' Validate manifest exists
         Dim manifestPath As String = Path.Combine(extractRoot, "manifest.txt")
         If Not File.Exists(manifestPath) Then
             Throw New InvalidOperationException("Invalid backup: manifest not found.")
         End If
 
-        ' Import data using isolated connection/transaction to avoid cross-thread/global issues
         Dim dataDir As String = Path.Combine(extractRoot, "data")
         If Directory.Exists(dataDir) Then
             Using localCon As New Odbc.OdbcConnection("DSN=tala_ams")
                 localCon.Open()
                 ImportAllTablesFromCsvWithConn(localCon, dataDir, Sub(pct As Integer, msg As String)
-                                                                       If progress IsNot Nothing Then
-                                                                           progress(pct, msg)
-                                                                       End If
-                                                                   End Sub)
+                                                                      If progress IsNot Nothing Then
+                                                                          progress(pct, msg)
+                                                                      End If
+                                                                  End Sub)
             End Using
         End If
 
-        ' Restore configuration files automatically if present
         Dim configDir As String = Path.Combine(extractRoot, "Config")
         If Directory.Exists(configDir) Then
             RestoreConfiguration(configDir)
@@ -187,12 +175,10 @@ Public Class BackupService
         Try
             transaction = con.BeginTransaction()
 
-            ' Best-effort: relax constraints and speed up bulk loads across engines
-            ExecuteNonQuerySafe("SET AUTOCOMMIT=0;", transaction) ' MySQL
-            ExecuteNonQuerySafe("SET UNIQUE_CHECKS=0;", transaction) ' MySQL
-            ExecuteNonQuerySafe("SET FOREIGN_KEY_CHECKS=0;", transaction) ' MySQL
-            ExecuteNonQuerySafe("ALTER DATABASE CURRENT SET READ_COMMITTED_SNAPSHOT ON;", transaction) ' SQL Server (ignore if not supported)
-            ' SQL Server: disable constraints per table (done later as fallback if needed)
+            ExecuteNonQuerySafe("SET AUTOCOMMIT=0;", transaction)
+            ExecuteNonQuerySafe("SET UNIQUE_CHECKS=0;", transaction)
+            ExecuteNonQuerySafe("SET FOREIGN_KEY_CHECKS=0;", transaction)
+            ExecuteNonQuerySafe("ALTER DATABASE CURRENT SET READ_COMMITTED_SNAPSHOT ON;", transaction)
 
             Dim allFiles As String() = Directory.GetFiles(inputDir, "*.csv")
             Dim total As Integer = Math.Max(allFiles.Length, 1)
@@ -201,18 +187,15 @@ Public Class BackupService
             For Each csvPath As String In allFiles
                 Dim tableName As String = Path.GetFileNameWithoutExtension(csvPath)
 
-                ' Read CSV
                 Dim dt As DataTable = ReadCsvToDataTable(csvPath)
                 If dt.Columns.Count = 0 Then
                     Continue For
                 End If
 
-                ' Truncate/clear table before insert (best-effort across engines)
                 If Not ExecuteNonQuerySafe($"TRUNCATE TABLE `{tableName}`;", transaction) Then
                     ExecuteNonQuerySafe($"DELETE FROM `{tableName}`;", transaction)
                 End If
 
-                ' Build insert command
                 Dim columnNames As New List(Of String)
                 For Each col As DataColumn In dt.Columns
                     columnNames.Add($"`{col.ColumnName}`")
@@ -221,11 +204,9 @@ Public Class BackupService
                 Dim placeholders As String = String.Join(",", Enumerable.Repeat("?", dt.Columns.Count))
                 Dim insertSql As String = $"INSERT INTO `{tableName}` ({String.Join(",", columnNames)}) VALUES ({placeholders})"
 
-                ' Load column metadata to handle NOT NULL/defaults robustly
                 Dim columnsInfo As Dictionary(Of String, ColumnInfo) = GetTableColumnsInfo(tableName, transaction)
 
                 Using insertCmd As New OdbcCommand(insertSql, con, transaction)
-                    ' Prepare parameters once with appropriate OdbcType
                     For i As Integer = 0 To dt.Columns.Count - 1
                         Dim p As New OdbcParameter()
                         Dim colName As String = dt.Columns(i).ColumnName
@@ -243,20 +224,16 @@ Public Class BackupService
                             If columnsInfo IsNot Nothing AndAlso columnsInfo.ContainsKey(colName) Then
                                 Dim info = columnsInfo(colName)
 
-                                ' Map empty strings to DBNull for CSVs
                                 If TypeOf rawVal Is String AndAlso String.IsNullOrWhiteSpace(CType(rawVal, String)) Then
                                     rawVal = DBNull.Value
                                 End If
 
-                                ' If NULL but column is NOT NULL, supply default
                                 If rawVal Is DBNull.Value AndAlso Not info.IsNullable Then
                                     rawVal = If(info.HasDefault, info.DefaultValue, GetTypeDefaultValue(info.DataType))
                                 End If
 
-                                ' Convert to appropriate .NET type for ODBC
                                 rawVal = ConvertValueForColumn(rawVal, info)
                             Else
-                                ' Fallback: keep as-is
                                 If TypeOf rawVal Is String AndAlso String.IsNullOrWhiteSpace(CType(rawVal, String)) Then
                                     rawVal = DBNull.Value
                                 End If
@@ -268,7 +245,6 @@ Public Class BackupService
                     Next
                 End Using
 
-                ' Progress update per table
                 processed += 1
                 Dim pct As Integer = CInt((processed / CDbl(total)) * 100)
                 Try
@@ -281,7 +257,6 @@ Public Class BackupService
                 End Try
             Next
 
-            ' Re-enable constraints / checks (best-effort)
             ExecuteNonQuerySafe("SET FOREIGN_KEY_CHECKS=1;", transaction)
             ExecuteNonQuerySafe("SET UNIQUE_CHECKS=1;", transaction)
 
@@ -301,7 +276,6 @@ Public Class BackupService
         End Try
     End Sub
 
-    ' New: Import using provided connection (isolated from global connection)
     Private Sub ImportAllTablesFromCsvWithConn(conn As OdbcConnection, inputDir As String, Optional progress As Action(Of Integer, String) = Nothing)
         Dim transaction As OdbcTransaction = Nothing
         Try
@@ -426,7 +400,6 @@ Public Class BackupService
         End Try
     End Function
 
-    ' Overload using provided connection
     Private Function GetTableColumnsInfo(conn As OdbcConnection, tableName As String, tx As OdbcTransaction) As Dictionary(Of String, ColumnInfo)
         Try
             Dim dict As New Dictionary(Of String, ColumnInfo)(StringComparer.OrdinalIgnoreCase)
@@ -464,7 +437,6 @@ Public Class BackupService
         If t = "date" Then Return New DateTime(1970, 1, 1)
         If t = "datetime" OrElse t = "timestamp" OrElse t = "datetime2" Then Return New DateTime(1970, 1, 1, 0, 0, 0)
         If t = "time" Then Return "00:00:00"
-        ' Fallback to empty string for text types
         Return ""
     End Function
 
@@ -517,7 +489,6 @@ Public Class BackupService
                 Case "smallint"
                     Return Convert.ToInt16(value)
                 Case "tinyint"
-                    ' for MySQL tinyint(1) often used as boolean
                     Dim s = Convert.ToString(value)
                     If String.Equals(s, "true", StringComparison.OrdinalIgnoreCase) Then Return 1
                     If String.Equals(s, "false", StringComparison.OrdinalIgnoreCase) Then Return 0
@@ -550,7 +521,6 @@ Public Class BackupService
                     If TimeSpan.TryParse(Convert.ToString(value), ts) Then
                         Return ts
                     End If
-                    ' Try parsing HH:mm or HH:mm:ss specifically
                     Dim s As String = Convert.ToString(value)
                     If Not String.IsNullOrWhiteSpace(s) Then
                         Dim parts As String() = s.Split(":"c)
@@ -573,7 +543,6 @@ Public Class BackupService
                     Return Convert.ToString(value)
             End Select
         Catch
-            ' Fallback to string or NULL
             If t.Contains("int") OrElse t = "decimal" OrElse t = "numeric" OrElse t = "float" OrElse t = "double" OrElse t = "real" OrElse t = "bit" OrElse t = "tinyint" Then
                 Return 0
             End If
@@ -592,7 +561,6 @@ Public Class BackupService
         End Try
     End Function
 
-    ' Overload using provided connection
     Private Function ExecuteNonQuerySafe(conn As OdbcConnection, sql As String, tx As OdbcTransaction) As Boolean
         Try
             Using cmd As New OdbcCommand(sql, conn, tx)
@@ -644,14 +612,12 @@ Public Class BackupService
 
     Private Sub WriteDataTableToCsv(table As DataTable, filePath As String)
         Using writer As New StreamWriter(filePath, False, Encoding.UTF8)
-            ' Header
             Dim headers As New List(Of String)
             For Each col As DataColumn In table.Columns
                 headers.Add(EscapeCsv(col.ColumnName))
             Next
             writer.WriteLine(String.Join(",", headers))
 
-            ' Rows
             For Each row As DataRow In table.Rows
                 Dim fields As New List(Of String)
                 For Each col As DataColumn In table.Columns

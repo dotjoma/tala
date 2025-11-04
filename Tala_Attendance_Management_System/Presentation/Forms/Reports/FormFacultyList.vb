@@ -6,20 +6,13 @@ Public Class FormFacultyList
 
     Private Sub FormFacultyList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
-            _logger.LogInfo("========== FormFacultyList Loading ==========")
-            _logger.LogInfo("Initializing form controls...")
             InitializeForm()
-            
-            _logger.LogInfo("Loading faculty data...")
             LoadFacultyList()
-            ' Clear any selection on initial load
             Try
                 dgvFaculty.ClearSelection()
                 dgvFaculty.CurrentCell = Nothing
             Catch
             End Try
-            
-            _logger.LogInfo("========== FormFacultyList Loaded Successfully ==========")
         Catch ex As Exception
             _logger.LogError($"Critical error loading FormFacultyList: {ex.Message}")
             _logger.LogError($"Stack trace: {ex.StackTrace}")
@@ -29,39 +22,25 @@ Public Class FormFacultyList
 
     Private Sub InitializeForm()
         Try
-            _logger.LogDebug("Setting up DataGridView properties...")
-            
-            ' Setup DataGridView
             dgvFaculty.AutoGenerateColumns = False
             dgvFaculty.AllowUserToAddRows = False
             dgvFaculty.ReadOnly = True
             dgvFaculty.SelectionMode = DataGridViewSelectionMode.FullRowSelect
             dgvFaculty.RowTemplate.Height = 40
-            _logger.LogDebug("DataGridView basic properties set")
-
-            ' Set column header style - keep it static blue
-            _logger.LogDebug("Configuring column header styles...")
             With dgvFaculty.ColumnHeadersDefaultCellStyle
                 .Font = New Font("Segoe UI Semibold", 11)
                 .Alignment = DataGridViewContentAlignment.MiddleLeft
-                .BackColor = Color.FromArgb(52, 152, 219) ' Blue color
+                .BackColor = Color.FromArgb(52, 152, 219)
                 .ForeColor = Color.White
-                .SelectionBackColor = Color.FromArgb(52, 152, 219) ' Same as BackColor - prevents highlighting
-                .SelectionForeColor = Color.White ' Same as ForeColor
+                .SelectionBackColor = Color.FromArgb(52, 152, 219)
+                .SelectionForeColor = Color.White
             End With
 
             dgvFaculty.DefaultCellStyle.Font = New Font("Segoe UI", 10)
             dgvFaculty.EnableHeadersVisualStyles = False
-            _logger.LogDebug("Column header styles configured")
-
-            ' Setup status filter combo box
-            _logger.LogDebug("Setting up status filter combo box...")
             cboStatusFilter.Items.Clear()
             cboStatusFilter.Items.AddRange({"All Status", "Active", "Inactive"})
             cboStatusFilter.SelectedIndex = 0
-            _logger.LogDebug($"Status filter initialized with {cboStatusFilter.Items.Count} items")
-
-            _logger.LogInfo("✓ FormFacultyList initialized successfully")
         Catch ex As Exception
             _logger.LogError($"Error in InitializeForm: {ex.Message}")
             Throw
@@ -70,9 +49,6 @@ Public Class FormFacultyList
 
     Private Sub LoadFacultyList()
         Try
-            _logger.LogInfo("========== Loading Faculty List ==========")
-            
-            ' Log filter settings
             Dim statusFilter As String = If(cboStatusFilter.SelectedIndex >= 0, cboStatusFilter.SelectedItem.ToString(), "None")
             Dim searchText As String = If(String.IsNullOrWhiteSpace(txtSearch.Text), "None", txtSearch.Text.Trim())
             _logger.LogInfo($"Filters - Status: {statusFilter}, Search: {searchText}")
@@ -94,16 +70,14 @@ Public Class FormFacultyList
 
             Dim parameters As New List(Of Object)
 
-            ' Add status filter
-            If cboStatusFilter.SelectedIndex = 1 Then ' Active
+            If cboStatusFilter.SelectedIndex = 1 Then
                 query &= " AND t.isActive = 1"
                 _logger.LogDebug("Applied filter: Active only")
-            ElseIf cboStatusFilter.SelectedIndex = 2 Then ' Inactive
+            ElseIf cboStatusFilter.SelectedIndex = 2 Then
                 query &= " AND t.isActive = 0"
                 _logger.LogDebug("Applied filter: Inactive only")
             End If
 
-            ' Add search filter
             If Not String.IsNullOrWhiteSpace(txtSearch.Text) Then
                 query &= " AND (
                     CONCAT(t.firstname, ' ', t.lastname) LIKE ? OR
@@ -120,12 +94,12 @@ Public Class FormFacultyList
             End If
 
             query &= " ORDER BY t.lastname, t.firstname"
-            
+
             _logger.LogDebug($"Executing query with {parameters.Count} parameters")
 
             Dim dbContext As New DatabaseContext()
             Dim dt = dbContext.ExecuteQuery(query, parameters.ToArray())
-            
+
             _logger.LogInfo($"Query returned {dt.Rows.Count} records")
 
             If dt.Rows.Count = 0 Then
@@ -134,20 +108,15 @@ Public Class FormFacultyList
 
             _logger.LogDebug("Binding data to DataGridView...")
             dgvFaculty.DataSource = dt
-
-            ' Apply alternating row colors (white and light gray)
-            ' Don't override with status colors - keep it clean and simple
             _logger.LogDebug("Applying alternating row colors...")
 
-            ' Update record count - use safe conversion
             _logger.LogDebug("Calculating active/inactive counts...")
             Dim activeCount As Integer = 0
             Dim inactiveCount As Integer = 0
-            
+
             For Each row As DataRow In dt.Rows
                 Try
                     Dim isActiveValue = row("isActive")
-                    ' Handle different data types (TINYINT, BIT, INT, etc.)
                     Dim isActive As Boolean = False
                     If TypeOf isActiveValue Is Boolean Then
                         isActive = CBool(isActiveValue)
@@ -160,7 +129,7 @@ Public Class FormFacultyList
                     Else
                         isActive = Convert.ToInt32(isActiveValue) = 1
                     End If
-                    
+
                     If isActive Then
                         activeCount += 1
                     Else
@@ -168,13 +137,12 @@ Public Class FormFacultyList
                     End If
                 Catch ex As Exception
                     _logger.LogWarning($"Could not determine isActive status for row: {ex.Message}")
-                    inactiveCount += 1 ' Default to inactive if can't determine
+                    inactiveCount += 1
                 End Try
             Next
-            
+
             lblRecordCount.Text = $"Total Records: {dt.Rows.Count} | Active: {activeCount} | Inactive: {inactiveCount}"
-            _logger.LogInfo($"✓ Successfully loaded {dt.Rows.Count} faculty records (Active: {activeCount}, Inactive: {inactiveCount})")
-            _logger.LogInfo("========== Faculty List Load Complete ==========")
+            _logger.LogInfo($"Successfully loaded {dt.Rows.Count} faculty records (Active: {activeCount}, Inactive: {inactiveCount})")
 
         Catch ex As Exception
             _logger.LogError($"Error loading faculty list: {ex.Message}")
@@ -193,7 +161,6 @@ Public Class FormFacultyList
     End Sub
 
     Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
-        ' Debounce search
         If searchTimer IsNot Nothing Then
             searchTimer.Stop()
         End If
@@ -234,13 +201,13 @@ Public Class FormFacultyList
                 End If
 
                 MessageBox.Show("Faculty list exported successfully!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                _logger.LogInfo($"✓ Faculty list exported successfully to: {saveDialog.FileName}")
+                _logger.LogInfo($"Faculty list exported successfully to: {saveDialog.FileName}")
             Else
                 _logger.LogInfo("Export cancelled by user")
             End If
 
         Catch ex As Exception
-            _logger.LogError($"❌ Error exporting faculty list: {ex.Message}")
+            _logger.LogError($"Error exporting faculty list: {ex.Message}")
             _logger.LogError($"Stack trace: {ex.StackTrace}")
             MessageBox.Show("Error exporting faculty list: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -252,7 +219,6 @@ Public Class FormFacultyList
             Dim workbook As Object = excelApp.Workbooks.Add()
             Dim worksheet As Object = workbook.Worksheets(1)
 
-            ' Write headers
             Dim col As Integer = 1
             For Each column As DataGridViewColumn In dgvFaculty.Columns
                 If column.Visible AndAlso column.Name <> "colTeacherID" Then
@@ -264,7 +230,6 @@ Public Class FormFacultyList
                 End If
             Next
 
-            ' Write data with color coding
             Dim row As Integer = 2
             For Each dgvRow As DataGridViewRow In dgvFaculty.Rows
                 If dgvRow.IsNewRow Then Continue For
@@ -275,7 +240,6 @@ Public Class FormFacultyList
                         Dim cellValue = dgvRow.Cells(column.Index).Value
                         worksheet.Cells(row, col).Value = If(cellValue Is Nothing OrElse IsDBNull(cellValue), "", cellValue.ToString())
 
-                        ' Apply color coding based on status
                         Dim status As String = dgvRow.Cells("colStatus").Value?.ToString()
                         If status = "Active" Then
                             worksheet.Cells(row, col).Interior.Color = RGB(212, 237, 218)
@@ -291,21 +255,17 @@ Public Class FormFacultyList
                 row += 1
             Next
 
-            ' Auto-fit columns
             worksheet.Columns.AutoFit()
 
-            ' Add borders
             Dim lastCol As Integer = col - 1
             Dim lastRow As Integer = row - 1
             Dim range = worksheet.Range(worksheet.Cells(1, 1), worksheet.Cells(lastRow, lastCol))
             range.Borders.LineStyle = 1
 
-            ' Save and close
             workbook.SaveAs(filePath)
             workbook.Close(False)
             excelApp.Quit()
 
-            ' Clean up
             System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet)
             System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook)
             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp)
@@ -318,7 +278,6 @@ Public Class FormFacultyList
 
     Private Sub ExportToCSV(filePath As String)
         Using writer As New System.IO.StreamWriter(filePath, False, New System.Text.UTF8Encoding(True))
-            ' Write headers
             Dim headers As New List(Of String)
             For Each column As DataGridViewColumn In dgvFaculty.Columns
                 If column.Visible AndAlso column.Name <> "colTeacherID" Then
@@ -327,7 +286,6 @@ Public Class FormFacultyList
             Next
             writer.WriteLine(String.Join(",", headers))
 
-            ' Write data
             For Each row As DataGridViewRow In dgvFaculty.Rows
                 If row.IsNewRow Then Continue For
 
@@ -354,8 +312,6 @@ Public Class FormFacultyList
 
     Private Sub btnGenerateReport_Click(sender As Object, e As EventArgs) Handles btnGenerateReport.Click
         Try
-            _logger.LogInfo("========== Generate Report Button Clicked ==========")
-            
             If dgvFaculty.Rows.Count = 0 Then
                 _logger.LogWarning("Report generation cancelled: No data to generate report")
                 MessageBox.Show("No data available to generate report.", "Generate Report", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -364,9 +320,8 @@ Public Class FormFacultyList
 
             _logger.LogInfo($"Preparing to generate report with {dgvFaculty.Rows.Count} records")
 
-            ' Create a DataTable from the current DataGridView data
             Dim dt As DataTable = CType(dgvFaculty.DataSource, DataTable)
-            
+
             If dt Is Nothing Then
                 _logger.LogError("DataSource is null")
                 MessageBox.Show("Unable to generate report. Data source is not available.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -375,7 +330,6 @@ Public Class FormFacultyList
 
             _logger.LogInfo($"DataTable has {dt.Rows.Count} rows and {dt.Columns.Count} columns")
 
-            ' Create report viewer form
             Dim reportForm As New Form()
             reportForm.Text = "Faculty List Report"
             reportForm.Size = New Size(1024, 768)
@@ -383,12 +337,10 @@ Public Class FormFacultyList
             reportForm.WindowState = FormWindowState.Maximized
             reportForm.Icon = Me.Icon
 
-            ' Create ReportViewer control
             Dim reportViewer As New Microsoft.Reporting.WinForms.ReportViewer()
             reportViewer.Dock = DockStyle.Fill
             reportViewer.ProcessingMode = Microsoft.Reporting.WinForms.ProcessingMode.Local
 
-            ' Load the RDLC file
             Dim rdlcPath As String = System.IO.Path.Combine(Application.StartupPath, "ReportFacultyList.rdlc")
             _logger.LogInfo($"Loading RDLC file from: {rdlcPath}")
 
@@ -401,28 +353,23 @@ Public Class FormFacultyList
             reportViewer.LocalReport.ReportPath = rdlcPath
             _logger.LogInfo("RDLC file loaded successfully")
 
-            ' Create ReportDataSource
             Dim rds As New Microsoft.Reporting.WinForms.ReportDataSource("DataSetFacultyList", dt)
             reportViewer.LocalReport.DataSources.Clear()
             reportViewer.LocalReport.DataSources.Add(rds)
             _logger.LogInfo("Report data source added")
 
-            ' Refresh the report
             _logger.LogInfo("Refreshing report viewer...")
             reportViewer.RefreshReport()
             _logger.LogInfo("Report refreshed successfully")
 
-            ' Add the ReportViewer to the form
             reportForm.Controls.Add(reportViewer)
 
-            ' Show the report form
             _logger.LogInfo("Displaying report form...")
             reportForm.ShowDialog()
-            _logger.LogInfo("✓ Report generated and displayed successfully")
-            _logger.LogInfo("========== Generate Report Complete ==========")
+            _logger.LogInfo("Report generated and displayed successfully")
 
         Catch ex As Exception
-            _logger.LogError($"❌ Error generating report: {ex.Message}")
+            _logger.LogError($"Error generating report: {ex.Message}")
             _logger.LogError($"Stack trace: {ex.StackTrace}")
             MessageBox.Show($"Error generating report: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

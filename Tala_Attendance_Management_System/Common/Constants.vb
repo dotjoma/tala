@@ -1,8 +1,5 @@
-﻿''' <summary>
-''' Application-wide constants - SINGLE SOURCE OF TRUTH
-''' </summary>
-Public Module Constants
-    ' Application Info - UPDATE VERSION HERE ONLY!
+﻿Public Module Constants
+    ' Application Info
     Public Const APP_NAME As String = "Tala Attendance Management System"
     Public Const APP_VERSION As String = "3.2.0"
 
@@ -29,12 +26,12 @@ Public Module Constants
     ' Validation
     Public Const MIN_PASSWORD_LENGTH As Integer = 8
     Public Const MAX_USERNAME_LENGTH As Integer = 50
-    
+
     ' Age Validation
     Public Const MIN_FACULTY_AGE As Integer = 18
     Public Const MAX_FACULTY_AGE As Integer = 100
     Public Const MIN_BIRTH_YEAR As Integer = 1900
-    
+
     ' Address Validation - Regions without provinces
     Public Const NCR_REGION_NAME As String = "NATIONAL CAPITAL REGION (NCR)"
     Public Const NCR_REGION_CODE As String = "130000000"
