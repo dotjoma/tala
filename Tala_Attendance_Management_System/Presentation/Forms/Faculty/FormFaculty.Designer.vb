@@ -52,8 +52,8 @@ Partial Class FormFaculty
         Me.Column5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.PhoneNo = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Column9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Column9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColumnDepartment = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColumnStatus = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel2.SuspendLayout()
@@ -302,7 +302,7 @@ Partial Class FormFaculty
         Me.dgvTeachers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvTeachers.ColumnHeadersHeight = 45
         Me.dgvTeachers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvTeachers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3, Me.email, Me.Column4, Me.Column5, Me.PhoneNo, Me.Column6, Me.Column9, Me.Column7, Me.ColumnDepartment, Me.ColumnStatus})
+        Me.dgvTeachers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3, Me.email, Me.Column4, Me.Column5, Me.PhoneNo, Me.Column6, Me.Column7, Me.Column9, Me.ColumnDepartment, Me.ColumnStatus})
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
         DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -398,16 +398,6 @@ Partial Class FormFaculty
         Me.Column6.Name = "Column6"
         Me.Column6.ReadOnly = True
         '
-        'Column9
-        '
-        Me.Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
-        Me.Column9.DataPropertyName = "contactno"
-        Me.Column9.HeaderText = "CONTACT NUMBER"
-        Me.Column9.MinimumWidth = 6
-        Me.Column9.Name = "Column9"
-        Me.Column9.ReadOnly = True
-        Me.Column9.Width = 140
-        '
         'Column7
         '
         Me.Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
@@ -417,6 +407,16 @@ Partial Class FormFaculty
         Me.Column7.Name = "Column7"
         Me.Column7.ReadOnly = True
         Me.Column7.Width = 135
+        '
+        'Column9
+        '
+        Me.Column9.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.Column9.DataPropertyName = "contactno"
+        Me.Column9.HeaderText = "CONTACT NUMBER"
+        Me.Column9.MinimumWidth = 6
+        Me.Column9.Name = "Column9"
+        Me.Column9.ReadOnly = True
+        Me.Column9.Width = 140
         '
         'ColumnDepartment
         '
@@ -496,8 +496,8 @@ Partial Class FormFaculty
     Friend WithEvents Column5 As DataGridViewTextBoxColumn
     Friend WithEvents PhoneNo As DataGridViewTextBoxColumn
     Friend WithEvents Column6 As DataGridViewTextBoxColumn
-    Friend WithEvents Column9 As DataGridViewTextBoxColumn
     Friend WithEvents Column7 As DataGridViewTextBoxColumn
+    Friend WithEvents Column9 As DataGridViewTextBoxColumn
     Friend WithEvents ColumnDepartment As DataGridViewTextBoxColumn
     Friend WithEvents ColumnStatus As DataGridViewTextBoxColumn
 End Class
