@@ -12,9 +12,17 @@ Public Class AddFaculty
             ConfigureDateTimePicker()
             LoadDepartments()
 
+            If String.IsNullOrWhiteSpace(txtPhoneNo.Text) Then
+                txtPhoneNo.Text = "+63"
+            End If
+
             If String.IsNullOrWhiteSpace(txtContactNo.Text) Then
                 txtContactNo.Text = "+63"
             End If
+
+            AddHandler txtPhoneNo.Enter, AddressOf txtPhoneNo_Enter
+            AddHandler txtPhoneNo.KeyPress, AddressOf txtPhoneNo_KeyPress
+            AddHandler txtPhoneNo.TextChanged, AddressOf txtPhoneNo_TextChanged
 
             AddHandler txtContactNo.Enter, AddressOf txtContactNo_Enter
             AddHandler txtContactNo.KeyPress, AddressOf txtContactNo_KeyPress
@@ -160,8 +168,8 @@ Public Class AddFaculty
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Dim cmd As System.Data.Odbc.OdbcCommand
         Dim da As New System.Data.Odbc.OdbcDataAdapter
-        Dim insertTeacher As String = "INSERT INTO teacherinformation(employeeID, profileImg, tagID, lastname, firstname, middlename, extName, email, gender, birthdate, contactNo, homeadd, brgyID, cityID, provinceID, regionID, emergencyContact, relationship, department_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-        Dim updateTeacher As String = "UPDATE teacherinformation SET employeeID=?, profileImg=?, tagID=?, lastname=?, firstname=?, middlename=?, extName=?, email=?, gender=?, birthdate=?, contactNo=?, homeadd=?, brgyID=?, cityID=?, provinceID=?, regionID=?, emergencyContact=?, relationship=?, department_id=? WHERE teacherID=?"
+        Dim insertTeacher As String = "INSERT INTO teacherinformation(employeeID, profileImg, tagID, lastname, firstname, middlename, extName, email, gender, birthdate, phoneNo, contactNo, homeadd, brgyID, cityID, provinceID, regionID, emergencyContact, relationship, department_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        Dim updateTeacher As String = "UPDATE teacherinformation SET employeeID=?, profileImg=?, tagID=?, lastname=?, firstname=?, middlename=?, extName=?, email=?, gender=?, birthdate=?, phoneNo=?, contactNo=?, homeadd=?, brgyID=?, cityID=?, provinceID=?, regionID=?, emergencyContact=?, relationship=?, department_id=? WHERE teacherID=?"
         Dim tmpString = "--"
         Dim ms As New MemoryStream
         Dim facultyName As String = NameFormatter.FormatFullName(Trim(txtFirstName.Text), Trim(txtMiddleName.Text), Trim(txtLastName.Text), Trim(txtExtName.Text))
@@ -227,6 +235,7 @@ Public Class AddFaculty
                         .Add("?", OdbcType.VarChar).Value = Trim(txtEmail.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(cbGender.Text)
                         .Add("?", OdbcType.Date).Value = dtpBirthdate.Value.Date
+                        .Add("?", OdbcType.VarChar).Value = Trim(txtPhoneNo.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(txtContactNo.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(txtHome.Text)
                         .Add("?", OdbcType.Int).Value = cbBrgy.SelectedValue
@@ -261,6 +270,7 @@ Public Class AddFaculty
                         .Add("?", OdbcType.VarChar).Value = Trim(txtEmail.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(cbGender.Text)
                         .Add("?", OdbcType.Date).Value = dtpBirthdate.Value.Date
+                        .Add("?", OdbcType.VarChar).Value = Trim(txtPhoneNo.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(txtContactNo.Text)
                         .Add("?", OdbcType.VarChar).Value = Trim(txtHome.Text)
                         .Add("?", OdbcType.Int).Value = cbBrgy.SelectedValue
@@ -599,6 +609,9 @@ Public Class AddFaculty
             ClearTextFieldSafely(txtLastName)
             ClearTextFieldSafely(txtExtName)
             ClearTextFieldSafely(txtEmail)
+            If txtPhoneNo IsNot Nothing Then
+                txtPhoneNo.Text = "+63"
+            End If
             If txtContactNo IsNot Nothing Then
                 txtContactNo.Text = "+63"
             End If
@@ -737,6 +750,17 @@ Public Class AddFaculty
         txtTagID.BackColor = Color.White
     End Sub
 
+    Private Sub txtPhoneNo_Enter(sender As Object, e As EventArgs)
+        Try
+            If String.IsNullOrWhiteSpace(txtPhoneNo.Text) OrElse Not txtPhoneNo.Text.StartsWith("+63") Then
+                txtPhoneNo.Text = "+63"
+                txtPhoneNo.SelectionStart = txtPhoneNo.Text.Length
+            End If
+        Catch ex As Exception
+            _logger.LogWarning($"AddFaculty - Error in txtPhoneNo_Enter: {ex.Message}")
+        End Try
+    End Sub
+
     Private Sub txtContactNo_Enter(sender As Object, e As EventArgs)
         Try
             If String.IsNullOrWhiteSpace(txtContactNo.Text) OrElse Not txtContactNo.Text.StartsWith("+63") Then
@@ -745,6 +769,35 @@ Public Class AddFaculty
             End If
         Catch ex As Exception
             _logger.LogWarning($"AddFaculty - Error in txtContactNo_Enter: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Sub txtPhoneNo_KeyPress(sender As Object, e As KeyPressEventArgs)
+        Try
+            If Char.IsControl(e.KeyChar) Then
+                Return
+            End If
+
+            Dim currentText As String = txtPhoneNo.Text
+            Dim cursorPosition As Integer = txtPhoneNo.SelectionStart
+
+            If cursorPosition < 3 Then
+                e.Handled = True
+                Return
+            End If
+
+            If Not Char.IsDigit(e.KeyChar) Then
+                e.Handled = True
+                Return
+            End If
+
+            If currentText.Length >= 13 AndAlso txtPhoneNo.SelectionLength = 0 Then
+                e.Handled = True
+                Return
+            End If
+
+        Catch ex As Exception
+            _logger.LogWarning($"AddFaculty - Error in txtContactNo_KeyPress: {ex.Message}")
         End Try
     End Sub
 
@@ -774,6 +827,31 @@ Public Class AddFaculty
 
         Catch ex As Exception
             _logger.LogWarning($"AddFaculty - Error in txtContactNo_KeyPress: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Sub txtPhoneNo_TextChanged(sender As Object, e As EventArgs)
+        Try
+            RemoveHandler txtPhoneNo.TextChanged, AddressOf txtContactNo_TextChanged
+
+            Dim currentText As String = txtPhoneNo.Text
+            If Not currentText.StartsWith("+63") Then
+                If currentText.StartsWith("+6") Then
+                    txtPhoneNo.Text = "+63"
+                ElseIf currentText.StartsWith("+") Then
+                    txtPhoneNo.Text = "+63"
+                Else
+                    Dim digits As String = New String(currentText.Where(Function(c) Char.IsDigit(c)).ToArray())
+                    txtPhoneNo.Text = "+63" & digits
+                End If
+                txtPhoneNo.SelectionStart = txtPhoneNo.Text.Length
+            End If
+
+            AddHandler txtPhoneNo.TextChanged, AddressOf txtPhoneNo_TextChanged
+
+        Catch ex As Exception
+            _logger.LogWarning($"AddFaculty - Error in txtPhoneNo_TextChanged: {ex.Message}")
+            AddHandler txtPhoneNo.TextChanged, AddressOf txtPhoneNo_TextChanged
         End Try
     End Sub
 

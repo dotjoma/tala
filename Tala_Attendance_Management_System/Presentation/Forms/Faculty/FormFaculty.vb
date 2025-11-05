@@ -180,7 +180,7 @@ Public Class FormFaculty
             _logger.LogInfo($"FormFaculty - Loading faculty record for editing - Faculty ID: {id}")
 
             connectDB()
-            cmd = New Odbc.OdbcCommand("SELECT teacherID, profileImg, employeeID,tagID,firstname,middlename,lastname,extName, email, gender,birthdate,homeadd,brgyID, cityID, provinceID, regionID,contactNo, emergencyContact, relationship, department_id FROM teacherinformation WHERE teacherID=?", con)
+            cmd = New Odbc.OdbcCommand("SELECT teacherID, profileImg, employeeID,tagID,firstname,middlename,lastname,extName, email, gender,birthdate,phoneNo,homeadd,brgyID, cityID, provinceID, regionID,contactNo, emergencyContact, relationship, department_id FROM teacherinformation WHERE teacherID=?", con)
             cmd.Parameters.AddWithValue("@", id)
             da.SelectCommand = cmd
             da.Fill(dt)
@@ -211,7 +211,7 @@ Public Class FormFaculty
                 AddFaculty.txtHome.Text = dt.Rows(0)("homeadd").ToString()
 
                 LoadAddressComboBoxes(dt.Rows(0)("regionID").ToString(), dt.Rows(0)("provinceID").ToString(), dt.Rows(0)("cityID").ToString(), dt.Rows(0)("brgyID").ToString())
-
+                AddFaculty.txtPhoneNo.Text = dt.Rows(0)("phoneNo").ToString()
                 AddFaculty.txtContactNo.Text = dt.Rows(0)("contactNo").ToString()
                 AddFaculty.txtEmergencyContact.Text = dt.Rows(0)("emergencyContact").ToString()
                 AddFaculty.cbRelationship.Text = dt.Rows(0)("relationship").ToString()
@@ -457,11 +457,12 @@ Public Class FormFaculty
                        " & GetNameConcatSQL() & " AS teacher_name, 
                        ti.email, 
                        ti.gender AS gender, 
-                       ti.birthdate AS birthdate, 
+                       ti.birthdate AS birthdate,
+                       ti.phoneNo AS phoneNo,
                        ti.contactNo AS contactNo, 
                        CONCAT(ti.homeadd, ' ', COALESCE(rb.brgyDesc, ''), '. ', COALESCE(rc.citymunDesc, '')) AS teacher_address, 
                        ti.emergencyContact AS emergencyContact,
-                       COALESCE(d.department_code, 'No Dept') AS department_code,
+                       COALESCE(d.department_name, 'No Dept') AS department_name,
                        CASE WHEN ti.isActive = 1 THEN 'Active' ELSE 'Inactive' END AS status_text
                 FROM teacherinformation ti 
                 LEFT JOIN refregion rg ON ti.regionID = rg.id 
@@ -615,6 +616,7 @@ Public Class FormFaculty
                     CONCAT(t.lastname, ', ', t.firstname, ' ', IFNULL(t.middlename, '')) AS fullname,
                     IFNULL(d.department_name, 'N/A') AS department,
                     t.email,
+                    t.phoneNo,
                     t.contactNo,
                     CASE WHEN t.isActive = 1 THEN 'Active' ELSE 'Inactive' END AS status
                 FROM teacherinformation t

@@ -234,6 +234,33 @@ Public Class AddDepartment
                 Return False
             End If
 
+            ' Validate that the selected teacher is not already a department head in another active department
+            If cboHeadTeacher.SelectedValue IsNot Nothing AndAlso Not IsDBNull(cboHeadTeacher.SelectedValue) Then
+                Dim selectedValue = cboHeadTeacher.SelectedValue.ToString()
+                If IsNumeric(selectedValue) AndAlso Convert.ToInt32(selectedValue) > 0 Then
+                    Dim selectedTeacherId As Integer = Convert.ToInt32(selectedValue)
+                    
+                    ' Check if this teacher is already a department head in another active department
+                    Dim dbContext As New DatabaseContext()
+                    Dim query As String = "SELECT d.department_name FROM departments d " &
+                      "WHERE d.head_teacher_id = ? " &
+                      "AND d.is_active = 1 " &
+                      "AND d.department_id != ?"
+                    
+                    Dim parameters As Object() = {selectedTeacherId, _departmentId}
+                    
+                    Dim existingDept = dbContext.ExecuteQuery(query, parameters)
+                    
+                    If existingDept IsNot Nothing AndAlso existingDept.Rows.Count > 0 Then
+                        Dim existingDeptName As String = existingDept.Rows(0)("department_name").ToString()
+                        MessageBox.Show($"The selected teacher is already the department head of '{existingDeptName}",
+                                      "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        cboHeadTeacher.Focus()
+                        Return False
+                    End If
+                End If
+            End If
+
             _logger.LogInfo("AddDepartment - Input validation passed")
             Return True
         Catch ex As Exception

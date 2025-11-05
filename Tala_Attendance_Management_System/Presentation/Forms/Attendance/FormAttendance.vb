@@ -141,7 +141,7 @@ Public Class FormAttendace
         UpdateDataBasedOnFilterAndSearch()
     End Sub
     Private Sub UpdateDataBasedOnFilterAndSearch()
-        Dim strFilter As String = cbFilter.SelectedItem.ToString()
+        Dim strFilter As String = If(cbFilter.SelectedItem IsNot Nothing, cbFilter.SelectedItem.ToString(), "Teachers")
 
         Try
             Select Case strFilter
@@ -152,7 +152,7 @@ Public Class FormAttendace
                 Case "Students"
                     LoadStudentsRecords()
                 Case Else
-                    DefaultSettings()
+                    LoadTeachersRecords()
             End Select
         Catch ex As Exception
             Dim msgForm As New Form() With {.TopMost = True}
@@ -195,45 +195,54 @@ Public Class FormAttendace
     End Sub
 
     Private Sub LoadAllRecords()
-        If txtSearch.TextLength > 0 Then
-            SearchAllRecords()
-        Else
-            loadDGV("SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
+        Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
+        Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
+
+        Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
                      DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                      arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
                      depStatus 
                      FROM attendance_record ar 
                      JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
-                     WHERE logDate = CURDATE()", dgvAttendance)
+                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+        If txtSearch.TextLength > 0 Then
+            query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
         End If
+
+        query &= " ORDER BY logDate DESC, arrivalTime DESC"
+
+        loadDGV(query, dgvAttendance)
     End Sub
 
     Private Sub LoadTeachersRecords()
+        Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
+        Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
+
+        Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS Name, 
+                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
+                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
+                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
+                     depStatus 
+                     FROM attendance_record ar 
+                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID  
+                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
         If txtSearch.TextLength > 0 Then
-            loadDGV("SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS Name, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-                     depStatus 
-                     FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID  
-                     WHERE logDate = CURDATE()", dgvAttendance, "lastname", "firstname", "logDate", txtSearch.Text.Trim())
-        Else
-            loadDGV("SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS Name, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-                     depStatus 
-                     FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID  
-                     WHERE logDate = CURDATE()", dgvAttendance)
+            query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
         End If
+
+        query &= " ORDER BY logDate DESC, arrivalTime DESC"
+
+        loadDGV(query, dgvAttendance)
     End Sub
 
     Private Sub LoadStudentsRecords()
-        If txtSearch.TextLength > 0 Then
-            loadDGV("SELECT CONCAT(firstname, ' ', lastname) AS Name, 
+        Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
+        Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
+
+        Dim query As String = "SELECT CONCAT(firstname, ' ', lastname) AS Name, 
                      DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                      arrStatus, 
@@ -245,21 +254,15 @@ Public Class FormAttendace
                      JOIN studentrecords sr ON ar.tag_id = sr.tagID 
                      JOIN classrooms cr ON ar.classroom_id=cr.classroom_id 
                      JOIN subjects s ON ar.subject_id=s.subject_id 
-                     WHERE logDate = CURDATE()", dgvAttendance, "lastname", "firstname", "logDate", txtSearch.Text.Trim())
-        Else
-            loadDGV("SELECT CONCAT(firstname, ' ', lastname) AS Name, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-                     depStatus,'Student' AS TYPE,
-                     CONCAT(cr.location, ' ', cr.classroom_name) AS classroom, 
-                     s.subject_name 
-                     FROM attendance_record ar 
-                     JOIN studentrecords sr ON ar.tag_id = sr.tagID 
-                     JOIN classrooms cr ON ar.classroom_id=cr.classroom_id 
-                     JOIN subjects s ON ar.subject_id=s.subject_id 
-                     WHERE logDate = CURDATE()", dgvAttendance)
+                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+        If txtSearch.TextLength > 0 Then
+            query &= " AND (sr.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR sr.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
         End If
+
+        query &= " ORDER BY logDate DESC, arrivalTime DESC"
+
+        loadDGV(query, dgvAttendance)
     End Sub
 
     Private Sub dtpDateFrom_ValueChanged(sender As Object, e As EventArgs) Handles dtpDateFrom.ValueChanged
@@ -323,7 +326,7 @@ Public Class FormAttendace
             _logger.LogWarning($"Large date range selected: {daysDiff} days")
         End If
 
-        LoadAttendanceData()
+        UpdateDataBasedOnFilterAndSearch()
     End Sub
 
     Private Sub dgvAttendance_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAttendance.CellClick

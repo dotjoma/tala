@@ -50,6 +50,7 @@ Partial Class FormFaculty
         Me.email = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.PhoneNo = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -301,7 +302,7 @@ Partial Class FormFaculty
         Me.dgvTeachers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvTeachers.ColumnHeadersHeight = 45
         Me.dgvTeachers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvTeachers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3, Me.email, Me.Column4, Me.Column5, Me.Column6, Me.Column9, Me.Column7, Me.ColumnDepartment, Me.ColumnStatus})
+        Me.dgvTeachers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3, Me.email, Me.Column4, Me.Column5, Me.PhoneNo, Me.Column6, Me.Column9, Me.Column7, Me.ColumnDepartment, Me.ColumnStatus})
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
         DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -356,10 +357,10 @@ Partial Class FormFaculty
         '
         Me.email.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
         Me.email.DataPropertyName = "email"
-        Me.email.HeaderText = "Email"
+        Me.email.HeaderText = "EMAIL"
         Me.email.Name = "email"
         Me.email.ReadOnly = True
-        Me.email.Width = 64
+        Me.email.Width = 72
         '
         'Column4
         '
@@ -380,6 +381,13 @@ Partial Class FormFaculty
         Me.Column5.Name = "Column5"
         Me.Column5.ReadOnly = True
         Me.Column5.Width = 115
+        '
+        'PhoneNo
+        '
+        Me.PhoneNo.DataPropertyName = "phoneNo"
+        Me.PhoneNo.HeaderText = "PHONE NO"
+        Me.PhoneNo.Name = "PhoneNo"
+        Me.PhoneNo.ReadOnly = True
         '
         'Column6
         '
@@ -413,7 +421,7 @@ Partial Class FormFaculty
         'ColumnDepartment
         '
         Me.ColumnDepartment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
-        Me.ColumnDepartment.DataPropertyName = "department_code"
+        Me.ColumnDepartment.DataPropertyName = "department_name"
         Me.ColumnDepartment.HeaderText = "DEPARTMENT"
         Me.ColumnDepartment.MinimumWidth = 6
         Me.ColumnDepartment.Name = "ColumnDepartment"
@@ -479,16 +487,17 @@ Partial Class FormFaculty
     Friend WithEvents btnToggleStat As Button
     Friend WithEvents Panel3 As Panel
     Public WithEvents dgvTeachers As DataGridView
+    Friend WithEvents btnGenerateReport As Button
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column3 As DataGridViewTextBoxColumn
     Friend WithEvents email As DataGridViewTextBoxColumn
     Friend WithEvents Column4 As DataGridViewTextBoxColumn
     Friend WithEvents Column5 As DataGridViewTextBoxColumn
+    Friend WithEvents PhoneNo As DataGridViewTextBoxColumn
     Friend WithEvents Column6 As DataGridViewTextBoxColumn
     Friend WithEvents Column9 As DataGridViewTextBoxColumn
     Friend WithEvents Column7 As DataGridViewTextBoxColumn
     Friend WithEvents ColumnDepartment As DataGridViewTextBoxColumn
     Friend WithEvents ColumnStatus As DataGridViewTextBoxColumn
-    Friend WithEvents btnGenerateReport As Button
 End Class

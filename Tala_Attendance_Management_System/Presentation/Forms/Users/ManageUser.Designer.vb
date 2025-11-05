@@ -41,6 +41,8 @@ Partial Class ManageUser
         Me.btnEdit = New System.Windows.Forms.Button()
         Me.btnNew = New System.Windows.Forms.Button()
         Me.dgvManageUser = New System.Windows.Forms.DataGridView()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.PictureBox6 = New System.Windows.Forms.PictureBox()
         Me.login_id = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.full_name = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.username = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -53,8 +55,6 @@ Partial Class ManageUser
         Me.isActive = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.EditBtn = New System.Windows.Forms.DataGridViewButtonColumn()
         Me.deleteBtn = New System.Windows.Forms.DataGridViewButtonColumn()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.PictureBox6 = New System.Windows.Forms.PictureBox()
         Me.panelHeader.SuspendLayout()
         CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.panelBottom.SuspendLayout()
@@ -271,6 +271,28 @@ Partial Class ManageUser
         Me.dgvManageUser.TabIndex = 21
         Me.dgvManageUser.TabStop = False
         '
+        'Panel1
+        '
+        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.Panel1.Controls.Add(Me.PictureBox6)
+        Me.Panel1.Controls.Add(Me.Label1)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Panel1.Location = New System.Drawing.Point(0, 0)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(1444, 60)
+        Me.Panel1.TabIndex = 22
+        '
+        'PictureBox6
+        '
+        Me.PictureBox6.BackColor = System.Drawing.Color.Transparent
+        Me.PictureBox6.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_manage_50
+        Me.PictureBox6.Location = New System.Drawing.Point(12, 12)
+        Me.PictureBox6.Name = "PictureBox6"
+        Me.PictureBox6.Size = New System.Drawing.Size(40, 40)
+        Me.PictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox6.TabIndex = 16
+        Me.PictureBox6.TabStop = False
+        '
         'login_id
         '
         Me.login_id.DataPropertyName = "login_id"
@@ -283,7 +305,7 @@ Partial Class ManageUser
         '
         Me.full_name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.full_name.DataPropertyName = "full_name"
-        Me.full_name.HeaderText = "Full Name"
+        Me.full_name.HeaderText = "FULL NAME"
         Me.full_name.Name = "full_name"
         Me.full_name.ReadOnly = True
         '
@@ -291,7 +313,7 @@ Partial Class ManageUser
         '
         Me.username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.username.DataPropertyName = "username"
-        Me.username.HeaderText = "Username"
+        Me.username.HeaderText = "USERNAME"
         Me.username.Name = "username"
         Me.username.ReadOnly = True
         '
@@ -299,7 +321,7 @@ Partial Class ManageUser
         '
         Me.password.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.password.DataPropertyName = "password"
-        Me.password.HeaderText = "Password"
+        Me.password.HeaderText = "PASSWORD"
         Me.password.Name = "password"
         Me.password.ReadOnly = True
         Me.password.Visible = False
@@ -308,7 +330,7 @@ Partial Class ManageUser
         '
         Me.email.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.email.DataPropertyName = "email"
-        Me.email.HeaderText = "Email Address"
+        Me.email.HeaderText = "EMAIL"
         Me.email.Name = "email"
         Me.email.ReadOnly = True
         '
@@ -316,7 +338,7 @@ Partial Class ManageUser
         '
         Me.location.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.location.DataPropertyName = "address"
-        Me.location.HeaderText = "Location"
+        Me.location.HeaderText = "LOCATION"
         Me.location.Name = "location"
         Me.location.ReadOnly = True
         '
@@ -324,7 +346,7 @@ Partial Class ManageUser
         '
         Me.created_at.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.created_at.DataPropertyName = "created_at"
-        Me.created_at.HeaderText = "Created"
+        Me.created_at.HeaderText = "CREATED"
         Me.created_at.Name = "created_at"
         Me.created_at.ReadOnly = True
         '
@@ -332,24 +354,24 @@ Partial Class ManageUser
         '
         Me.role.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
         Me.role.DataPropertyName = "role"
-        Me.role.HeaderText = "Role"
+        Me.role.HeaderText = "ROLE"
         Me.role.Name = "role"
         Me.role.ReadOnly = True
-        Me.role.Width = 64
+        Me.role.Width = 71
         '
         'status
         '
         Me.status.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
         Me.status.DataPropertyName = "status"
-        Me.status.HeaderText = "Status"
+        Me.status.HeaderText = "STATUS"
         Me.status.Name = "status"
         Me.status.ReadOnly = True
-        Me.status.Width = 75
+        Me.status.Width = 86
         '
         'isActive
         '
         Me.isActive.DataPropertyName = "isActive"
-        Me.isActive.HeaderText = "IsActive"
+        Me.isActive.HeaderText = "isACTIVE"
         Me.isActive.Name = "isActive"
         Me.isActive.ReadOnly = True
         Me.isActive.Visible = False
@@ -364,7 +386,7 @@ Partial Class ManageUser
         DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
         Me.EditBtn.DefaultCellStyle = DataGridViewCellStyle3
         Me.EditBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.EditBtn.HeaderText = "Actions"
+        Me.EditBtn.HeaderText = "ACTIONS"
         Me.EditBtn.Name = "EditBtn"
         Me.EditBtn.ReadOnly = True
         Me.EditBtn.Text = "Edit"
@@ -387,28 +409,6 @@ Partial Class ManageUser
         Me.deleteBtn.Text = "Delete"
         Me.deleteBtn.UseColumnTextForButtonValue = True
         Me.deleteBtn.Visible = False
-        '
-        'Panel1
-        '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Panel1.Controls.Add(Me.PictureBox6)
-        Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel1.Location = New System.Drawing.Point(0, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1444, 60)
-        Me.Panel1.TabIndex = 22
-        '
-        'PictureBox6
-        '
-        Me.PictureBox6.BackColor = System.Drawing.Color.Transparent
-        Me.PictureBox6.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_manage_50
-        Me.PictureBox6.Location = New System.Drawing.Point(12, 12)
-        Me.PictureBox6.Name = "PictureBox6"
-        Me.PictureBox6.Size = New System.Drawing.Size(40, 40)
-        Me.PictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox6.TabIndex = 16
-        Me.PictureBox6.TabStop = False
         '
         'ManageUser
         '
@@ -450,19 +450,19 @@ Partial Class ManageUser
     Friend WithEvents Panel1 As Panel
     Friend WithEvents PictureBox6 As PictureBox
     Friend WithEvents PictureBox4 As PictureBox
+    Friend WithEvents btnNew As Button
+    Friend WithEvents Label2 As Label
+    Friend WithEvents btnChangePassword As Button
     Friend WithEvents login_id As DataGridViewTextBoxColumn
     Friend WithEvents full_name As DataGridViewTextBoxColumn
     Friend WithEvents username As DataGridViewTextBoxColumn
     Friend WithEvents password As DataGridViewTextBoxColumn
     Friend WithEvents email As DataGridViewTextBoxColumn
-    Friend Shadows WithEvents location As DataGridViewTextBoxColumn
+    Friend WithEvents location As DataGridViewTextBoxColumn
     Friend WithEvents created_at As DataGridViewTextBoxColumn
     Friend WithEvents role As DataGridViewTextBoxColumn
     Friend WithEvents status As DataGridViewTextBoxColumn
     Friend WithEvents isActive As DataGridViewTextBoxColumn
     Friend WithEvents EditBtn As DataGridViewButtonColumn
     Friend WithEvents deleteBtn As DataGridViewButtonColumn
-    Friend WithEvents btnNew As Button
-    Friend WithEvents Label2 As Label
-    Friend WithEvents btnChangePassword As Button
 End Class

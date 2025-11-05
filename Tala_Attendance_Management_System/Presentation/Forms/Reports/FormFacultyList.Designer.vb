@@ -17,9 +17,9 @@ Partial Class FormFacultyList
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.pnlTop = New System.Windows.Forms.Panel()
         Me.lblTitle = New System.Windows.Forms.Label()
         Me.pnlFilters = New System.Windows.Forms.Panel()
@@ -31,13 +31,6 @@ Partial Class FormFacultyList
         Me.cboStatusFilter = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dgvFaculty = New System.Windows.Forms.DataGridView()
-        Me.colTeacherID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colEmployeeID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colFullName = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colDepartment = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colEmail = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colContactNumber = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colStatus = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.pnlBottom = New System.Windows.Forms.Panel()
         Me.btnLastPage = New System.Windows.Forms.Button()
         Me.btnNextPage = New System.Windows.Forms.Button()
@@ -45,6 +38,13 @@ Partial Class FormFacultyList
         Me.btnPrevPage = New System.Windows.Forms.Button()
         Me.btnFirstPage = New System.Windows.Forms.Button()
         Me.lblRecordCount = New System.Windows.Forms.Label()
+        Me.colTeacherID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colEmployeeID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colFullName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colDepartment = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colEmail = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colContactNumber = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colStatus = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.pnlTop.SuspendLayout()
         Me.pnlFilters.SuspendLayout()
         CType(Me.dgvFaculty, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -176,32 +176,32 @@ Partial Class FormFacultyList
         Me.dgvFaculty.AllowUserToDeleteRows = False
         Me.dgvFaculty.AllowUserToResizeColumns = False
         Me.dgvFaculty.AllowUserToResizeRows = False
-        DataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvFaculty.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvFaculty.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvFaculty.BackgroundColor = System.Drawing.Color.White
         Me.dgvFaculty.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvFaculty.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle5.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvFaculty.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvFaculty.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvFaculty.ColumnHeadersHeight = 45
         Me.dgvFaculty.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvFaculty.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTeacherID, Me.colEmployeeID, Me.colFullName, Me.colDepartment, Me.colEmail, Me.colContactNumber, Me.colStatus})
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvFaculty.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvFaculty.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvFaculty.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvFaculty.EnableHeadersVisualStyles = False
         Me.dgvFaculty.Location = New System.Drawing.Point(0, 130)
@@ -213,68 +213,6 @@ Partial Class FormFacultyList
         Me.dgvFaculty.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvFaculty.Size = New System.Drawing.Size(1200, 470)
         Me.dgvFaculty.TabIndex = 2
-        '
-        'colTeacherID
-        '
-        Me.colTeacherID.DataPropertyName = "teacherID"
-        Me.colTeacherID.HeaderText = "ID"
-        Me.colTeacherID.Name = "colTeacherID"
-        Me.colTeacherID.ReadOnly = True
-        Me.colTeacherID.Visible = False
-        '
-        'colEmployeeID
-        '
-        Me.colEmployeeID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colEmployeeID.DataPropertyName = "employeeID"
-        Me.colEmployeeID.FillWeight = 12.0!
-        Me.colEmployeeID.HeaderText = "Employee ID"
-        Me.colEmployeeID.Name = "colEmployeeID"
-        Me.colEmployeeID.ReadOnly = True
-        '
-        'colFullName
-        '
-        Me.colFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colFullName.DataPropertyName = "fullname"
-        Me.colFullName.FillWeight = 25.0!
-        Me.colFullName.HeaderText = "Full Name"
-        Me.colFullName.Name = "colFullName"
-        Me.colFullName.ReadOnly = True
-        '
-        'colDepartment
-        '
-        Me.colDepartment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colDepartment.DataPropertyName = "department"
-        Me.colDepartment.FillWeight = 15.0!
-        Me.colDepartment.HeaderText = "Department"
-        Me.colDepartment.Name = "colDepartment"
-        Me.colDepartment.ReadOnly = True
-        '
-        'colEmail
-        '
-        Me.colEmail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colEmail.DataPropertyName = "email"
-        Me.colEmail.FillWeight = 20.0!
-        Me.colEmail.HeaderText = "Email"
-        Me.colEmail.Name = "colEmail"
-        Me.colEmail.ReadOnly = True
-        '
-        'colContactNumber
-        '
-        Me.colContactNumber.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colContactNumber.DataPropertyName = "contactNo"
-        Me.colContactNumber.FillWeight = 13.0!
-        Me.colContactNumber.HeaderText = "Contact Number"
-        Me.colContactNumber.Name = "colContactNumber"
-        Me.colContactNumber.ReadOnly = True
-        '
-        'colStatus
-        '
-        Me.colStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colStatus.DataPropertyName = "status"
-        Me.colStatus.FillWeight = 10.0!
-        Me.colStatus.HeaderText = "Status"
-        Me.colStatus.Name = "colStatus"
-        Me.colStatus.ReadOnly = True
         '
         'pnlBottom
         '
@@ -368,6 +306,68 @@ Partial Class FormFacultyList
         Me.lblRecordCount.TabIndex = 0
         Me.lblRecordCount.Text = "Total Records: 0"
         '
+        'colTeacherID
+        '
+        Me.colTeacherID.DataPropertyName = "teacherID"
+        Me.colTeacherID.HeaderText = "ID"
+        Me.colTeacherID.Name = "colTeacherID"
+        Me.colTeacherID.ReadOnly = True
+        Me.colTeacherID.Visible = False
+        '
+        'colEmployeeID
+        '
+        Me.colEmployeeID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colEmployeeID.DataPropertyName = "employeeID"
+        Me.colEmployeeID.FillWeight = 12.0!
+        Me.colEmployeeID.HeaderText = "EMPLOYEE ID"
+        Me.colEmployeeID.Name = "colEmployeeID"
+        Me.colEmployeeID.ReadOnly = True
+        '
+        'colFullName
+        '
+        Me.colFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colFullName.DataPropertyName = "fullname"
+        Me.colFullName.FillWeight = 25.0!
+        Me.colFullName.HeaderText = "FULL NAME"
+        Me.colFullName.Name = "colFullName"
+        Me.colFullName.ReadOnly = True
+        '
+        'colDepartment
+        '
+        Me.colDepartment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colDepartment.DataPropertyName = "department"
+        Me.colDepartment.FillWeight = 15.0!
+        Me.colDepartment.HeaderText = "DEPARTMENT"
+        Me.colDepartment.Name = "colDepartment"
+        Me.colDepartment.ReadOnly = True
+        '
+        'colEmail
+        '
+        Me.colEmail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colEmail.DataPropertyName = "email"
+        Me.colEmail.FillWeight = 20.0!
+        Me.colEmail.HeaderText = "EMAIL"
+        Me.colEmail.Name = "colEmail"
+        Me.colEmail.ReadOnly = True
+        '
+        'colContactNumber
+        '
+        Me.colContactNumber.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colContactNumber.DataPropertyName = "contactNo"
+        Me.colContactNumber.FillWeight = 13.0!
+        Me.colContactNumber.HeaderText = "CONTACT NO"
+        Me.colContactNumber.Name = "colContactNumber"
+        Me.colContactNumber.ReadOnly = True
+        '
+        'colStatus
+        '
+        Me.colStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colStatus.DataPropertyName = "status"
+        Me.colStatus.FillWeight = 10.0!
+        Me.colStatus.HeaderText = "STATUS"
+        Me.colStatus.Name = "colStatus"
+        Me.colStatus.ReadOnly = True
+        '
         'FormFacultyList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -403,6 +403,12 @@ Partial Class FormFacultyList
     Friend WithEvents dgvFaculty As DataGridView
     Friend WithEvents pnlBottom As Panel
     Friend WithEvents lblRecordCount As Label
+    Friend WithEvents btnFirstPage As Button
+    Friend WithEvents btnPrevPage As Button
+    Friend WithEvents lblPageInfo As Label
+    Friend WithEvents btnNextPage As Button
+    Friend WithEvents btnLastPage As Button
+    Friend WithEvents btnGenerateReport As Button
     Friend WithEvents colTeacherID As DataGridViewTextBoxColumn
     Friend WithEvents colEmployeeID As DataGridViewTextBoxColumn
     Friend WithEvents colFullName As DataGridViewTextBoxColumn
@@ -410,10 +416,4 @@ Partial Class FormFacultyList
     Friend WithEvents colEmail As DataGridViewTextBoxColumn
     Friend WithEvents colContactNumber As DataGridViewTextBoxColumn
     Friend WithEvents colStatus As DataGridViewTextBoxColumn
-    Friend WithEvents btnFirstPage As Button
-    Friend WithEvents btnPrevPage As Button
-    Friend WithEvents lblPageInfo As Label
-    Friend WithEvents btnNextPage As Button
-    Friend WithEvents btnLastPage As Button
-    Friend WithEvents btnGenerateReport As Button
 End Class
