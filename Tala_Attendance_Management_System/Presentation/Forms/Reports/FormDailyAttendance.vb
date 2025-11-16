@@ -1,12 +1,12 @@
 ﻿Imports System.Data.Odbc
 
-Public Class FormAttendace
+Public Class FormDailyAttendance
     Private ReadOnly _logger As ILogger = LoggerFactory.Instance
     Public strFilter As String = ""
     Private selectedAttendanceId As Integer = 0
     Public Property UserRole As String = ""
-    
-    Public Shared CurrentInstance As FormAttendace = Nothing
+
+    Public Shared CurrentInstance As FormDailyAttendance = Nothing
 
     Public Sub DefaultSettings()
         dgvAttendance.CurrentCell = Nothing
@@ -258,15 +258,15 @@ Public Class FormAttendace
             End If
 
             ' Enable Edit button for admin and HR
-            'Dim canEdit As Boolean = (userRole = "admin" OrElse userRole = "hr")
-            'btnEdit.Visible = canEdit
-            'btnEdit.Enabled = canEdit
+            Dim canEdit As Boolean = (userRole = "admin" OrElse userRole = "hr")
+            btnEdit.Visible = canEdit
+            btnEdit.Enabled = canEdit
 
-            'Dim canManualInput As Boolean = (userRole = "admin" OrElse userRole = "hr")
-            'btnManualInput.Visible = canManualInput
-            'btnManualInput.Enabled = canManualInput
+            Dim canManualInput As Boolean = (userRole = "admin" OrElse userRole = "hr")
+            btnManualInput.Visible = canManualInput
+            btnManualInput.Enabled = canManualInput
 
-            '_logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button {If(canEdit, "enabled", "disabled")}, Manual input {If(canManualInput, "enabled", "disabled")}")
+            _logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button {If(canEdit, "enabled", "disabled")}, Manual input {If(canManualInput, "enabled", "disabled")}")
         Catch ex As Exception
             _logger.LogError($"Error applying role-based access: {ex.Message}")
             btnEdit.Visible = False

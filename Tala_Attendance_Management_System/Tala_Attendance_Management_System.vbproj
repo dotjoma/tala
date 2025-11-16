@@ -193,6 +193,12 @@
     <Compile Include="Presentation\Forms\Faculty\AddFaculty.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormDailyAttendance.Designer.vb">
+      <DependentUpon>FormDailyAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Reports\FormDailyAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Presentation\Forms\Reports\FormFacultyList.Designer.vb">
       <DependentUpon>FormFacultyList.vb</DependentUpon>
     </Compile>
@@ -486,6 +492,9 @@
     <EmbeddedResource Include="Presentation\Forms\Faculty\AddFaculty.resx">
       <DependentUpon>AddFaculty.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Reports\FormDailyAttendance.resx">
+      <DependentUpon>FormDailyAttendance.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Reports\FormFacultyList.resx">
       <DependentUpon>FormFacultyList.vb</DependentUpon>
     </EmbeddedResource>
@@ -593,6 +602,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Users\BatchGenerate.resx">
       <DependentUpon>BatchGenerate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Users\ChangePassword.resx">
+      <DependentUpon>ChangePassword.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Users\ManageUser.resx">
       <DependentUpon>ManageUser.vb</DependentUpon>

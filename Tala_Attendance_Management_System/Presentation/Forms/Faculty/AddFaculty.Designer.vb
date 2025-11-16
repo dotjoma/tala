@@ -111,7 +111,7 @@ Partial Class AddFaculty
         '
         'panelHeader
         '
-        Me.panelHeader.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.panelHeader.BackColor = System.Drawing.Color.SteelBlue
         Me.panelHeader.Controls.Add(Me.Label10)
         Me.panelHeader.Controls.Add(Me.txtID)
         Me.panelHeader.Controls.Add(Me.Label25)

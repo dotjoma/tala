@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class FormAttendace
+Partial Class FormDailyAttendance
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,6 +22,7 @@ Partial Class FormAttendace
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormDailyAttendance))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -33,8 +34,8 @@ Partial Class FormAttendace
         Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormAttendace))
         Me.panelHeader = New System.Windows.Forms.Panel()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtSearch = New System.Windows.Forms.TextBox()
@@ -42,8 +43,8 @@ Partial Class FormAttendace
         Me.btnViewDetails = New System.Windows.Forms.Button()
         Me.btnManualInput = New System.Windows.Forms.Button()
         Me.btnEdit = New System.Windows.Forms.Button()
-        Me.btnExport = New System.Windows.Forms.Button()
         Me.btnPrint = New System.Windows.Forms.Button()
+        Me.btnExport = New System.Windows.Forms.Button()
         Me.dtpDateTo = New System.Windows.Forms.DateTimePicker()
         Me.dtpDateFrom = New System.Windows.Forms.DateTimePicker()
         Me.Label5 = New System.Windows.Forms.Label()
@@ -62,12 +63,11 @@ Partial Class FormAttendace
         Me.colTimeOut = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colStatus = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colRemarks = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.panelHeader.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvAttendance, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'panelHeader
@@ -81,6 +81,17 @@ Partial Class FormAttendace
         Me.panelHeader.Name = "panelHeader"
         Me.panelHeader.Size = New System.Drawing.Size(1444, 57)
         Me.panelHeader.TabIndex = 3
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.Color.SteelBlue
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(3, 10)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(50, 37)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.PictureBox1.TabIndex = 20
+        Me.PictureBox1.TabStop = False
         '
         'Label2
         '
@@ -100,7 +111,7 @@ Partial Class FormAttendace
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label1.ForeColor = System.Drawing.Color.Black
-        Me.Label1.Location = New System.Drawing.Point(12, 22)
+        Me.Label1.Location = New System.Drawing.Point(12, 25)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(59, 20)
         Me.Label1.TabIndex = 5
@@ -108,20 +119,18 @@ Partial Class FormAttendace
         '
         'txtSearch
         '
-        Me.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtSearch.Location = New System.Drawing.Point(77, 19)
+        Me.txtSearch.Location = New System.Drawing.Point(72, 22)
         Me.txtSearch.Name = "txtSearch"
-        Me.txtSearch.Size = New System.Drawing.Size(214, 26)
+        Me.txtSearch.Size = New System.Drawing.Size(198, 26)
         Me.txtSearch.TabIndex = 2
         '
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.SteelBlue
         Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel1.Controls.Add(Me.btnViewDetails)
         Me.Panel1.Controls.Add(Me.btnManualInput)
         Me.Panel1.Controls.Add(Me.btnEdit)
-        Me.Panel1.Controls.Add(Me.btnExport)
-        Me.Panel1.Controls.Add(Me.btnPrint)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Panel1.Location = New System.Drawing.Point(0, 464)
         Me.Panel1.Name = "Panel1"
@@ -135,7 +144,7 @@ Partial Class FormAttendace
         Me.btnViewDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnViewDetails.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnViewDetails.ForeColor = System.Drawing.Color.White
-        Me.btnViewDetails.Location = New System.Drawing.Point(1312, 13)
+        Me.btnViewDetails.Location = New System.Drawing.Point(15, 12)
         Me.btnViewDetails.Name = "btnViewDetails"
         Me.btnViewDetails.Size = New System.Drawing.Size(120, 38)
         Me.btnViewDetails.TabIndex = 8
@@ -149,13 +158,12 @@ Partial Class FormAttendace
         Me.btnManualInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnManualInput.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnManualInput.ForeColor = System.Drawing.Color.White
-        Me.btnManualInput.Location = New System.Drawing.Point(1185, 12)
+        Me.btnManualInput.Location = New System.Drawing.Point(267, 12)
         Me.btnManualInput.Name = "btnManualInput"
         Me.btnManualInput.Size = New System.Drawing.Size(120, 38)
         Me.btnManualInput.TabIndex = 4
         Me.btnManualInput.Text = "Manual Input"
         Me.btnManualInput.UseVisualStyleBackColor = False
-        Me.btnManualInput.Visible = False
         '
         'btnEdit
         '
@@ -164,48 +172,45 @@ Partial Class FormAttendace
         Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnEdit.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnEdit.ForeColor = System.Drawing.Color.White
-        Me.btnEdit.Location = New System.Drawing.Point(1311, 12)
+        Me.btnEdit.Location = New System.Drawing.Point(141, 12)
         Me.btnEdit.Name = "btnEdit"
         Me.btnEdit.Size = New System.Drawing.Size(120, 38)
         Me.btnEdit.TabIndex = 7
         Me.btnEdit.Text = "Edit Record"
         Me.btnEdit.UseVisualStyleBackColor = False
-        Me.btnEdit.Visible = False
-        '
-        'btnExport
-        '
-        Me.btnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnExport.BackColor = System.Drawing.Color.FromArgb(CType(CType(46, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(113, Byte), Integer))
-        Me.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnExport.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
-        Me.btnExport.ForeColor = System.Drawing.Color.White
-        Me.btnExport.Location = New System.Drawing.Point(15, 12)
-        Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(120, 38)
-        Me.btnExport.TabIndex = 5
-        Me.btnExport.Text = "Export CSV"
-        Me.btnExport.UseVisualStyleBackColor = False
-        Me.btnExport.Visible = False
         '
         'btnPrint
         '
-        Me.btnPrint.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnPrint.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnPrint.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
         Me.btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnPrint.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnPrint.ForeColor = System.Drawing.Color.White
-        Me.btnPrint.Location = New System.Drawing.Point(142, 12)
+        Me.btnPrint.Location = New System.Drawing.Point(1292, 16)
         Me.btnPrint.Name = "btnPrint"
         Me.btnPrint.Size = New System.Drawing.Size(140, 38)
         Me.btnPrint.TabIndex = 6
         Me.btnPrint.Text = "Generate Report"
         Me.btnPrint.UseVisualStyleBackColor = False
-        Me.btnPrint.Visible = False
+        '
+        'btnExport
+        '
+        Me.btnExport.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnExport.BackColor = System.Drawing.Color.FromArgb(CType(CType(46, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(113, Byte), Integer))
+        Me.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnExport.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
+        Me.btnExport.ForeColor = System.Drawing.Color.White
+        Me.btnExport.Location = New System.Drawing.Point(1165, 16)
+        Me.btnExport.Name = "btnExport"
+        Me.btnExport.Size = New System.Drawing.Size(120, 38)
+        Me.btnExport.TabIndex = 5
+        Me.btnExport.Text = "Export CSV"
+        Me.btnExport.UseVisualStyleBackColor = False
         '
         'dtpDateTo
         '
         Me.dtpDateTo.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpDateTo.Location = New System.Drawing.Point(545, 19)
+        Me.dtpDateTo.Location = New System.Drawing.Point(518, 22)
         Me.dtpDateTo.Name = "dtpDateTo"
         Me.dtpDateTo.Size = New System.Drawing.Size(114, 26)
         Me.dtpDateTo.TabIndex = 3
@@ -213,7 +218,7 @@ Partial Class FormAttendace
         'dtpDateFrom
         '
         Me.dtpDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpDateFrom.Location = New System.Drawing.Point(373, 19)
+        Me.dtpDateFrom.Location = New System.Drawing.Point(348, 22)
         Me.dtpDateFrom.Name = "dtpDateFrom"
         Me.dtpDateFrom.Size = New System.Drawing.Size(116, 26)
         Me.dtpDateFrom.TabIndex = 2
@@ -223,7 +228,7 @@ Partial Class FormAttendace
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label5.ForeColor = System.Drawing.Color.Black
-        Me.Label5.Location = New System.Drawing.Point(510, 22)
+        Me.Label5.Location = New System.Drawing.Point(483, 25)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(29, 20)
         Me.Label5.TabIndex = 1
@@ -234,7 +239,7 @@ Partial Class FormAttendace
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label4.ForeColor = System.Drawing.Color.Black
-        Me.Label4.Location = New System.Drawing.Point(318, 22)
+        Me.Label4.Location = New System.Drawing.Point(293, 25)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(49, 20)
         Me.Label4.TabIndex = 0
@@ -242,13 +247,14 @@ Partial Class FormAttendace
         '
         'Panel2
         '
-        Me.Panel2.Controls.Add(Me.btnViewDetails)
         Me.Panel2.Controls.Add(Me.Label7)
         Me.Panel2.Controls.Add(Me.cboStatus)
         Me.Panel2.Controls.Add(Me.Label6)
         Me.Panel2.Controls.Add(Me.Label1)
         Me.Panel2.Controls.Add(Me.txtSearch)
         Me.Panel2.Controls.Add(Me.cboDepartmentFilter)
+        Me.Panel2.Controls.Add(Me.btnPrint)
+        Me.Panel2.Controls.Add(Me.btnExport)
         Me.Panel2.Controls.Add(Me.dtpDateTo)
         Me.Panel2.Controls.Add(Me.dtpDateFrom)
         Me.Panel2.Controls.Add(Me.Label4)
@@ -256,7 +262,7 @@ Partial Class FormAttendace
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel2.Location = New System.Drawing.Point(0, 57)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(1444, 65)
+        Me.Panel2.Size = New System.Drawing.Size(1444, 70)
         Me.Panel2.TabIndex = 17
         '
         'Label7
@@ -265,7 +271,7 @@ Partial Class FormAttendace
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label7.ForeColor = System.Drawing.Color.Black
-        Me.Label7.Location = New System.Drawing.Point(999, 22)
+        Me.Label7.Location = New System.Drawing.Point(938, 25)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(54, 20)
         Me.Label7.TabIndex = 26
@@ -275,9 +281,9 @@ Partial Class FormAttendace
         '
         Me.cboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboStatus.FormattingEnabled = True
-        Me.cboStatus.Location = New System.Drawing.Point(1059, 19)
+        Me.cboStatus.Location = New System.Drawing.Point(998, 22)
         Me.cboStatus.Name = "cboStatus"
-        Me.cboStatus.Size = New System.Drawing.Size(171, 27)
+        Me.cboStatus.Size = New System.Drawing.Size(161, 27)
         Me.cboStatus.TabIndex = 25
         '
         'Label6
@@ -286,7 +292,7 @@ Partial Class FormAttendace
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label6.ForeColor = System.Drawing.Color.Black
-        Me.Label6.Location = New System.Drawing.Point(677, 22)
+        Me.Label6.Location = New System.Drawing.Point(652, 25)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(95, 20)
         Me.Label6.TabIndex = 24
@@ -296,9 +302,9 @@ Partial Class FormAttendace
         '
         Me.cboDepartmentFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboDepartmentFilter.FormattingEnabled = True
-        Me.cboDepartmentFilter.Location = New System.Drawing.Point(778, 19)
+        Me.cboDepartmentFilter.Location = New System.Drawing.Point(753, 22)
         Me.cboDepartmentFilter.Name = "cboDepartmentFilter"
-        Me.cboDepartmentFilter.Size = New System.Drawing.Size(200, 27)
+        Me.cboDepartmentFilter.Size = New System.Drawing.Size(170, 27)
         Me.cboDepartmentFilter.TabIndex = 23
         '
         'dgvAttendance
@@ -336,7 +342,7 @@ Partial Class FormAttendace
         Me.dgvAttendance.DefaultCellStyle = DataGridViewCellStyle11
         Me.dgvAttendance.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvAttendance.EnableHeadersVisualStyles = False
-        Me.dgvAttendance.Location = New System.Drawing.Point(0, 122)
+        Me.dgvAttendance.Location = New System.Drawing.Point(0, 127)
         Me.dgvAttendance.MultiSelect = False
         Me.dgvAttendance.Name = "dgvAttendance"
         Me.dgvAttendance.ReadOnly = True
@@ -344,7 +350,7 @@ Partial Class FormAttendace
         Me.dgvAttendance.RowHeadersWidth = 51
         Me.dgvAttendance.RowTemplate.Height = 40
         Me.dgvAttendance.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvAttendance.Size = New System.Drawing.Size(1444, 342)
+        Me.dgvAttendance.Size = New System.Drawing.Size(1444, 337)
         Me.dgvAttendance.TabIndex = 18
         Me.dgvAttendance.TabStop = False
         '
@@ -442,18 +448,7 @@ Partial Class FormAttendace
         Me.colRemarks.Name = "colRemarks"
         Me.colRemarks.ReadOnly = True
         '
-        'PictureBox1
-        '
-        Me.PictureBox1.BackColor = System.Drawing.Color.SteelBlue
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(3, 10)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(50, 37)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 20
-        Me.PictureBox1.TabStop = False
-        '
-        'FormAttendace
+        'FormDailyAttendance
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -467,18 +462,18 @@ Partial Class FormAttendace
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
-        Me.Name = "FormAttendace"
+        Me.Name = "FormDailyAttendance"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormAttendance"
         Me.TopMost = True
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.panelHeader.ResumeLayout(False)
         Me.panelHeader.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvAttendance, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub

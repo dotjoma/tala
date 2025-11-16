@@ -52,12 +52,20 @@ Public Class FormEditAttendance
                 MessageBox.Show("Please set at least Time In or Time Out.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
+            
+            ' Validate that edit reason is provided
+            If String.IsNullOrWhiteSpace(txtRemarks.Text) Then
+                MessageBox.Show("Please provide a reason for editing this attendance record.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                txtRemarks.Focus()
+                Return
+            End If
 
             Dim message As String = $"Are you sure you want to update this attendance record?{vbCrLf}{vbCrLf}" &
                                    $"Teacher: {TeacherName}{vbCrLf}" &
                                    $"Date: {AttendanceDate:MMMM dd, yyyy}{vbCrLf}" &
                                    $"Time In: {If(dtpTimeIn.Checked, dtpTimeIn.Value.ToString("hh:mm tt"), "Not Set")}{vbCrLf}" &
-                                   $"Time Out: {If(dtpTimeOut.Checked, dtpTimeOut.Value.ToString("hh:mm tt"), "Not Set")}"
+                                   $"Time Out: {If(dtpTimeOut.Checked, dtpTimeOut.Value.ToString("hh:mm tt"), "Not Set")}{vbCrLf}" &
+                                   $"Reason: {txtRemarks.Text.Trim()}"
 
             If MessageBox.Show(message, "Confirm Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
                 Return
@@ -135,40 +143,59 @@ Public Class FormEditAttendance
                 _logger.LogDebug("Setting departureTime to NULL")
             End If
 
-            ' Get teacher's shift end time for Under time/Over time calculation
+            ' Get teacher's shift times for time-in and time-out calculation
+            Dim shiftStartTime As Object = Nothing
             Dim shiftEndTime As Object = Nothing
-            Dim getTeacherCmd As New OdbcCommand("SELECT ti.teacherID, ti.shift_end_time FROM attendance_record ar JOIN teacherinformation ti ON ar.teacherID = ti.teacherID WHERE ar.attendanceID = ?", con)
+            Dim getTeacherCmd As New OdbcCommand("SELECT ti.teacherID, ti.shift_start_time, ti.shift_end_time FROM attendance_record ar JOIN teacherinformation ti ON ar.teacherID = ti.teacherID WHERE ar.attendanceID = ?", con)
             getTeacherCmd.Parameters.AddWithValue("?", AttendanceId)
             Dim teacherReader = getTeacherCmd.ExecuteReader()
             If teacherReader.Read() Then
                 teacherID = Convert.ToInt32(teacherReader("teacherID"))
+                If Not IsDBNull(teacherReader("shift_start_time")) Then
+                    shiftStartTime = teacherReader("shift_start_time")
+                End If
                 If Not IsDBNull(teacherReader("shift_end_time")) Then
                     shiftEndTime = teacherReader("shift_end_time")
                 End If
             End If
             teacherReader.Close()
             
-            ' Build remarks: Calculate Under/Over time, then add the latest action (Edit) as the final part
+            ' Build remarks: Calculate time-in and time-out remarks, then add the latest action (Edit) as the final part
             Dim editReason As String = txtRemarks.Text.Trim()
             Dim finalRemarks As String = ""
             
-            ' Calculate Under/Over time if time-out is provided (existing action parts are ignored in calculation)
-            If departureTime.HasValue AndAlso shiftEndTime IsNot Nothing Then
-                Dim timeRemarks As String = CalculateTimeRemarks(departureTime.Value, shiftEndTime, CurrentRemarks)
-                finalRemarks = timeRemarks
-            Else
-                ' No time-out or shift time - keep only non-action custom remarks
-                finalRemarks = CalculateTimeRemarks(DateTime.MinValue, Nothing, CurrentRemarks)
+            ' Calculate time-in remarks (Late or On time) if time-in is provided
+            Dim arrivalTime As DateTime? = Nothing
+            If dtpTimeIn.Checked Then
+                arrivalTime = New DateTime(AttendanceDate.Year, AttendanceDate.Month, AttendanceDate.Day,
+                                          dtpTimeIn.Value.Hour, dtpTimeIn.Value.Minute, dtpTimeIn.Value.Second)
+                If shiftStartTime IsNot Nothing Then
+                    Dim timeInRemarks As String = CalculateTimeInRemarks(arrivalTime.Value, shiftStartTime)
+                    If Not String.IsNullOrEmpty(timeInRemarks) Then
+                        finalRemarks = timeInRemarks
+                    End If
+                End If
             End If
             
-            ' Append the latest action (Edit) last
-            If Not String.IsNullOrEmpty(editReason) Then
-                Dim editRemark As String = $"Edit: {editReason}"
-                If Not String.IsNullOrEmpty(finalRemarks) Then
-                    finalRemarks = $"{finalRemarks}; {editRemark}"
-                Else
-                    finalRemarks = editRemark
+            ' Calculate time-out remarks (Under/Over time) if time-out is provided
+            If departureTime.HasValue AndAlso shiftEndTime IsNot Nothing Then
+                Dim timeOutRemarks As String = CalculateTimeOutRemarks(departureTime.Value, shiftEndTime)
+                If Not String.IsNullOrEmpty(timeOutRemarks) Then
+                    If Not String.IsNullOrEmpty(finalRemarks) Then
+                        finalRemarks &= "; " & timeOutRemarks
+                    Else
+                        finalRemarks = timeOutRemarks
+                    End If
                 End If
+            End If
+            
+            ' Append the latest action (Edit) last - edit reason is now required
+            Dim editRemark As String = $"Edit: {editReason}"
+            
+            If Not String.IsNullOrEmpty(finalRemarks) Then
+                finalRemarks = $"{finalRemarks}; {editRemark}"
+            Else
+                finalRemarks = editRemark
             End If
             
             ' Always update remarks
@@ -230,6 +257,102 @@ Public Class FormEditAttendance
                 Return $"{hours} h {minutes} min{If(minutes > 1, "s", "")}"
             End If
         End If
+    End Function
+
+    Private Function CalculateTimeInRemarks(arrivalTime As DateTime, shiftStartTime As Object) As String
+        Try
+            ' If no shift start time is set, no remark
+            If shiftStartTime Is Nothing OrElse IsDBNull(shiftStartTime) Then
+                _logger.LogDebug("No shift start time set, no time-in remark")
+                Return ""
+            End If
+            
+            ' Parse shift start time
+            Dim shiftStart As TimeSpan
+            If TypeOf shiftStartTime Is TimeSpan Then
+                shiftStart = CType(shiftStartTime, TimeSpan)
+            ElseIf TypeOf shiftStartTime Is DateTime Then
+                shiftStart = CType(shiftStartTime, DateTime).TimeOfDay
+            Else
+                TimeSpan.TryParse(shiftStartTime.ToString(), shiftStart)
+            End If
+            
+            ' Get the time portion of arrival
+            Dim arrivalTimeOnly As TimeSpan = arrivalTime.TimeOfDay
+            
+            ' Calculate the difference in minutes
+            Dim timeDifference As Integer = CInt((arrivalTimeOnly - shiftStart).TotalMinutes)
+            
+            Dim timeRemarks As String = ""
+            
+            If timeDifference > 0 Then
+                ' Arrived late
+                Dim minutesLate As Integer = timeDifference
+                Dim formattedTime As String = FormatTimeSpan(minutesLate)
+                timeRemarks = $"Late ({formattedTime})"
+                _logger.LogInfo($"Late arrival detected: {minutesLate} minutes late (Arrival: {arrivalTimeOnly}, Shift Start: {shiftStart})")
+            Else
+                ' On time or early
+                _logger.LogInfo($"On time arrival (Arrival: {arrivalTimeOnly}, Shift Start: {shiftStart})")
+            End If
+            
+            Return timeRemarks
+            
+        Catch ex As Exception
+            _logger.LogError($"Error calculating time-in remarks: {ex.Message}")
+            Return ""
+        End Try
+    End Function
+    
+    Private Function CalculateTimeOutRemarks(departureTime As DateTime, shiftEndTime As Object) As String
+        Try
+            ' If no shift end time is set, no remark
+            If shiftEndTime Is Nothing OrElse IsDBNull(shiftEndTime) Then
+                _logger.LogDebug("No shift end time set, no time-out remark")
+                Return ""
+            End If
+            
+            ' Parse shift end time
+            Dim shiftEnd As TimeSpan
+            If TypeOf shiftEndTime Is TimeSpan Then
+                shiftEnd = CType(shiftEndTime, TimeSpan)
+            ElseIf TypeOf shiftEndTime Is DateTime Then
+                shiftEnd = CType(shiftEndTime, DateTime).TimeOfDay
+            Else
+                TimeSpan.TryParse(shiftEndTime.ToString(), shiftEnd)
+            End If
+            
+            ' Get the time portion of departure
+            Dim departureTimeOnly As TimeSpan = departureTime.TimeOfDay
+            
+            ' Calculate the difference in minutes
+            Dim timeDifference As Integer = CInt((departureTimeOnly - shiftEnd).TotalMinutes)
+            
+            Dim timeRemarks As String = ""
+            
+            If timeDifference < 0 Then
+                ' Left early - Under time
+                Dim minutesEarly As Integer = Math.Abs(timeDifference)
+                Dim formattedTime As String = FormatTimeSpan(minutesEarly)
+                timeRemarks = $"Under time ({formattedTime})"
+                _logger.LogInfo($"Under time detected: {minutesEarly} minutes early (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            ElseIf timeDifference > 0 Then
+                ' Stayed late - Over time
+                Dim minutesLate As Integer = timeDifference
+                Dim formattedTime As String = FormatTimeSpan(minutesLate)
+                timeRemarks = $"Over time ({formattedTime})"
+                _logger.LogInfo($"Over time detected: {minutesLate} minutes late (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            Else
+                ' Exactly on time
+                _logger.LogInfo($"On time departure (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            End If
+            
+            Return timeRemarks
+            
+        Catch ex As Exception
+            _logger.LogError($"Error calculating time-out remarks: {ex.Message}")
+            Return ""
+        End Try
     End Function
 
     Private Function CalculateTimeRemarks(departureTime As DateTime, shiftEndTime As Object, existingRemarks As String) As String

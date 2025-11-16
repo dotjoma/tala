@@ -45,7 +45,7 @@ Partial Class ChangePassword
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(41, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(185, Byte), Integer))
+        Me.Panel1.BackColor = System.Drawing.Color.SteelBlue
         Me.Panel1.Controls.Add(Me.lblTitle)
         Me.Panel1.Controls.Add(Me.PictureBox1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
@@ -61,13 +61,13 @@ Partial Class ChangePassword
         Me.lblTitle.ForeColor = System.Drawing.Color.White
         Me.lblTitle.Location = New System.Drawing.Point(70, 25)
         Me.lblTitle.Name = "lblTitle"
-        Me.lblTitle.Size = New System.Drawing.Size(213, 32)
+        Me.lblTitle.Size = New System.Drawing.Size(214, 32)
         Me.lblTitle.TabIndex = 1
         Me.lblTitle.Text = "Change Password"
         '
         'PictureBox1
         '
-        Me.PictureBox1.Image = My.Resources.Resources.reset_password_40x40
+        Me.PictureBox1.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.reset_password_40x40
         Me.PictureBox1.Location = New System.Drawing.Point(20, 20)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(40, 40)
@@ -109,7 +109,7 @@ Partial Class ChangePassword
         Me.chkShowPasswords.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.chkShowPasswords.Location = New System.Drawing.Point(33, 220)
         Me.chkShowPasswords.Name = "chkShowPasswords"
-        Me.chkShowPasswords.Size = New System.Drawing.Size(108, 19)
+        Me.chkShowPasswords.Size = New System.Drawing.Size(113, 19)
         Me.chkShowPasswords.TabIndex = 6
         Me.chkShowPasswords.Text = "Show passwords"
         Me.chkShowPasswords.UseVisualStyleBackColor = True
@@ -130,7 +130,7 @@ Partial Class ChangePassword
         Me.lblConfirmPassword.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
         Me.lblConfirmPassword.Location = New System.Drawing.Point(33, 138)
         Me.lblConfirmPassword.Name = "lblConfirmPassword"
-        Me.lblConfirmPassword.Size = New System.Drawing.Size(147, 19)
+        Me.lblConfirmPassword.Size = New System.Drawing.Size(165, 19)
         Me.lblConfirmPassword.TabIndex = 4
         Me.lblConfirmPassword.Text = "Confirm New Password"
         '
@@ -150,7 +150,7 @@ Partial Class ChangePassword
         Me.lblNewPassword.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
         Me.lblNewPassword.Location = New System.Drawing.Point(33, 83)
         Me.lblNewPassword.Name = "lblNewPassword"
-        Me.lblNewPassword.Size = New System.Drawing.Size(103, 19)
+        Me.lblNewPassword.Size = New System.Drawing.Size(107, 19)
         Me.lblNewPassword.TabIndex = 2
         Me.lblNewPassword.Text = "New Password"
         '
@@ -170,7 +170,7 @@ Partial Class ChangePassword
         Me.lblOldPassword.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
         Me.lblOldPassword.Location = New System.Drawing.Point(33, 28)
         Me.lblOldPassword.Name = "lblOldPassword"
-        Me.lblOldPassword.Size = New System.Drawing.Size(118, 19)
+        Me.lblOldPassword.Size = New System.Drawing.Size(127, 19)
         Me.lblOldPassword.TabIndex = 0
         Me.lblOldPassword.Text = "Current Password"
         '

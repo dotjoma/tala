@@ -41,17 +41,49 @@ Public Class FormFacultyList
             cboStatusFilter.Items.Clear()
             cboStatusFilter.Items.AddRange({"All Status", "Active", "Inactive"})
             cboStatusFilter.SelectedIndex = 0
+            
+            LoadDepartments()
         Catch ex As Exception
             _logger.LogError($"Error in InitializeForm: {ex.Message}")
             Throw
         End Try
     End Sub
 
+    Private Sub LoadDepartments()
+        Try
+            cboDepartmentFilter.Items.Clear()
+            cboDepartmentFilter.Items.Add("All Departments")
+            
+            Dim query As String = "SELECT department_id, department_name FROM departments ORDER BY department_name"
+            Dim dbContext As New DatabaseContext()
+            Dim dt = dbContext.ExecuteQuery(query)
+            
+            For Each row As DataRow In dt.Rows
+                cboDepartmentFilter.Items.Add(New With {
+                    .Value = row("department_id"),
+                    .Text = row("department_name").ToString()
+                })
+            Next
+            
+            cboDepartmentFilter.DisplayMember = "Text"
+            cboDepartmentFilter.ValueMember = "Value"
+            cboDepartmentFilter.SelectedIndex = 0
+            
+            _logger.LogInfo($"Loaded {dt.Rows.Count} departments into filter")
+        Catch ex As Exception
+            _logger.LogError($"Error loading departments: {ex.Message}")
+            cboDepartmentFilter.Items.Clear()
+            cboDepartmentFilter.Items.Add("All Departments")
+            cboDepartmentFilter.SelectedIndex = 0
+        End Try
+    End Sub
+
     Private Sub LoadFacultyList()
         Try
             Dim statusFilter As String = If(cboStatusFilter.SelectedIndex >= 0, cboStatusFilter.SelectedItem.ToString(), "None")
+            Dim departmentFilter As String = If(cboDepartmentFilter.SelectedIndex >= 0 AndAlso cboDepartmentFilter.SelectedIndex > 0, cboDepartmentFilter.Text, "None")
             Dim searchText As String = If(String.IsNullOrWhiteSpace(txtSearch.Text), "None", txtSearch.Text.Trim())
-            _logger.LogInfo($"Filters - Status: {statusFilter}, Search: {searchText}")
+            _logger.LogInfo($"Filters - Status: {statusFilter}, Department: {departmentFilter}, Search: {searchText}")
 
             Dim query As String = "
                 SELECT 
@@ -76,6 +108,16 @@ Public Class FormFacultyList
             ElseIf cboStatusFilter.SelectedIndex = 2 Then
                 query &= " AND t.isActive = 0"
                 _logger.LogDebug("Applied filter: Inactive only")
+            End If
+
+            If cboDepartmentFilter.SelectedIndex > 0 Then
+                Dim selectedDept = cboDepartmentFilter.SelectedItem
+                If selectedDept IsNot Nothing AndAlso TypeOf selectedDept Is Object Then
+                    Dim deptId = CType(selectedDept, Object).Value
+                    query &= " AND t.department_id = ?"
+                    parameters.Add(deptId)
+                    _logger.LogDebug($"Applied department filter: {cboDepartmentFilter.Text} (ID: {deptId})")
+                End If
             End If
 
             If Not String.IsNullOrWhiteSpace(txtSearch.Text) Then
@@ -157,6 +199,11 @@ Public Class FormFacultyList
 
     Private Sub cboStatusFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboStatusFilter.SelectedIndexChanged
         _logger.LogInfo($"Status filter changed to: {cboStatusFilter.SelectedItem}")
+        LoadFacultyList()
+    End Sub
+
+    Private Sub cboDepartmentFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDepartmentFilter.SelectedIndexChanged
+        _logger.LogInfo($"Department filter changed to: {cboDepartmentFilter.Text}")
         LoadFacultyList()
     End Sub
 

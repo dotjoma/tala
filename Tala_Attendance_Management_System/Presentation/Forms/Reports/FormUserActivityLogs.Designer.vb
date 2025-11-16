@@ -36,12 +36,6 @@ Partial Class FormUserActivityLogs
         Me.dtpFrom = New System.Windows.Forms.DateTimePicker()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dgvLogs = New System.Windows.Forms.DataGridView()
-        Me.log_id = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.username = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.action_type = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.module_name = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.description = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.log_timestamp = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.btnLastPage = New System.Windows.Forms.Button()
         Me.btnNextPage = New System.Windows.Forms.Button()
@@ -49,6 +43,12 @@ Partial Class FormUserActivityLogs
         Me.btnPrevPage = New System.Windows.Forms.Button()
         Me.btnFirstPage = New System.Windows.Forms.Button()
         Me.lblRecordCount = New System.Windows.Forms.Label()
+        Me.log_id = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.username = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.action_type = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.module_name = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.description = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.log_timestamp = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvLogs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,7 +57,7 @@ Partial Class FormUserActivityLogs
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.Panel1.BackColor = System.Drawing.Color.SteelBlue
         Me.Panel1.Controls.Add(Me.lblTitle)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
@@ -94,7 +94,7 @@ Partial Class FormUserActivityLogs
         Me.Panel2.Location = New System.Drawing.Point(0, 60)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Padding = New System.Windows.Forms.Padding(10)
-        Me.Panel2.Size = New System.Drawing.Size(1378, 120)
+        Me.Panel2.Size = New System.Drawing.Size(1378, 67)
         Me.Panel2.TabIndex = 1
         '
         'btnGenerateReport
@@ -104,7 +104,7 @@ Partial Class FormUserActivityLogs
         Me.btnGenerateReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnGenerateReport.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
         Me.btnGenerateReport.ForeColor = System.Drawing.Color.White
-        Me.btnGenerateReport.Location = New System.Drawing.Point(1220, 72)
+        Me.btnGenerateReport.Location = New System.Drawing.Point(1221, 16)
         Me.btnGenerateReport.Name = "btnGenerateReport"
         Me.btnGenerateReport.Size = New System.Drawing.Size(145, 35)
         Me.btnGenerateReport.TabIndex = 12
@@ -118,7 +118,7 @@ Partial Class FormUserActivityLogs
         Me.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnExport.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
         Me.btnExport.ForeColor = System.Drawing.Color.White
-        Me.btnExport.Location = New System.Drawing.Point(1094, 72)
+        Me.btnExport.Location = New System.Drawing.Point(1095, 16)
         Me.btnExport.Name = "btnExport"
         Me.btnExport.Size = New System.Drawing.Size(120, 35)
         Me.btnExport.TabIndex = 11
@@ -132,7 +132,7 @@ Partial Class FormUserActivityLogs
         Me.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnRefresh.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
         Me.btnRefresh.ForeColor = System.Drawing.Color.White
-        Me.btnRefresh.Location = New System.Drawing.Point(1245, 10)
+        Me.btnRefresh.Location = New System.Drawing.Point(969, 16)
         Me.btnRefresh.Name = "btnRefresh"
         Me.btnRefresh.Size = New System.Drawing.Size(120, 35)
         Me.btnRefresh.TabIndex = 10
@@ -144,36 +144,36 @@ Partial Class FormUserActivityLogs
         Me.cboActionFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboActionFilter.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.cboActionFilter.FormattingEnabled = True
-        Me.cboActionFilter.Location = New System.Drawing.Point(478, 21)
+        Me.cboActionFilter.Location = New System.Drawing.Point(731, 21)
         Me.cboActionFilter.Name = "cboActionFilter"
-        Me.cboActionFilter.Size = New System.Drawing.Size(200, 25)
+        Me.cboActionFilter.Size = New System.Drawing.Size(142, 25)
         Me.cboActionFilter.TabIndex = 7
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label3.Location = New System.Drawing.Point(474, 1)
+        Me.Label3.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.Label3.Location = New System.Drawing.Point(668, 23)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(51, 19)
+        Me.Label3.Size = New System.Drawing.Size(57, 20)
         Me.Label3.TabIndex = 6
         Me.Label3.Text = "Action:"
         '
         'txtSearch
         '
         Me.txtSearch.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.txtSearch.Location = New System.Drawing.Point(707, 21)
+        Me.txtSearch.Location = New System.Drawing.Point(78, 21)
         Me.txtSearch.Name = "txtSearch"
-        Me.txtSearch.Size = New System.Drawing.Size(200, 25)
+        Me.txtSearch.Size = New System.Drawing.Size(190, 25)
         Me.txtSearch.TabIndex = 5
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label5.Location = New System.Drawing.Point(703, 1)
+        Me.Label5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.Label5.Location = New System.Drawing.Point(13, 23)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(52, 19)
+        Me.Label5.Size = New System.Drawing.Size(59, 20)
         Me.Label5.TabIndex = 4
         Me.Label5.Text = "Search:"
         '
@@ -181,18 +181,18 @@ Partial Class FormUserActivityLogs
         '
         Me.dtpTo.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpTo.Location = New System.Drawing.Point(249, 21)
+        Me.dtpTo.Location = New System.Drawing.Point(530, 21)
         Me.dtpTo.Name = "dtpTo"
-        Me.dtpTo.Size = New System.Drawing.Size(200, 25)
+        Me.dtpTo.Size = New System.Drawing.Size(111, 25)
         Me.dtpTo.TabIndex = 3
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label2.Location = New System.Drawing.Point(245, 1)
+        Me.Label2.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.Label2.Location = New System.Drawing.Point(495, 23)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(26, 19)
+        Me.Label2.Size = New System.Drawing.Size(29, 20)
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "To:"
         '
@@ -200,18 +200,18 @@ Partial Class FormUserActivityLogs
         '
         Me.dtpFrom.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFrom.Location = New System.Drawing.Point(20, 21)
+        Me.dtpFrom.Location = New System.Drawing.Point(348, 21)
         Me.dtpFrom.Name = "dtpFrom"
-        Me.dtpFrom.Size = New System.Drawing.Size(200, 25)
+        Me.dtpFrom.Size = New System.Drawing.Size(115, 25)
         Me.dtpFrom.TabIndex = 1
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label1.Location = New System.Drawing.Point(16, 1)
+        Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.Label1.Location = New System.Drawing.Point(293, 23)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(44, 19)
+        Me.Label1.Size = New System.Drawing.Size(49, 20)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "From:"
         '
@@ -249,68 +249,14 @@ Partial Class FormUserActivityLogs
         Me.dgvLogs.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvLogs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvLogs.EnableHeadersVisualStyles = False
-        Me.dgvLogs.Location = New System.Drawing.Point(0, 180)
+        Me.dgvLogs.Location = New System.Drawing.Point(0, 127)
         Me.dgvLogs.MultiSelect = False
         Me.dgvLogs.Name = "dgvLogs"
         Me.dgvLogs.ReadOnly = True
         Me.dgvLogs.RowHeadersVisible = False
         Me.dgvLogs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvLogs.Size = New System.Drawing.Size(1378, 420)
+        Me.dgvLogs.Size = New System.Drawing.Size(1378, 473)
         Me.dgvLogs.TabIndex = 2
-        '
-        'log_id
-        '
-        Me.log_id.DataPropertyName = "log_id"
-        Me.log_id.HeaderText = "ID"
-        Me.log_id.Name = "log_id"
-        Me.log_id.ReadOnly = True
-        Me.log_id.Width = 60
-        '
-        'username
-        '
-        Me.username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.username.DataPropertyName = "username"
-        Me.username.FillWeight = 15.0!
-        Me.username.HeaderText = "Username"
-        Me.username.Name = "username"
-        Me.username.ReadOnly = True
-        '
-        'action_type
-        '
-        Me.action_type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.action_type.DataPropertyName = "action_type"
-        Me.action_type.FillWeight = 12.0!
-        Me.action_type.HeaderText = "Action"
-        Me.action_type.Name = "action_type"
-        Me.action_type.ReadOnly = True
-        '
-        'module_name
-        '
-        Me.module_name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.module_name.DataPropertyName = "module"
-        Me.module_name.FillWeight = 12.0!
-        Me.module_name.HeaderText = "Module"
-        Me.module_name.Name = "module_name"
-        Me.module_name.ReadOnly = True
-        Me.module_name.Visible = False
-        '
-        'description
-        '
-        Me.description.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.description.DataPropertyName = "description"
-        Me.description.FillWeight = 45.0!
-        Me.description.HeaderText = "Description"
-        Me.description.Name = "description"
-        Me.description.ReadOnly = True
-        '
-        'log_timestamp
-        '
-        Me.log_timestamp.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.log_timestamp.DataPropertyName = "log_timestamp"
-        Me.log_timestamp.FillWeight = 16.0!
-        Me.log_timestamp.HeaderText = "Timestamp"
-        Me.log_timestamp.Name = "log_timestamp"
-        Me.log_timestamp.ReadOnly = True
         '
         'Panel3
         '
@@ -404,6 +350,61 @@ Partial Class FormUserActivityLogs
         Me.lblRecordCount.TabIndex = 0
         Me.lblRecordCount.Text = "Total Records: 0"
         '
+        'log_id
+        '
+        Me.log_id.DataPropertyName = "log_id"
+        Me.log_id.HeaderText = "ID"
+        Me.log_id.Name = "log_id"
+        Me.log_id.ReadOnly = True
+        Me.log_id.Visible = False
+        Me.log_id.Width = 60
+        '
+        'username
+        '
+        Me.username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.username.DataPropertyName = "username"
+        Me.username.FillWeight = 15.0!
+        Me.username.HeaderText = "Username"
+        Me.username.Name = "username"
+        Me.username.ReadOnly = True
+        '
+        'action_type
+        '
+        Me.action_type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.action_type.DataPropertyName = "action_type"
+        Me.action_type.FillWeight = 12.0!
+        Me.action_type.HeaderText = "Action"
+        Me.action_type.Name = "action_type"
+        Me.action_type.ReadOnly = True
+        '
+        'module_name
+        '
+        Me.module_name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.module_name.DataPropertyName = "module"
+        Me.module_name.FillWeight = 12.0!
+        Me.module_name.HeaderText = "Module"
+        Me.module_name.Name = "module_name"
+        Me.module_name.ReadOnly = True
+        Me.module_name.Visible = False
+        '
+        'description
+        '
+        Me.description.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.description.DataPropertyName = "description"
+        Me.description.FillWeight = 45.0!
+        Me.description.HeaderText = "Description"
+        Me.description.Name = "description"
+        Me.description.ReadOnly = True
+        '
+        'log_timestamp
+        '
+        Me.log_timestamp.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.log_timestamp.DataPropertyName = "log_timestamp"
+        Me.log_timestamp.FillWeight = 16.0!
+        Me.log_timestamp.HeaderText = "Timestamp"
+        Me.log_timestamp.Name = "log_timestamp"
+        Me.log_timestamp.ReadOnly = True
+        '
         'FormUserActivityLogs
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -445,16 +446,16 @@ Partial Class FormUserActivityLogs
     Friend WithEvents dgvLogs As DataGridView
     Friend WithEvents Panel3 As Panel
     Friend WithEvents lblRecordCount As Label
-    Friend WithEvents log_id As DataGridViewTextBoxColumn
-    Friend WithEvents username As DataGridViewTextBoxColumn
-    Friend WithEvents action_type As DataGridViewTextBoxColumn
-    Friend WithEvents module_name As DataGridViewTextBoxColumn
-    Friend WithEvents description As DataGridViewTextBoxColumn
-    Friend WithEvents log_timestamp As DataGridViewTextBoxColumn
     Friend WithEvents btnFirstPage As Button
     Friend WithEvents btnPrevPage As Button
     Friend WithEvents lblPageInfo As Label
     Friend WithEvents btnNextPage As Button
     Friend WithEvents btnLastPage As Button
     Friend WithEvents btnGenerateReport As Button
+    Friend WithEvents log_id As DataGridViewTextBoxColumn
+    Friend WithEvents username As DataGridViewTextBoxColumn
+    Friend WithEvents action_type As DataGridViewTextBoxColumn
+    Friend WithEvents module_name As DataGridViewTextBoxColumn
+    Friend WithEvents description As DataGridViewTextBoxColumn
+    Friend WithEvents log_timestamp As DataGridViewTextBoxColumn
 End Class

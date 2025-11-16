@@ -53,6 +53,7 @@ Partial Class MainForm
         Me.AuditLogsToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.SystemBackupToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DailyAttendanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel5.SuspendLayout()
         Me.toolStripNav.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -199,7 +200,7 @@ Partial Class MainForm
         'tsReports
         '
         Me.tsReports.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
-        Me.tsReports.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsLogs, Me.tsFaculty})
+        Me.tsReports.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsLogs, Me.tsFaculty, Me.DailyAttendanceToolStripMenuItem})
         Me.tsReports.Font = New System.Drawing.Font("Tahoma", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tsReports.ForeColor = System.Drawing.Color.SteelBlue
         Me.tsReports.Image = CType(resources.GetObject("tsReports.Image"), System.Drawing.Image)
@@ -213,14 +214,14 @@ Partial Class MainForm
         '
         Me.tsLogs.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_elective_30
         Me.tsLogs.Name = "tsLogs"
-        Me.tsLogs.Size = New System.Drawing.Size(167, 28)
+        Me.tsLogs.Size = New System.Drawing.Size(242, 28)
         Me.tsLogs.Text = "LOGS"
         '
         'tsFaculty
         '
         Me.tsFaculty.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_cog_48
         Me.tsFaculty.Name = "tsFaculty"
-        Me.tsFaculty.Size = New System.Drawing.Size(167, 28)
+        Me.tsFaculty.Size = New System.Drawing.Size(242, 28)
         Me.tsFaculty.Text = "FACULTY"
         '
         'TableLayoutPanel1
@@ -322,6 +323,13 @@ Partial Class MainForm
         Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(47, 20)
         Me.HelpToolStripMenuItem.Text = "Help"
         '
+        'DailyAttendanceToolStripMenuItem
+        '
+        Me.DailyAttendanceToolStripMenuItem.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_schedule_30
+        Me.DailyAttendanceToolStripMenuItem.Name = "DailyAttendanceToolStripMenuItem"
+        Me.DailyAttendanceToolStripMenuItem.Size = New System.Drawing.Size(242, 28)
+        Me.DailyAttendanceToolStripMenuItem.Text = "Daily Attendance"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
@@ -388,4 +396,5 @@ Partial Class MainForm
     Friend WithEvents ManageDepartmentToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents AuditLogsToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents SystemBackupToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DailyAttendanceToolStripMenuItem As ToolStripMenuItem
 End Class

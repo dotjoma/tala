@@ -578,4 +578,8 @@ Public Class MainForm
             MessageBox.Show("Unable to open Backup/Restore form: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub DailyAttendanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DailyAttendanceToolStripMenuItem.Click
+        FormDailyAttendance.ShowDialog()
+    End Sub
 End Class
