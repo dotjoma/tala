@@ -68,15 +68,10 @@ Public Class FormAttendace
 
     Private Sub LoadStatusFilter()
         Try
-            ' Time In Status Filter
+            ' Combined Status Filter
             cboTimeInStatus.Items.Clear()
-            cboTimeInStatus.Items.AddRange({"All Status", "On time", "Late"})
+            cboTimeInStatus.Items.AddRange({"All Status", "Late", "On time", "Late - On time", "Late - Over time", "On time - On time", "On time - Over time"})
             cboTimeInStatus.SelectedIndex = 0
-            
-            ' Time Out Status Filter
-            cboTimeOutStatus.Items.Clear()
-            cboTimeOutStatus.Items.AddRange({"All Status", "Early Out", "Over time"})
-            cboTimeOutStatus.SelectedIndex = 0
             
             _logger.LogInfo("FormAttendance - Status filters initialized")
         Catch ex As Exception
@@ -94,9 +89,8 @@ Public Class FormAttendace
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus, 
                      DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
-                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
                      COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
                      JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
@@ -111,29 +105,11 @@ Public Class FormAttendace
                 End If
             End If
 
-            ' Add Time In status filter
+            ' Add Combined status filter
             If cboTimeInStatus IsNot Nothing AndAlso cboTimeInStatus.SelectedItem IsNot Nothing Then
                 Dim selectedStatus As String = cboTimeInStatus.SelectedItem.ToString()
                 If selectedStatus <> "All Status" Then
-                    Select Case selectedStatus
-                        Case "On time"
-                            query &= " AND (ar.arrivalTime IS NOT NULL AND " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " = 'On Time')"
-                        Case "Late"
-                            query &= " AND (ar.arrivalTime IS NOT NULL AND " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " = 'Late')"
-                    End Select
-                End If
-            End If
-
-            ' Add Time Out status filter
-            If cboTimeOutStatus IsNot Nothing AndAlso cboTimeOutStatus.SelectedItem IsNot Nothing Then
-                Dim selectedStatus As String = cboTimeOutStatus.SelectedItem.ToString()
-                If selectedStatus <> "All Status" Then
-                    Select Case selectedStatus
-                        Case "Early Out"
-                            query &= " AND (ar.departureTime IS NOT NULL AND ti.shift_end_time IS NOT NULL AND TIME(ar.departureTime) < ti.shift_end_time)"
-                        Case "Over time"
-                            query &= " AND (ar.departureTime IS NOT NULL AND ti.shift_end_time IS NOT NULL AND TIME(ar.departureTime) > ti.shift_end_time)"
-                    End Select
+                    query &= " AND (" & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " = '" & selectedStatus & "')"
                 End If
             End If
 
@@ -144,6 +120,7 @@ Public Class FormAttendace
 
             query &= " ORDER BY ar.logDate DESC, ar.arrivalTime DESC"
 
+            _logger.LogDebug($"SQL Query: {query}")
             loadDGV(query, dgvAttendance)
 
             _logger.LogInfo($"Loaded {dgvAttendance.Rows.Count} attendance records from {dateFrom} to {dateTo}")
@@ -152,7 +129,7 @@ Public Class FormAttendace
                 Dim dt As DataTable = CType(dgvAttendance.DataSource, DataTable)
                 For i As Integer = 0 To dt.Rows.Count - 1
                     Dim row = dt.Rows(i)
-                    _logger.LogDebug($"Record #{i + 1}: {{ID={If(IsDBNull(row("attendanceID")), "NULL", row("attendanceID").ToString())}, NAME={If(IsDBNull(row("NAME")), "NULL", row("NAME").ToString())}, logDate={If(IsDBNull(row("logDate")), "NULL", row("logDate").ToString())}, arrivalTime={If(IsDBNull(row("arrivalTime")), "NULL", row("arrivalTime").ToString())}, arrStatus={If(IsDBNull(row("arrStatus")), "NULL", row("arrStatus").ToString())}, departureTime={If(IsDBNull(row("departureTime")), "NULL", row("departureTime").ToString())}, depStatus={If(IsDBNull(row("depStatus")), "NULL", row("depStatus").ToString())}}}")
+                    _logger.LogDebug($"Record #{i + 1}: {{ID={If(IsDBNull(row("attendanceID")), "NULL", row("attendanceID").ToString())}, NAME={If(IsDBNull(row("NAME")), "NULL", row("NAME").ToString())}, logDate={If(IsDBNull(row("logDate")), "NULL", row("logDate").ToString())}, arrivalTime={If(IsDBNull(row("arrivalTime")), "NULL", row("arrivalTime").ToString())}, departureTime={If(IsDBNull(row("departureTime")), "NULL", row("departureTime").ToString())}, STATUS={If(IsDBNull(row("STATUS")), "NULL", row("STATUS").ToString())}}}")
                 Next
             End If
 
@@ -180,7 +157,6 @@ Public Class FormAttendace
         ' Add filter event handlers
         AddHandler cboDepartmentFilter.SelectedIndexChanged, AddressOf FilterChanged
         AddHandler cboTimeInStatus.SelectedIndexChanged, AddressOf FilterChanged
-        AddHandler cboTimeOutStatus.SelectedIndexChanged, AddressOf FilterChanged
 
         DefaultSettings()
         ApplyRoleBasedAccess()
@@ -192,25 +168,20 @@ Public Class FormAttendace
         LoadAttendanceData()
     End Sub
 
-    Private Function GetTimeInStatusSQL(timeColumn As String, shiftTimeColumn As String, statusColumn As String) As String
-        ' Time-in status: On Time or Late
+    Private Function GetCombinedStatusSQL(arrivalColumn As String, departureColumn As String, shiftStartColumn As String, shiftEndColumn As String, statusColumn As String) As String
+        ' Combined status: Shows time in status only, then combines with time out status after time out
         Return $"CASE 
-            WHEN {timeColumn} IS NULL THEN 'Absent'
-            WHEN {shiftTimeColumn} IS NULL THEN {statusColumn}
-            WHEN TIME({timeColumn}) <= {shiftTimeColumn} THEN 'On Time'
-            WHEN TIME({timeColumn}) > {shiftTimeColumn} THEN 'Late'
-            ELSE {statusColumn}
-        END"
-    End Function
-
-    Private Function GetTimeOutStatusSQL(timeColumn As String, shiftTimeColumn As String) As String
-        ' Time-out status: Early Out, Over time, or empty if no time-out yet
-        Return $"CASE 
-            WHEN {timeColumn} IS NULL THEN ''
-            WHEN {shiftTimeColumn} IS NULL THEN ''
-            WHEN TIME({timeColumn}) < {shiftTimeColumn} THEN 'Early Out'
-            WHEN TIME({timeColumn}) > {shiftTimeColumn} THEN 'Over time'
-            ELSE ''
+            WHEN {arrivalColumn} IS NULL THEN 'Absent'
+            WHEN {shiftStartColumn} IS NULL THEN 'No shift'
+            WHEN {departureColumn} IS NULL AND TIME({arrivalColumn}) <= {shiftStartColumn} THEN 'On time'
+            WHEN {departureColumn} IS NULL AND TIME({arrivalColumn}) > {shiftStartColumn} THEN 'Late'
+            WHEN {shiftEndColumn} IS NULL AND TIME({arrivalColumn}) <= {shiftStartColumn} THEN 'On time'
+            WHEN {shiftEndColumn} IS NULL AND TIME({arrivalColumn}) > {shiftStartColumn} THEN 'Late'
+            WHEN TIME({arrivalColumn}) <= {shiftStartColumn} AND TIME({departureColumn}) <= {shiftEndColumn} THEN 'On time - On time'
+            WHEN TIME({arrivalColumn}) <= {shiftStartColumn} AND TIME({departureColumn}) > {shiftEndColumn} THEN 'On time - Over time'
+            WHEN TIME({arrivalColumn}) > {shiftStartColumn} AND TIME({departureColumn}) <= {shiftEndColumn} THEN 'Late - On time'
+            WHEN TIME({arrivalColumn}) > {shiftStartColumn} AND TIME({departureColumn}) > {shiftEndColumn} THEN 'Late - Over time'
+            ELSE 'Unknown'
         END"
     End Function
 
@@ -310,8 +281,9 @@ Public Class FormAttendace
 
         ' Construct the SQL query with parameters
         sql = "SELECT ar.attendanceID, CONCAT(ti.firstname, ' ', ti.lastname) AS Name, COALESCE(d.department_name, 'N/A') AS department, DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, " &
-           "DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, ar.arrStatus, " &
-           "DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, ar.depStatus, " &
+           "DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, " &
+           "DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, " &
+           GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS, " &
            "COALESCE(ar.remarks, '') AS remarks " &
            "FROM attendance_record ar JOIN teacherinformation ti ON ar.teacherID = ti.teacherID " &
            "LEFT JOIN departments d ON ti.department_id = d.department_id " &
@@ -356,9 +328,8 @@ Public Class FormAttendace
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus,
                      DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
-                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
                      COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
                      JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
@@ -390,9 +361,8 @@ Public Class FormAttendace
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus,
                      DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
-                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
                      COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
                      JOIN teacherinformation ti ON ar.teacherID = ti.teacherID  
@@ -905,8 +875,9 @@ Public Class FormAttendace
             Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, arrStatus, 
-                     DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, depStatus,
+                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
+                     DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
+                     " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
                      COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
                      JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 

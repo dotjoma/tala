@@ -114,6 +114,8 @@ Public Class FormManualAttendance
 
             ' Validate tagID
             If String.IsNullOrWhiteSpace(tagID) OrElse tagID = "--" Then
+                btnSave.Enabled = True
+                btnCancel.Enabled = True
                 MessageBox.Show($"Teacher '{teacherName}' does not have a valid RFID tag ID. Please assign a tag ID to this teacher first.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 _logger.LogWarning($"FormManualAttendance - Teacher '{teacherName}' (ID: {teacherID}) has no valid tagID")
                 Return
