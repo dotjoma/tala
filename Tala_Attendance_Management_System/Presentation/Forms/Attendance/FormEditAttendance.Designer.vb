@@ -32,11 +32,18 @@ Partial Class FormEditAttendance
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dtpTimeOut = New System.Windows.Forms.DateTimePicker()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.txtRemarks = New System.Windows.Forms.TextBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.txtExistingRemarks = New System.Windows.Forms.TextBox()
         Me.btnSave = New System.Windows.Forms.Button()
         Me.btnCancel = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
+        Me.GroupBox4.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -149,13 +156,68 @@ Partial Class FormEditAttendance
         Me.dtpTimeOut.Size = New System.Drawing.Size(200, 27)
         Me.dtpTimeOut.TabIndex = 0
         '
+        'GroupBox4
+        '
+        Me.GroupBox4.Controls.Add(Me.txtExistingRemarks)
+        Me.GroupBox4.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox4.Location = New System.Drawing.Point(24, 320)
+        Me.GroupBox4.Name = "GroupBox4"
+        Me.GroupBox4.Size = New System.Drawing.Size(450, 90)
+        Me.GroupBox4.TabIndex = 8
+        Me.GroupBox4.TabStop = False
+        Me.GroupBox4.Text = "Current Remarks"
+        '
+        'txtExistingRemarks
+        '
+        Me.txtExistingRemarks.BackColor = System.Drawing.Color.FromArgb(CType(CType(245, Byte), Integer), CType(CType(245, Byte), Integer), CType(CType(245, Byte), Integer))
+        Me.txtExistingRemarks.Font = New System.Drawing.Font("Segoe UI", 9.5!)
+        Me.txtExistingRemarks.Location = New System.Drawing.Point(15, 25)
+        Me.txtExistingRemarks.Multiline = True
+        Me.txtExistingRemarks.Name = "txtExistingRemarks"
+        Me.txtExistingRemarks.ReadOnly = True
+        Me.txtExistingRemarks.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.txtExistingRemarks.Size = New System.Drawing.Size(420, 55)
+        Me.txtExistingRemarks.TabIndex = 0
+        '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.Label4)
+        Me.GroupBox3.Controls.Add(Me.txtRemarks)
+        Me.GroupBox3.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox3.Location = New System.Drawing.Point(24, 420)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(450, 100)
+        Me.GroupBox3.TabIndex = 7
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Edit Reason"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.Label4.ForeColor = System.Drawing.Color.DimGray
+        Me.Label4.Location = New System.Drawing.Point(15, 25)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(250, 15)
+        Me.Label4.TabIndex = 2
+        Me.Label4.Text = "Please provide a reason for editing this record:"
+        '
+        'txtRemarks
+        '
+        Me.txtRemarks.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.txtRemarks.Location = New System.Drawing.Point(15, 45)
+        Me.txtRemarks.Multiline = True
+        Me.txtRemarks.Name = "txtRemarks"
+        Me.txtRemarks.Size = New System.Drawing.Size(420, 45)
+        Me.txtRemarks.TabIndex = 0
+        '
         'btnSave
         '
         Me.btnSave.BackColor = System.Drawing.Color.FromArgb(CType(CType(46, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(113, Byte), Integer))
         Me.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnSave.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
         Me.btnSave.ForeColor = System.Drawing.Color.White
-        Me.btnSave.Location = New System.Drawing.Point(250, 330)
+        Me.btnSave.Location = New System.Drawing.Point(250, 535)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(110, 40)
         Me.btnSave.TabIndex = 5
@@ -168,7 +230,7 @@ Partial Class FormEditAttendance
         Me.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnCancel.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
         Me.btnCancel.ForeColor = System.Drawing.Color.White
-        Me.btnCancel.Location = New System.Drawing.Point(370, 330)
+        Me.btnCancel.Location = New System.Drawing.Point(370, 535)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(110, 40)
         Me.btnCancel.TabIndex = 6
@@ -180,9 +242,11 @@ Partial Class FormEditAttendance
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(500, 385)
+        Me.ClientSize = New System.Drawing.Size(500, 590)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnSave)
+        Me.Controls.Add(Me.GroupBox3)
+        Me.Controls.Add(Me.GroupBox4)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.lblDate)
@@ -201,6 +265,10 @@ Partial Class FormEditAttendance
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
+        Me.GroupBox4.ResumeLayout(False)
+        Me.GroupBox4.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -216,6 +284,11 @@ Partial Class FormEditAttendance
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents Label3 As Label
     Friend WithEvents dtpTimeOut As DateTimePicker
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents txtRemarks As TextBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents GroupBox4 As GroupBox
+    Friend WithEvents txtExistingRemarks As TextBox
     Friend WithEvents btnSave As Button
     Friend WithEvents btnCancel As Button
 End Class

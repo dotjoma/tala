@@ -2,10 +2,16 @@
 Imports System.Data.Odbc
 Imports System.Drawing
 Imports Microsoft.ReportingServices.Rendering.ExcelOpenXmlRenderer
+Imports System.Threading.Tasks
+Imports System.Threading
 
 Public Class FormFaculty
     Private ReadOnly _logger As ILogger = LoggerFactory.Instance
     Private ReadOnly _auditLogger As AuditLogger = AuditLogger.Instance
+    Private _isLoading As Boolean = False
+    Private _refreshRequested As Boolean = False
+    Private _searchCancellationTokenSource As CancellationTokenSource = Nothing
+    Private ReadOnly _searchDelayMs As Integer = 500 ' 500ms delay for search debouncing
 
     Private Sub LoadAddressComboBoxes(regionId As String, provinceId As String, cityId As String, brgyId As String)
         Try
@@ -94,6 +100,7 @@ Public Class FormFaculty
             LoadStatusFilter()
 
             LoadDepartmentFilter()
+            ' Load faculty list synchronously on initial load
             LoadFacultyList()
             ResetToggleButtonToDefault()
 
@@ -103,11 +110,179 @@ Public Class FormFaculty
             Throw
         End Try
     End Sub
+    
+    ''' <summary>
+    ''' Refreshes the faculty list asynchronously to prevent UI blocking
+    ''' </summary>
+    Private Async Sub RefreshFacultyListAsync()
+        If _isLoading Then
+            _refreshRequested = True
+            Return
+        End If
+
+        Try
+            _isLoading = True
+            Me.Cursor = Cursors.WaitCursor
+            
+            ' Get current filter values (capture on UI thread)
+            Dim selectedDepartment As String = If(cboDepartment.SelectedValue IsNot Nothing, cboDepartment.SelectedValue.ToString(), "ALL")
+            Dim searchTerm As String = txtSearch.Text.Trim()
+            Dim selectedStatus As String = If(cboStatusFilter.SelectedItem IsNot Nothing, cboStatusFilter.SelectedItem.ToString(), "All")
+
+            _logger.LogInfo($"FormFaculty - Starting async faculty list refresh - Department: {selectedDepartment}, Status: {selectedStatus}, Search: '{searchTerm}'")
+
+            ' Load data in background thread - actually execute the query off UI thread
+            Dim dataTable As DataTable = Await Task.Run(Function()
+                                                             Try
+                                                                 Dim baseQuery As String = BuildFacultyQuery(selectedDepartment, searchTerm, selectedStatus)
+                                                                 Return LoadFacultyDataTable(baseQuery)
+                                                             Catch ex As Exception
+                                                                 _logger.LogError($"FormFaculty - Error loading data in background: {ex.Message}")
+                                                                 Return Nothing
+                                                             End Try
+                                                         End Function)
+
+            ' Update UI on UI thread
+            If dataTable IsNot Nothing Then
+                UpdateDataGridView(dataTable)
+                _logger.LogInfo($"FormFaculty - Faculty list updated, {dgvTeachers.Rows.Count} records displayed")
+            Else
+                MessageBox.Show("Error loading faculty list. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+
+            ' Reset toggle button
+            ResetToggleButtonToDefault()
+
+            ' Check if another refresh was requested while loading
+            If _refreshRequested Then
+                _refreshRequested = False
+                RefreshFacultyListAsync()
+            End If
+
+        Catch ex As Exception
+            _logger.LogError($"FormFaculty - Error in RefreshFacultyListAsync: {ex.Message}")
+            MessageBox.Show("Error refreshing faculty list: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            _isLoading = False
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+    
+    ''' <summary>
+    ''' Loads faculty data into a DataTable (executes on background thread)
+    ''' </summary>
+    Private Function LoadFacultyDataTable(query As String) As DataTable
+        Dim cmd As Odbc.OdbcCommand = Nothing
+        Dim da As New Odbc.OdbcDataAdapter
+        Dim dt As New DataTable
+        Dim connection As Odbc.OdbcConnection = Nothing
+
+        Try
+            connection = New Odbc.OdbcConnection("DSN=tala_ams")
+            If connection.State = ConnectionState.Closed Then
+                connection.Open()
+            End If
+
+            cmd = New Odbc.OdbcCommand(query, connection)
+            da.SelectCommand = cmd
+            da.Fill(dt)
+            
+            Return dt
+        Catch ex As Exception
+            _logger.LogError($"FormFaculty - Error loading faculty data table: {ex.Message}")
+            Throw
+        Finally
+            If cmd IsNot Nothing Then
+                cmd.Dispose()
+            End If
+            If da IsNot Nothing Then
+                da.Dispose()
+            End If
+            If connection IsNot Nothing AndAlso connection.State = ConnectionState.Open Then
+                connection.Close()
+                connection.Dispose()
+            End If
+        End Try
+    End Function
+    
+    ''' <summary>
+    ''' Updates the DataGridView with the loaded data (executes on UI thread)
+    ''' </summary>
+    Private Sub UpdateDataGridView(dt As DataTable)
+        Try
+            ' Suspend layout for better performance
+            dgvTeachers.SuspendLayout()
+            dgvTeachers.DataSource = Nothing
+            
+            ' Set new data source
+            dgvTeachers.DataSource = dt
+            
+            ' Optimize column sizing
+            If dgvTeachers.Columns.Count > 0 Then
+                dgvTeachers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
+                For Each col As DataGridViewColumn In dgvTeachers.Columns
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                Next
+            End If
+            
+            ' Resume layout
+            dgvTeachers.ResumeLayout(False)
+        Catch ex As Exception
+            _logger.LogError($"FormFaculty - Error updating DataGridView: {ex.Message}")
+            Throw
+        End Try
+    End Sub
+    
+    ''' <summary>
+    ''' Builds the faculty query string based on filters
+    ''' </summary>
+    Private Function BuildFacultyQuery(departmentFilter As String, searchTerm As String, statusFilter As String) As String
+        Dim baseQuery As String = "
+                SELECT ti.teacherID AS teacherID, 
+                       ti.employeeID AS employeeID, 
+                       " & GetNameConcatSQL() & " AS teacher_name, 
+                       ti.email, 
+                       ti.gender AS gender, 
+                       ti.birthdate AS birthdate,
+                       ti.phoneNo AS phoneNo,
+                       ti.contactNo AS contactNo, 
+                       CONCAT(ti.homeadd, ' ', COALESCE(rb.brgyDesc, ''), '. ', COALESCE(rc.citymunDesc, '')) AS teacher_address, 
+                       ti.emergencyContact AS emergencyContact,
+                       COALESCE(d.department_name, 'No Dept') AS department_name,
+                       CASE WHEN ti.isActive = 1 THEN 'Active' ELSE 'Inactive' END AS status_text
+                FROM teacherinformation ti 
+                LEFT JOIN refregion rg ON ti.regionID = rg.id 
+                LEFT JOIN refprovince rp ON ti.provinceID = rp.id 
+                LEFT JOIN refcitymun rc ON ti.cityID = rc.id 
+                LEFT JOIN refbrgy rb ON ti.brgyID = rb.id 
+                LEFT JOIN departments d ON ti.department_id = d.department_id
+                WHERE 1=1"
+
+        If statusFilter = "Active" Then
+            baseQuery &= " AND ti.isActive = 1"
+        ElseIf statusFilter = "Inactive" Then
+            baseQuery &= " AND ti.isActive = 0"
+        End If
+
+        If departmentFilter <> "ALL" AndAlso IsNumeric(departmentFilter) Then
+            baseQuery &= $" AND ti.department_id = {departmentFilter}"
+        End If
+
+        If Not String.IsNullOrWhiteSpace(searchTerm) Then
+            baseQuery &= $" AND (ti.lastname LIKE '%{searchTerm}%' OR ti.firstname LIKE '%{searchTerm}%' OR ti.employeeID LIKE '%{searchTerm}%')"
+        End If
+
+        baseQuery &= " ORDER BY ti.lastname, ti.firstname"
+        
+        Return baseQuery
+    End Function
+    
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         _logger.LogInfo("FormFaculty - Add Faculty button clicked, opening AddFaculty form")
         AddFaculty.ShowDialog()
-        DefaultSettings()
-        _logger.LogInfo("FormFaculty - Returned from AddFaculty form, faculty list refreshed")
+        ' Refresh faculty list asynchronously to prevent UI blocking
+        RefreshFacultyListAsync()
+        _logger.LogInfo("FormFaculty - Returned from AddFaculty form, faculty list refresh initiated")
     End Sub
 
     Private Sub FormFaculty_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -239,9 +414,9 @@ Public Class FormFaculty
 
                 _logger.LogInfo($"FormFaculty - Faculty record loaded for editing - Name: '{facultyName}', Employee ID: '{dt.Rows(0)("employeeID")}'")
                 AddFaculty.ShowDialog()
-                ' Refresh the list after editing
-                DefaultSettings()
-                _logger.LogInfo("FormFaculty - Returned from edit mode, faculty list refreshed")
+                ' Refresh the list asynchronously after editing to prevent UI blocking
+                RefreshFacultyListAsync()
+                _logger.LogInfo("FormFaculty - Returned from edit mode, faculty list refresh initiated")
             Else
                 _logger.LogWarning($"FormFaculty - No faculty record found with ID: {id}")
             End If
@@ -249,7 +424,7 @@ Public Class FormFaculty
             _logger.LogError($"FormFaculty - Error loading faculty record for editing (ID: {id}): {ex.Message}")
             MessageBox.Show(ex.Message.ToString())
         Finally
-            GC.Collect()
+            ' Removed GC.Collect() - let .NET handle garbage collection automatically
             con.Close()
         End Try
     End Sub
@@ -271,17 +446,27 @@ Public Class FormFaculty
         End If
     End Sub
 
-    Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
+    Private Async Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
         Try
-            Dim searchTerm As String = txtSearch.Text.Trim()
-            Dim selectedDepartment As String = If(cboDepartment.SelectedValue IsNot Nothing, cboDepartment.SelectedValue.ToString(), "ALL")
-            Dim selectedStatus As String = If(cboStatusFilter.SelectedItem IsNot Nothing, cboStatusFilter.SelectedItem.ToString(), "All")
-
-            _logger.LogInfo($"FormFaculty - Search changed to: '{searchTerm}', Department filter: {selectedDepartment}, Status filter: {selectedStatus}")
-
-            ' Reload faculty list with current filters
-            LoadFacultyList(selectedDepartment, searchTerm, selectedStatus)
-
+            ' Cancel previous search if user is still typing
+            If _searchCancellationTokenSource IsNot Nothing Then
+                _searchCancellationTokenSource.Cancel()
+                _searchCancellationTokenSource.Dispose()
+            End If
+            
+            ' Create new cancellation token for this search
+            _searchCancellationTokenSource = New CancellationTokenSource()
+            Dim token = _searchCancellationTokenSource.Token
+            
+            ' Wait for debounce delay
+            Await Task.Delay(_searchDelayMs, token)
+            
+            ' If not cancelled, perform search
+            If Not token.IsCancellationRequested Then
+                RefreshFacultyListAsync()
+            End If
+        Catch ex As OperationCanceledException
+            ' Expected when search is cancelled - ignore
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error during search operation: {ex.Message}")
         End Try
@@ -509,13 +694,9 @@ Public Class FormFaculty
     Private Sub cboDepartment_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDepartment.SelectedIndexChanged
         Try
             If cboDepartment.SelectedValue IsNot Nothing Then
-                Dim selectedDepartment As String = cboDepartment.SelectedValue.ToString()
-                Dim searchTerm As String = txtSearch.Text.Trim()
-                Dim selectedStatus As String = If(cboStatusFilter.SelectedItem IsNot Nothing, cboStatusFilter.SelectedItem.ToString(), "All")
-
-                _logger.LogInfo($"FormFaculty - Department filter changed to: {cboDepartment.Text} (ID: {selectedDepartment})")
-
-                LoadFacultyList(selectedDepartment, searchTerm, selectedStatus)
+                _logger.LogInfo($"FormFaculty - Department filter changed to: {cboDepartment.Text}")
+                ' Use async refresh to prevent UI blocking
+                RefreshFacultyListAsync()
             End If
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error in department filter change: {ex.Message}")
@@ -525,13 +706,9 @@ Public Class FormFaculty
     Private Sub cboStatusFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboStatusFilter.SelectedIndexChanged
         Try
             If cboStatusFilter.SelectedItem IsNot Nothing Then
-                Dim selectedStatus As String = cboStatusFilter.SelectedItem.ToString()
-                Dim selectedDepartment As String = If(cboDepartment.SelectedValue IsNot Nothing, cboDepartment.SelectedValue.ToString(), "ALL")
-                Dim searchTerm As String = txtSearch.Text.Trim()
-
-                _logger.LogInfo($"FormFaculty - Status filter changed to: {selectedStatus}")
-
-                LoadFacultyList(selectedDepartment, searchTerm, selectedStatus)
+                _logger.LogInfo($"FormFaculty - Status filter changed to: {cboStatusFilter.SelectedItem.ToString()}")
+                ' Use async refresh to prevent UI blocking
+                RefreshFacultyListAsync()
             End If
         Catch ex As Exception
             _logger.LogError($"FormFaculty - Error in status filter change: {ex.Message}")
@@ -580,7 +757,8 @@ Public Class FormFaculty
                     _logger.LogInfo($"FormFaculty - Faculty status toggled successfully - Faculty ID: {facultyId}, Status: {newStatus}")
                     MessageBox.Show($"Faculty member has been {newStatus} successfully.", "Status Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                    DefaultSettings()
+                    ' Refresh faculty list asynchronously to prevent UI blocking
+                    RefreshFacultyListAsync()
                 Else
                     _logger.LogInfo($"FormFaculty - User cancelled {action} for Faculty ID: {facultyId}")
                 End If
@@ -598,7 +776,7 @@ Public Class FormFaculty
                 End If
             Catch
             End Try
-            GC.Collect()
+            ' Removed GC.Collect() - let .NET handle garbage collection automatically
         End Try
     End Sub
 

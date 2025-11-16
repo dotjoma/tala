@@ -112,9 +112,9 @@ Public Class LoginForm
                                                     targetForm = MainForm
 
                                                 Case "attendance"
-                                                    logger.LogDebug("Opening FormAttendanceScanner for Attendance user")
+                                                    logger.LogDebug("Opening RFIDScanMonitor for Attendance user")
                                                     loginSuccess = True
-                                                    targetForm = FormAttendanceScanner
+                                                    targetForm = RFIDScanMonitor
 
                                                 Case Else
                                                     logger.LogWarning($"Undefined user role: {userRole} for username: {Trim(ttxtUser.Text)}")

@@ -17,9 +17,9 @@ Partial Class FormUserActivityLogs
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormUserActivityLogs))
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lblTitle = New System.Windows.Forms.Label()
@@ -144,7 +144,7 @@ Partial Class FormUserActivityLogs
         Me.cboActionFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboActionFilter.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.cboActionFilter.FormattingEnabled = True
-        Me.cboActionFilter.Location = New System.Drawing.Point(478, 20)
+        Me.cboActionFilter.Location = New System.Drawing.Point(478, 21)
         Me.cboActionFilter.Name = "cboActionFilter"
         Me.cboActionFilter.Size = New System.Drawing.Size(200, 25)
         Me.cboActionFilter.TabIndex = 7
@@ -153,7 +153,7 @@ Partial Class FormUserActivityLogs
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label3.Location = New System.Drawing.Point(474, 0)
+        Me.Label3.Location = New System.Drawing.Point(474, 1)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(51, 19)
         Me.Label3.TabIndex = 6
@@ -162,7 +162,7 @@ Partial Class FormUserActivityLogs
         'txtSearch
         '
         Me.txtSearch.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.txtSearch.Location = New System.Drawing.Point(707, 20)
+        Me.txtSearch.Location = New System.Drawing.Point(707, 21)
         Me.txtSearch.Name = "txtSearch"
         Me.txtSearch.Size = New System.Drawing.Size(200, 25)
         Me.txtSearch.TabIndex = 5
@@ -171,7 +171,7 @@ Partial Class FormUserActivityLogs
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label5.Location = New System.Drawing.Point(703, 0)
+        Me.Label5.Location = New System.Drawing.Point(703, 1)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(52, 19)
         Me.Label5.TabIndex = 4
@@ -181,7 +181,7 @@ Partial Class FormUserActivityLogs
         '
         Me.dtpTo.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpTo.Location = New System.Drawing.Point(249, 20)
+        Me.dtpTo.Location = New System.Drawing.Point(249, 21)
         Me.dtpTo.Name = "dtpTo"
         Me.dtpTo.Size = New System.Drawing.Size(200, 25)
         Me.dtpTo.TabIndex = 3
@@ -190,7 +190,7 @@ Partial Class FormUserActivityLogs
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label2.Location = New System.Drawing.Point(245, 0)
+        Me.Label2.Location = New System.Drawing.Point(245, 1)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(26, 19)
         Me.Label2.TabIndex = 2
@@ -200,7 +200,7 @@ Partial Class FormUserActivityLogs
         '
         Me.dtpFrom.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFrom.Location = New System.Drawing.Point(20, 20)
+        Me.dtpFrom.Location = New System.Drawing.Point(20, 21)
         Me.dtpFrom.Name = "dtpFrom"
         Me.dtpFrom.Size = New System.Drawing.Size(200, 25)
         Me.dtpFrom.TabIndex = 1
@@ -209,7 +209,7 @@ Partial Class FormUserActivityLogs
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.Label1.Location = New System.Drawing.Point(16, 0)
+        Me.Label1.Location = New System.Drawing.Point(16, 1)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(44, 19)
         Me.Label1.TabIndex = 0
@@ -221,32 +221,32 @@ Partial Class FormUserActivityLogs
         Me.dgvLogs.AllowUserToDeleteRows = False
         Me.dgvLogs.AllowUserToResizeColumns = False
         Me.dgvLogs.AllowUserToResizeRows = False
-        DataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvLogs.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvLogs.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvLogs.BackgroundColor = System.Drawing.Color.White
         Me.dgvLogs.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvLogs.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle5.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvLogs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI Semibold", 11.0!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvLogs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvLogs.ColumnHeadersHeight = 45
         Me.dgvLogs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvLogs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.log_id, Me.username, Me.action_type, Me.module_name, Me.description, Me.log_timestamp})
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvLogs.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvLogs.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvLogs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvLogs.EnableHeadersVisualStyles = False
         Me.dgvLogs.Location = New System.Drawing.Point(0, 180)

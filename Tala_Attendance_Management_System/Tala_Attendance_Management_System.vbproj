@@ -362,12 +362,6 @@
     <Compile Include="Presentation\Forms\Attendance\FormAttendance.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Presentation\Forms\Attendance\FormAttendanceScanner.Designer.vb">
-      <DependentUpon>FormAttendanceScanner.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Forms\Attendance\FormAttendanceScanner.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Presentation\Forms\Faculty\FormFaculty.Designer.vb">
       <DependentUpon>FormFaculty.vb</DependentUpon>
     </Compile>
@@ -471,6 +465,9 @@
     <EmbeddedResource Include="Presentation\Forms\Attendance\FormEditAttendance.resx">
       <DependentUpon>FormEditAttendance.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormManualAttendance.resx">
+      <DependentUpon>FormManualAttendance.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Attendance\RFIDScanMonitor.resx">
       <DependentUpon>RFIDScanMonitor.vb</DependentUpon>
     </EmbeddedResource>
@@ -566,9 +563,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Attendance\FormAttendance.resx">
       <DependentUpon>FormAttendance.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Presentation\Forms\Attendance\FormAttendanceScanner.resx">
-      <DependentUpon>FormAttendanceScanner.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Faculty\FormFaculty.resx">
       <DependentUpon>FormFaculty.vb</DependentUpon>

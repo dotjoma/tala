@@ -10,6 +10,7 @@ Public Class AddFaculty
             Dim mode As String = If(Val(txtID.Text) > 0, "Edit", "Add New")
             _logger.LogInfo($"AddFaculty form opened - Mode: {mode}, Faculty ID: {txtID.Text}")
             ConfigureDateTimePicker()
+            ConfigureShiftTimePickers()
             LoadDepartments()
 
             If String.IsNullOrWhiteSpace(txtPhoneNo.Text) Then
@@ -152,10 +153,8 @@ Public Class AddFaculty
             _logger.LogInfo("AddFaculty form closing")
             ClearAllFields()
 
-            Dim teacher As FormFaculty = TryCast(Application.OpenForms("FormFaculty"), FormFaculty)
-            If teacher IsNot Nothing Then
-                teacher.DefaultSettings()
-            End If
+            ' Note: Faculty list refresh is now handled asynchronously in FormFaculty.btnAdd_Click and EditRecord
+            ' to prevent UI blocking and double refresh. No need to refresh here.
         Catch ex As Exception
             _logger.LogError("Error in AddFaculty_FormClosing", ex)
         End Try
@@ -168,8 +167,8 @@ Public Class AddFaculty
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Dim cmd As System.Data.Odbc.OdbcCommand
         Dim da As New System.Data.Odbc.OdbcDataAdapter
-        Dim insertTeacher As String = "INSERT INTO teacherinformation(employeeID, profileImg, tagID, lastname, firstname, middlename, extName, email, gender, birthdate, phoneNo, contactNo, homeadd, brgyID, cityID, provinceID, regionID, emergencyContact, relationship, department_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-        Dim updateTeacher As String = "UPDATE teacherinformation SET employeeID=?, profileImg=?, tagID=?, lastname=?, firstname=?, middlename=?, extName=?, email=?, gender=?, birthdate=?, phoneNo=?, contactNo=?, homeadd=?, brgyID=?, cityID=?, provinceID=?, regionID=?, emergencyContact=?, relationship=?, department_id=? WHERE teacherID=?"
+        Dim insertTeacher As String = "INSERT INTO teacherinformation(employeeID, profileImg, tagID, lastname, firstname, middlename, extName, email, gender, birthdate, phoneNo, contactNo, homeadd, brgyID, cityID, provinceID, regionID, emergencyContact, relationship, department_id, shift_start_time, shift_end_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        Dim updateTeacher As String = "UPDATE teacherinformation SET employeeID=?, profileImg=?, tagID=?, lastname=?, firstname=?, middlename=?, extName=?, email=?, gender=?, birthdate=?, phoneNo=?, contactNo=?, homeadd=?, brgyID=?, cityID=?, provinceID=?, regionID=?, emergencyContact=?, relationship=?, department_id=?, shift_start_time=?, shift_end_time=? WHERE teacherID=?"
         Dim tmpString = "--"
         Dim ms As New MemoryStream
         Dim facultyName As String = NameFormatter.FormatFullName(Trim(txtFirstName.Text), Trim(txtMiddleName.Text), Trim(txtLastName.Text), Trim(txtExtName.Text))
@@ -245,6 +244,8 @@ Public Class AddFaculty
                         .Add("?", OdbcType.VarChar).Value = Trim(txtEmergencyContact.Text)
                         .Add("?", OdbcType.VarChar).Value = cbRelationship.Text
                         .Add("?", OdbcType.Int).Value = If(selectedDepartmentId.HasValue, selectedDepartmentId.Value, DBNull.Value)
+                        .Add("?", OdbcType.Time).Value = dtpShiftStart.Value.TimeOfDay
+                        .Add("?", OdbcType.Time).Value = dtpShiftEnd.Value.TimeOfDay
                         .Add("?", OdbcType.Int).Value = txtID.Text
                     End With
                     cmd.ExecuteNonQuery()
@@ -280,6 +281,8 @@ Public Class AddFaculty
                         .Add("?", OdbcType.VarChar).Value = Trim(txtEmergencyContact.Text)
                         .Add("?", OdbcType.VarChar).Value = cbRelationship.Text
                         .Add("?", OdbcType.Int).Value = If(selectedDepartmentId.HasValue, selectedDepartmentId.Value, DBNull.Value)
+                        .Add("?", OdbcType.Time).Value = dtpShiftStart.Value.TimeOfDay
+                        .Add("?", OdbcType.Time).Value = dtpShiftEnd.Value.TimeOfDay
                     End With
                     cmd.ExecuteNonQuery()
 
@@ -300,7 +303,8 @@ Public Class AddFaculty
             MsgBox(ex.Message.ToString)
         Finally
             con.Close()
-            GC.Collect()
+            ' Removed GC.Collect() - let .NET handle garbage collection automatically
+            ' GC.Collect() causes unnecessary pauses and doesn't improve performance
         End Try
     End Sub
 
@@ -485,6 +489,19 @@ Public Class AddFaculty
                     _logger.LogInfo($"AddFaculty - Faculty {facultyId} has no department assigned")
                     SetDepartmentSelection(Nothing)
                 End If
+
+                ' Load shift times
+                If Not IsDBNull(reader("shift_start_time")) Then
+                    Dim shiftStart As TimeSpan = CType(reader("shift_start_time"), TimeSpan)
+                    dtpShiftStart.Value = DateTime.Today.Add(shiftStart)
+                End If
+
+                If Not IsDBNull(reader("shift_end_time")) Then
+                    Dim shiftEnd As TimeSpan = CType(reader("shift_end_time"), TimeSpan)
+                    dtpShiftEnd.Value = DateTime.Today.Add(shiftEnd)
+                End If
+
+                _logger.LogInfo($"AddFaculty - Shift times loaded for faculty {facultyId}")
             Else
                 _logger.LogWarning($"AddFaculty - Faculty with ID {facultyId} not found")
                 SetDepartmentSelection(Nothing)
@@ -598,6 +615,25 @@ Public Class AddFaculty
         End Try
     End Sub
 
+    Private Sub ConfigureShiftTimePickers()
+        Try
+            ' Set default shift times (7:00 AM start, 5:00 PM end)
+            dtpShiftStart.Value = DateTime.Today.AddHours(7)
+            dtpShiftEnd.Value = DateTime.Today.AddHours(17)
+            dtpShiftStart.Format = DateTimePickerFormat.Custom
+            dtpShiftStart.CustomFormat = "hh:mm tt"
+            dtpShiftStart.ShowUpDown = True
+            dtpShiftEnd.Format = DateTimePickerFormat.Custom
+            dtpShiftEnd.CustomFormat = "hh:mm tt"
+            dtpShiftEnd.ShowUpDown = True
+
+            _logger.LogInfo("AddFaculty - Shift time pickers configured")
+
+        Catch ex As Exception
+            _logger.LogError($"AddFaculty - Error configuring shift time pickers: {ex.Message}")
+        End Try
+    End Sub
+
     Private Sub ClearAllFields()
         Try
             _logger.LogInfo("AddFaculty - Clearing all form fields")
@@ -627,6 +663,7 @@ Public Class AddFaculty
             ResetComboBoxSafely(cbBrgy, -1)
 
             ConfigureDateTimePicker()
+            ConfigureShiftTimePickers()
 
             If pbProfile IsNot Nothing Then
                 pbProfile.Image = Nothing

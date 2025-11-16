@@ -343,19 +343,46 @@ Public Class FormAttendanceScanner
                 ' Add the card to the grid panel
                 AddToGridPanel(facultyCard)
 
-                ' Check if the teacher is already checked ina
-                cmd = New System.Data.Odbc.OdbcCommand("SELECT ar.tag_id FROM attendance_record ar 
+                ' Check if the teacher is already checked in
+                cmd = New System.Data.Odbc.OdbcCommand("SELECT ar.tag_id, ar.remarks FROM attendance_record ar 
                                             WHERE ar.tag_id=? AND departureTime IS NULL AND depState = 0", con)
                 cmd.Parameters.AddWithValue("@", tagID)
                 Dim myreader As OdbcDataReader = cmd.ExecuteReader()
 
                 If myreader.HasRows Then
+                    myreader.Read()
+                    Dim existingRemarks As String = If(IsDBNull(myreader("remarks")), "", myreader("remarks").ToString())
+                    myreader.Close()
+                    
                     ' Update the departure time
                     _logger.LogInfo($"Faculty already checked in, recording Time Out for tag: {tagID}")
-                    cmd = New System.Data.Odbc.OdbcCommand("UPDATE attendance_record SET departureTime=?, depStatus='Successful', depState = 1 WHERE tag_id=? AND arrivalTime IS NOT NULL AND depState = 0", con)
+                    
+                    ' Get teacher's shift end time
+                    Dim teacherID As Integer = Convert.ToInt32(dt.Rows(0)("teacherID"))
+                    Dim shiftEndTime As Object = Nothing
+                    Dim getShiftCmd As New System.Data.Odbc.OdbcCommand("SELECT shift_end_time FROM teacherinformation WHERE teacherID = ?", con)
+                    getShiftCmd.Parameters.AddWithValue("@", teacherID)
+                    Dim shiftReader = getShiftCmd.ExecuteReader()
+                    If shiftReader.Read() AndAlso Not IsDBNull(shiftReader("shift_end_time")) Then
+                        shiftEndTime = shiftReader("shift_end_time")
+                    End If
+                    shiftReader.Close()
+                    
+                    ' Calculate remarks with Under time/Over time
                     Dim departureTime As DateTime = DateTime.Now
-                    cmd.Parameters.AddWithValue("@", departureTime)
-                    cmd.Parameters.AddWithValue("@", tagID)
+                    Dim finalRemarks As String = CalculateTimeRemarks(departureTime, shiftEndTime, existingRemarks)
+                    
+                    ' Update attendance record with departure time and remarks
+                    If Not String.IsNullOrWhiteSpace(finalRemarks) Then
+                        cmd = New System.Data.Odbc.OdbcCommand("UPDATE attendance_record SET departureTime=?, depStatus='Successful', depState = 1, remarks = ? WHERE tag_id=? AND arrivalTime IS NOT NULL AND depState = 0", con)
+                        cmd.Parameters.AddWithValue("@", departureTime)
+                        cmd.Parameters.AddWithValue("@", finalRemarks)
+                        cmd.Parameters.AddWithValue("@", tagID)
+                    Else
+                        cmd = New System.Data.Odbc.OdbcCommand("UPDATE attendance_record SET departureTime=?, depStatus='Successful', depState = 1 WHERE tag_id=? AND arrivalTime IS NOT NULL AND depState = 0", con)
+                        cmd.Parameters.AddWithValue("@", departureTime)
+                        cmd.Parameters.AddWithValue("@", tagID)
+                    End If
 
                     facultyCard.Status = "Time Out"
                 Else
@@ -390,6 +417,82 @@ Public Class FormAttendanceScanner
             GC.Collect()
         End Try
     End Sub
+
+    Private Function FormatTimeSpan(totalMinutes As Integer) As String
+        If totalMinutes < 60 Then
+            ' Less than 1 hour - show minutes only
+            Return $"{totalMinutes} min{If(totalMinutes > 1, "s", "")}"
+        Else
+            Dim hours As Integer = totalMinutes \ 60
+            Dim minutes As Integer = totalMinutes Mod 60
+            
+            If minutes = 0 Then
+                ' Exact hours
+                Return $"{hours} hour{If(hours > 1, "s", "")}"
+            Else
+                ' Hours and minutes
+                Return $"{hours} h {minutes} min{If(minutes > 1, "s", "")}"
+            End If
+        End If
+    End Function
+
+    Private Function CalculateTimeRemarks(departureTime As DateTime, shiftEndTime As Object, existingRemarks As String) As String
+        Try
+            ' If no shift end time is set, return existing remarks
+            If shiftEndTime Is Nothing OrElse IsDBNull(shiftEndTime) Then
+                _logger.LogDebug("No shift end time set, returning existing remarks")
+                Return existingRemarks
+            End If
+            
+            ' Parse shift end time
+            Dim shiftEnd As TimeSpan
+            If TypeOf shiftEndTime Is TimeSpan Then
+                shiftEnd = CType(shiftEndTime, TimeSpan)
+            ElseIf TypeOf shiftEndTime Is DateTime Then
+                shiftEnd = CType(shiftEndTime, DateTime).TimeOfDay
+            Else
+                TimeSpan.TryParse(shiftEndTime.ToString(), shiftEnd)
+            End If
+            
+            ' Get the time portion of departure
+            Dim departureTimeOnly As TimeSpan = departureTime.TimeOfDay
+            
+            ' Calculate the difference in minutes
+            Dim timeDifference As Integer = CInt((departureTimeOnly - shiftEnd).TotalMinutes)
+            
+            Dim timeRemarks As String = ""
+            
+            If timeDifference < 0 Then
+                ' Left early - Under time
+                Dim minutesEarly As Integer = Math.Abs(timeDifference)
+                Dim formattedTime As String = FormatTimeSpan(minutesEarly)
+                timeRemarks = $"Under time ({formattedTime})"
+                _logger.LogInfo($"Under time detected: {minutesEarly} minutes early (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            ElseIf timeDifference > 0 Then
+                ' Stayed late - Over time
+                Dim minutesLate As Integer = timeDifference
+                Dim formattedTime As String = FormatTimeSpan(minutesLate)
+                timeRemarks = $"Over time ({formattedTime})"
+                _logger.LogInfo($"Over time detected: {minutesLate} minutes late (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            Else
+                ' Exactly on time
+                _logger.LogInfo($"On time departure (Departure: {departureTimeOnly}, Shift End: {shiftEnd})")
+            End If
+            
+            ' Combine with existing remarks if any
+            If Not String.IsNullOrWhiteSpace(existingRemarks) AndAlso Not String.IsNullOrWhiteSpace(timeRemarks) Then
+                Return existingRemarks & "; " & timeRemarks
+            ElseIf Not String.IsNullOrWhiteSpace(timeRemarks) Then
+                Return timeRemarks
+            Else
+                Return existingRemarks
+            End If
+            
+        Catch ex As Exception
+            _logger.LogError($"Error calculating time remarks: {ex.Message}")
+            Return existingRemarks
+        End Try
+    End Function
 
     Private Sub AddToGridPanel(ByVal facultyCard As StudentCard)
         pnlFacultyCard.SuspendLayout()

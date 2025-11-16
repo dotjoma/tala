@@ -16,33 +16,136 @@ Public Class FormAttendace
         dgvAttendance.ReadOnly = True
         dgvAttendance.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
-        LoadAttendanceData()
+        ' Load department filter
+        LoadDepartmentFilter()
 
-        cbFilter.SelectedIndex = 0
+        ' Load status filter
+        LoadStatusFilter()
+
+        LoadAttendanceData()
     End Sub
-    
+
+    Private Sub LoadDepartmentFilter()
+        Try
+            _logger.LogInfo("FormAttendance - Loading departments for filtering")
+
+            Dim dt As New DataTable()
+            dt.Columns.Add("department_id", GetType(String))
+            dt.Columns.Add("department_display", GetType(String))
+
+            Dim allRow As DataRow = dt.NewRow()
+            allRow("department_id") = "ALL"
+            allRow("department_display") = "All Departments"
+            dt.Rows.Add(allRow)
+
+            ' Load departments from database
+            connectDB()
+            Dim query As String = "SELECT department_id, department_code, department_name FROM departments WHERE is_active = 1 ORDER BY department_name"
+            Dim cmd As New OdbcCommand(query, con)
+            Dim reader As OdbcDataReader = cmd.ExecuteReader()
+
+            While reader.Read()
+                Dim row As DataRow = dt.NewRow()
+                row("department_id") = reader("department_id").ToString()
+                row("department_display") = $"{reader("department_code")} - {reader("department_name")}"
+                dt.Rows.Add(row)
+            End While
+            reader.Close()
+            con.Close()
+
+            _logger.LogInfo($"FormAttendance - {dt.Rows.Count - 1} departments loaded for filtering")
+
+            cboDepartmentFilter.DataSource = dt
+            cboDepartmentFilter.ValueMember = "department_id"
+            cboDepartmentFilter.DisplayMember = "department_display"
+            cboDepartmentFilter.SelectedIndex = 0
+
+        Catch ex As Exception
+            _logger.LogError($"FormAttendance - Error loading department filter: {ex.Message}")
+            If con.State = ConnectionState.Open Then con.Close()
+        End Try
+    End Sub
+
+    Private Sub LoadStatusFilter()
+        Try
+            ' Time In Status Filter
+            cboTimeInStatus.Items.Clear()
+            cboTimeInStatus.Items.AddRange({"All Status", "On time", "Late"})
+            cboTimeInStatus.SelectedIndex = 0
+            
+            ' Time Out Status Filter
+            cboTimeOutStatus.Items.Clear()
+            cboTimeOutStatus.Items.AddRange({"All Status", "Early Out", "Over time"})
+            cboTimeOutStatus.SelectedIndex = 0
+            
+            _logger.LogInfo("FormAttendance - Status filters initialized")
+        Catch ex As Exception
+            _logger.LogError($"FormAttendance - Error loading status filter: {ex.Message}")
+        End Try
+    End Sub
+
     Private Sub LoadAttendanceData()
         Try
             Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
             Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
-            
-            Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, arrStatus, 
-                     DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, depStatus 
+
+            Dim query As String = "SELECT ar.attendanceID, 
+                     CONCAT(ti.firstname, ' ', ti.lastname) AS NAME, 
+                     COALESCE(d.department_name, 'N/A') AS department, 
+                     DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                     DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
+                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus, 
+                     DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
+                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
-                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
-            
+                     JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
+                     LEFT JOIN departments d ON ti.department_id = d.department_id
+                     WHERE ar.logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+            ' Add department filter
+            If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+                Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+                If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                    query &= " AND ti.department_id = " & selectedDept
+                End If
+            End If
+
+            ' Add Time In status filter
+            If cboTimeInStatus IsNot Nothing AndAlso cboTimeInStatus.SelectedItem IsNot Nothing Then
+                Dim selectedStatus As String = cboTimeInStatus.SelectedItem.ToString()
+                If selectedStatus <> "All Status" Then
+                    Select Case selectedStatus
+                        Case "On time"
+                            query &= " AND (ar.arrivalTime IS NOT NULL AND " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " = 'On Time')"
+                        Case "Late"
+                            query &= " AND (ar.arrivalTime IS NOT NULL AND " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " = 'Late')"
+                    End Select
+                End If
+            End If
+
+            ' Add Time Out status filter
+            If cboTimeOutStatus IsNot Nothing AndAlso cboTimeOutStatus.SelectedItem IsNot Nothing Then
+                Dim selectedStatus As String = cboTimeOutStatus.SelectedItem.ToString()
+                If selectedStatus <> "All Status" Then
+                    Select Case selectedStatus
+                        Case "Early Out"
+                            query &= " AND (ar.departureTime IS NOT NULL AND ti.shift_end_time IS NOT NULL AND TIME(ar.departureTime) < ti.shift_end_time)"
+                        Case "Over time"
+                            query &= " AND (ar.departureTime IS NOT NULL AND ti.shift_end_time IS NOT NULL AND TIME(ar.departureTime) > ti.shift_end_time)"
+                    End Select
+                End If
+            End If
+
             ' Add search filter if provided
             If txtSearch.Text.Trim().Length > 0 Then
                 query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
             End If
-            
-            query &= " ORDER BY logDate DESC, arrivalTime DESC"
-            
+
+            query &= " ORDER BY ar.logDate DESC, ar.arrivalTime DESC"
+
             loadDGV(query, dgvAttendance)
-            
+
             _logger.LogInfo($"Loaded {dgvAttendance.Rows.Count} attendance records from {dateFrom} to {dateTo}")
 
             If TypeOf dgvAttendance.DataSource Is DataTable Then
@@ -61,7 +164,7 @@ Public Class FormAttendace
     End Sub
     Private Sub FormAttendance_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CurrentInstance = Me
-        
+
         RemoveHandler dtpDateFrom.ValueChanged, AddressOf dtpDateFrom_ValueChanged
         RemoveHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
 
@@ -74,18 +177,49 @@ Public Class FormAttendace
         AddHandler dtpDateFrom.ValueChanged, AddressOf dtpDateFrom_ValueChanged
         AddHandler dtpDateTo.ValueChanged, AddressOf dtpDateTo_ValueChanged
 
+        ' Add filter event handlers
+        AddHandler cboDepartmentFilter.SelectedIndexChanged, AddressOf FilterChanged
+        AddHandler cboTimeInStatus.SelectedIndexChanged, AddressOf FilterChanged
+        AddHandler cboTimeOutStatus.SelectedIndexChanged, AddressOf FilterChanged
+
         DefaultSettings()
         ApplyRoleBasedAccess()
 
         _logger.LogInfo("FormAttendance loaded")
     End Sub
-    
+
+    Private Sub FilterChanged(sender As Object, e As EventArgs)
+        LoadAttendanceData()
+    End Sub
+
+    Private Function GetTimeInStatusSQL(timeColumn As String, shiftTimeColumn As String, statusColumn As String) As String
+        ' Time-in status: On Time or Late
+        Return $"CASE 
+            WHEN {timeColumn} IS NULL THEN 'Absent'
+            WHEN {shiftTimeColumn} IS NULL THEN {statusColumn}
+            WHEN TIME({timeColumn}) <= {shiftTimeColumn} THEN 'On Time'
+            WHEN TIME({timeColumn}) > {shiftTimeColumn} THEN 'Late'
+            ELSE {statusColumn}
+        END"
+    End Function
+
+    Private Function GetTimeOutStatusSQL(timeColumn As String, shiftTimeColumn As String) As String
+        ' Time-out status: Early Out, Over time, or empty if no time-out yet
+        Return $"CASE 
+            WHEN {timeColumn} IS NULL THEN ''
+            WHEN {shiftTimeColumn} IS NULL THEN ''
+            WHEN TIME({timeColumn}) < {shiftTimeColumn} THEN 'Early Out'
+            WHEN TIME({timeColumn}) > {shiftTimeColumn} THEN 'Over time'
+            ELSE ''
+        END"
+    End Function
+
     Private Sub FormAttendance_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         If CurrentInstance Is Me Then
             CurrentInstance = Nothing
         End If
     End Sub
-    
+
     Public Sub RefreshAttendanceData()
         If InvokeRequired Then
             Invoke(New Action(AddressOf RefreshAttendanceData))
@@ -114,14 +248,16 @@ Public Class FormAttendace
                 End If
             End If
 
-            btnEdit.Visible = False
-            btnEdit.Enabled = False
+            ' Enable Edit button for admin and HR
+            Dim canEdit As Boolean = (userRole = "admin" OrElse userRole = "hr")
+            btnEdit.Visible = canEdit
+            btnEdit.Enabled = canEdit
 
             Dim canManualInput As Boolean = (userRole = "admin" OrElse userRole = "hr")
             btnManualInput.Visible = canManualInput
             btnManualInput.Enabled = canManualInput
 
-            _logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button disabled, Manual input {If(canManualInput, "enabled", "disabled")}")
+            _logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button {If(canEdit, "enabled", "disabled")}, Manual input {If(canManualInput, "enabled", "disabled")}")
         Catch ex As Exception
             _logger.LogError($"Error applying role-based access: {ex.Message}")
             btnEdit.Visible = False
@@ -134,14 +270,20 @@ Public Class FormAttendace
     End Sub
 
     Private Sub dgvAttendance_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvAttendance.DataBindingComplete
-        dgvAttendance.CurrentCell = Nothing
+        Try
+            dgvAttendance.CurrentCell = Nothing
+            dgvAttendance.ClearSelection()
+            selectedAttendanceId = 0
+            _logger.LogInfo("Cleared selection after data binding; selectedAttendanceId reset to 0")
+        Catch
+        End Try
     End Sub
 
-    Private Sub cbFilter_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFilter.SelectedIndexChanged
+    Private Sub cbFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
         UpdateDataBasedOnFilterAndSearch()
     End Sub
     Private Sub UpdateDataBasedOnFilterAndSearch()
-        Dim strFilter As String = If(cbFilter.SelectedItem IsNot Nothing, cbFilter.SelectedItem.ToString(), "Teachers")
+        Dim strFilter As String = "Teachers"
 
         Try
             Select Case strFilter
@@ -167,11 +309,13 @@ Public Class FormAttendace
         Dim sql As String = ""
 
         ' Construct the SQL query with parameters
-        sql = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS Name, DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, " &
-           "DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, arrStatus, " &
-           "DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, depStatus  " &
-           "FROM attendance_record ar JOIN teacherinformation ti ON ar.tag_id = ti.tagID " &
-           "WHERE logDate = CURDATE() AND (ti.lastname LIKE ? OR ti.firstname LIKE ? OR DATE_FORMAT(ar.logDate, '%Y-%m-%d') LIKE ?)"
+        sql = "SELECT ar.attendanceID, CONCAT(ti.firstname, ' ', ti.lastname) AS Name, COALESCE(d.department_name, 'N/A') AS department, DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, " &
+           "DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, ar.arrStatus, " &
+           "DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, ar.depStatus, " &
+           "COALESCE(ar.remarks, '') AS remarks " &
+           "FROM attendance_record ar JOIN teacherinformation ti ON ar.teacherID = ti.teacherID " &
+           "LEFT JOIN departments d ON ti.department_id = d.department_id " &
+           "WHERE DATE(ar.logDate) = CURDATE() AND (ti.lastname LIKE ? OR ti.firstname LIKE ? OR DATE_FORMAT(ar.logDate, '%Y-%m-%d') LIKE ?)"
 
         Try
             connectDB()
@@ -180,6 +324,15 @@ Public Class FormAttendace
             cmd.Parameters.AddWithValue("@lastname", "%" & txtSearch.Text.Trim() & "%")
             cmd.Parameters.AddWithValue("@firstname", "%" & txtSearch.Text.Trim() & "%")
             cmd.Parameters.AddWithValue("@logDate", "%" & txtSearch.Text.Trim() & "%")
+
+            ' Apply department filter if set
+            If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+                Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+                If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                    sql &= " AND ti.department_id = " & selectedDept
+                    cmd.CommandText = sql
+                End If
+            End If
 
             da.SelectCommand = cmd
             da.Fill(dt)
@@ -198,20 +351,32 @@ Public Class FormAttendace
         Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
         Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
 
-        Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-                     depStatus 
+        Dim query As String = "SELECT ar.attendanceID, 
+                     CONCAT(ti.firstname, ' ', ti.lastname) AS NAME, 
+                     COALESCE(d.department_name, 'N/A') AS department, 
+                     DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                     DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
+                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus,
+                     DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
+                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
-                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+                     JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
+                     LEFT JOIN departments d ON ti.department_id = d.department_id
+                     WHERE ar.logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+        If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+            Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+            If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                query &= " AND ti.department_id = " & selectedDept
+            End If
+        End If
 
         If txtSearch.TextLength > 0 Then
             query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
         End If
 
-        query &= " ORDER BY logDate DESC, arrivalTime DESC"
+        query &= " ORDER BY ar.logDate DESC, ar.arrivalTime DESC"
 
         loadDGV(query, dgvAttendance)
     End Sub
@@ -220,20 +385,32 @@ Public Class FormAttendace
         Dim dateFrom As String = dtpDateFrom.Value.ToString("yyyy-MM-dd")
         Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
 
-        Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS Name, 
-                     DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
-                     DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
-                     arrStatus, DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, 
-                     depStatus 
+        Dim query As String = "SELECT ar.attendanceID, 
+                     CONCAT(ti.firstname, ' ', ti.lastname) AS Name, 
+                     COALESCE(d.department_name, 'N/A') AS department, 
+                     DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                     DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
+                     " & GetTimeInStatusSQL("ar.arrivalTime", "ti.shift_start_time", "ar.arrStatus") & " AS arrStatus,
+                     DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
+                     " & GetTimeOutStatusSQL("ar.departureTime", "ti.shift_end_time") & " AS depStatus,
+                     COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID  
-                     WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+                     JOIN teacherinformation ti ON ar.teacherID = ti.teacherID  
+                     LEFT JOIN departments d ON ti.department_id = d.department_id
+                     WHERE ar.logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+        If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+            Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+            If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                query &= " AND ti.department_id = " & selectedDept
+            End If
+        End If
 
         If txtSearch.TextLength > 0 Then
             query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
         End If
 
-        query &= " ORDER BY logDate DESC, arrivalTime DESC"
+        query &= " ORDER BY ar.logDate DESC, ar.arrivalTime DESC"
 
         loadDGV(query, dgvAttendance)
     End Sub
@@ -255,6 +432,13 @@ Public Class FormAttendace
                      JOIN classrooms cr ON ar.classroom_id=cr.classroom_id 
                      JOIN subjects s ON ar.subject_id=s.subject_id 
                      WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+        If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+            Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+            If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                query &= " AND ti.department_id = " & selectedDept
+            End If
+        End If
 
         If txtSearch.TextLength > 0 Then
             query &= " AND (sr.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR sr.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
@@ -382,8 +566,68 @@ Public Class FormAttendace
         End Try
     End Sub
 
+    Private Sub dgvAttendance_SelectionChanged(sender As Object, e As EventArgs) Handles dgvAttendance.SelectionChanged
+        UpdateSelectedAttendance()
+    End Sub
+
+    Private Sub UpdateSelectedAttendance()
+        Try
+            If dgvAttendance.SelectedRows IsNot Nothing AndAlso dgvAttendance.SelectedRows.Count > 0 Then
+                Dim row = dgvAttendance.SelectedRows(0)
+                Dim id = TryGetAttendanceIdFromRow(row)
+                If id.HasValue AndAlso id.Value > 0 Then
+                    selectedAttendanceId = id.Value
+                    _logger.LogInfo($"✓ Selected attendance ID from selection: {selectedAttendanceId}")
+                End If
+            Else
+                selectedAttendanceId = 0
+            End If
+        Catch ex As Exception
+            _logger.LogWarning($"Error updating selected attendance: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Function TryGetAttendanceIdFromRow(row As DataGridViewRow) As Integer?
+        If row Is Nothing Then Return Nothing
+        Try
+            ' 1) Try by column name "attendanceID"
+            If dgvAttendance.Columns.Contains("attendanceID") Then
+                Dim v = row.Cells("attendanceID").Value
+                If v IsNot Nothing AndAlso Not IsDBNull(v) Then Return Convert.ToInt32(v)
+            End If
+
+            ' 2) Try by DataPropertyName == "attendanceID"
+            For Each col As DataGridViewColumn In dgvAttendance.Columns
+                If String.Equals(col.DataPropertyName, "attendanceID", StringComparison.OrdinalIgnoreCase) Then
+                    Dim v = row.Cells(col.Index).Value
+                    If v IsNot Nothing AndAlso Not IsDBNull(v) Then Return Convert.ToInt32(v)
+                End If
+            Next
+
+            ' 3) Try from DataBoundItem
+            If TypeOf row.DataBoundItem Is DataRowView Then
+                Dim drv = DirectCast(row.DataBoundItem, DataRowView)
+                If drv.DataView.Table.Columns.Contains("attendanceID") Then
+                    Dim v = drv("attendanceID")
+                    If v IsNot Nothing AndAlso Not IsDBNull(v) Then Return Convert.ToInt32(v)
+                End If
+            End If
+
+            Return Nothing
+        Catch
+            Return Nothing
+        End Try
+    End Function
+
     Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
         _logger.LogDebug($"Edit button clicked. Current selectedAttendanceId: {selectedAttendanceId}")
+
+        If dgvAttendance.SelectedRows Is Nothing OrElse dgvAttendance.SelectedRows.Count = 0 Then
+            _logger.LogWarning("No attendance row selected in grid")
+            Dim msgForm As New Form() With {.TopMost = True}
+            MessageBox.Show(msgForm, "Please select an attendance record to edit.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
 
         If selectedAttendanceId = 0 Then
             _logger.LogWarning("No attendance record selected")
@@ -397,9 +641,10 @@ Public Class FormAttendace
 
             connectDB()
 
-            Dim cmd As New OdbcCommand("SELECT arrivalTime, departureTime, CONCAT(ti.firstname, ' ', ti.lastname) AS teacher_name, logDate 
+            Dim cmd As New OdbcCommand("SELECT ar.arrivalTime, ar.departureTime, ar.remarks, 
+                                        CONCAT(ti.firstname, ' ', ti.lastname) AS teacher_name, ar.logDate 
                                         FROM attendance_record ar 
-                                        JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
+                                        JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
                                         WHERE ar.attendanceID = ?", con)
             cmd.Parameters.AddWithValue("?", selectedAttendanceId)
 
@@ -410,6 +655,7 @@ Public Class FormAttendace
                 Dim logDate As Date = Convert.ToDateTime(reader("logDate"))
                 Dim currentTimeIn As Object = reader("arrivalTime")
                 Dim currentTimeOut As Object = reader("departureTime")
+                Dim currentRemarks As String = If(IsDBNull(reader("remarks")), "", reader("remarks").ToString())
 
                 _logger.LogDebug($"Retrieved from DB - TimeIn: {If(IsDBNull(currentTimeIn), "NULL", currentTimeIn.ToString())}, TimeOut: {If(IsDBNull(currentTimeOut), "NULL", currentTimeOut.ToString())}")
 
@@ -419,6 +665,7 @@ Public Class FormAttendace
                     editForm.AttendanceId = selectedAttendanceId
                     editForm.TeacherName = teacherName
                     editForm.AttendanceDate = logDate
+                    editForm.CurrentRemarks = currentRemarks
 
                     If Not IsDBNull(currentTimeIn) Then
                         editForm.TimeIn = Convert.ToDateTime(currentTimeIn)
@@ -656,12 +903,22 @@ Public Class FormAttendace
             Dim dateTo As String = dtpDateTo.Value.ToString("yyyy-MM-dd")
 
             Dim query As String = "SELECT ar.attendanceID, CONCAT(firstname, ' ', lastname) AS NAME, 
+                     COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(logDate, '%M %d, %Y') AS logDate, 
                      DATE_FORMAT(arrivalTime, '%h:%i:%s %p') AS arrivalTime, arrStatus, 
-                     DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, depStatus 
+                     DATE_FORMAT(departureTime, '%h:%i:%s %p') AS departureTime, depStatus,
+                     COALESCE(ar.remarks, '') AS remarks
                      FROM attendance_record ar 
-                     JOIN teacherinformation ti ON ar.tag_id = ti.tagID 
+                     JOIN teacherinformation ti ON ar.teacherID = ti.teacherID 
+                     LEFT JOIN departments d ON ti.department_id = d.department_id
                      WHERE logDate BETWEEN '" & dateFrom & "' AND '" & dateTo & "'"
+
+            If cboDepartmentFilter IsNot Nothing AndAlso cboDepartmentFilter.SelectedValue IsNot Nothing Then
+                Dim selectedDept As String = cboDepartmentFilter.SelectedValue.ToString()
+                If selectedDept <> "ALL" AndAlso IsNumeric(selectedDept) Then
+                    query &= " AND ti.department_id = " & selectedDept
+                End If
+            End If
 
             If txtSearch.Text.Trim().Length > 0 Then
                 query &= " AND (ti.firstname LIKE '%" & txtSearch.Text.Trim() & "%' OR ti.lastname LIKE '%" & txtSearch.Text.Trim() & "%')"
