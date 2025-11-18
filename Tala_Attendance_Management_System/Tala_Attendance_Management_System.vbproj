@@ -193,6 +193,12 @@
     <Compile Include="Presentation\Forms\Faculty\AddFaculty.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormFacultyDetails.Designer.vb">
+      <DependentUpon>FormFacultyDetails.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Faculty\FormFacultyDetails.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Presentation\Forms\Reports\FormDailyAttendance.Designer.vb">
       <DependentUpon>FormDailyAttendance.vb</DependentUpon>
     </Compile>
@@ -491,6 +497,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Faculty\AddFaculty.resx">
       <DependentUpon>AddFaculty.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Faculty\FormFacultyDetails.resx">
+      <DependentUpon>FormFacultyDetails.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Reports\FormDailyAttendance.resx">
       <DependentUpon>FormDailyAttendance.vb</DependentUpon>

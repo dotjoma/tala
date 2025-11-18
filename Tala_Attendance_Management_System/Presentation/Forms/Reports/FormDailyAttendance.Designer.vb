@@ -144,12 +144,13 @@ Partial Class FormDailyAttendance
         Me.btnViewDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnViewDetails.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnViewDetails.ForeColor = System.Drawing.Color.White
-        Me.btnViewDetails.Location = New System.Drawing.Point(15, 12)
+        Me.btnViewDetails.Location = New System.Drawing.Point(267, 12)
         Me.btnViewDetails.Name = "btnViewDetails"
         Me.btnViewDetails.Size = New System.Drawing.Size(120, 38)
         Me.btnViewDetails.TabIndex = 8
         Me.btnViewDetails.Text = "View Details"
         Me.btnViewDetails.UseVisualStyleBackColor = False
+        Me.btnViewDetails.Visible = False
         '
         'btnManualInput
         '
@@ -158,7 +159,7 @@ Partial Class FormDailyAttendance
         Me.btnManualInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnManualInput.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnManualInput.ForeColor = System.Drawing.Color.White
-        Me.btnManualInput.Location = New System.Drawing.Point(267, 12)
+        Me.btnManualInput.Location = New System.Drawing.Point(141, 12)
         Me.btnManualInput.Name = "btnManualInput"
         Me.btnManualInput.Size = New System.Drawing.Size(120, 38)
         Me.btnManualInput.TabIndex = 4
@@ -172,7 +173,7 @@ Partial Class FormDailyAttendance
         Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnEdit.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
         Me.btnEdit.ForeColor = System.Drawing.Color.White
-        Me.btnEdit.Location = New System.Drawing.Point(141, 12)
+        Me.btnEdit.Location = New System.Drawing.Point(15, 12)
         Me.btnEdit.Name = "btnEdit"
         Me.btnEdit.Size = New System.Drawing.Size(120, 38)
         Me.btnEdit.TabIndex = 7

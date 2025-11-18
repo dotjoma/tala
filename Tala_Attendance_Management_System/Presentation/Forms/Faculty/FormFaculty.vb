@@ -232,7 +232,7 @@ Public Class FormFaculty
             Throw
         End Try
     End Sub
-    
+
     ''' <summary>
     ''' Builds the faculty query string based on filters
     ''' </summary>
@@ -273,17 +273,9 @@ Public Class FormFaculty
         End If
 
         baseQuery &= " ORDER BY ti.lastname, ti.firstname"
-        
+
         Return baseQuery
     End Function
-    
-    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        _logger.LogInfo("FormFaculty - Add Faculty button clicked, opening AddFaculty form")
-        AddFaculty.ShowDialog()
-        ' Refresh faculty list asynchronously to prevent UI blocking
-        RefreshFacultyListAsync()
-        _logger.LogInfo("FormFaculty - Returned from AddFaculty form, faculty list refresh initiated")
-    End Sub
 
     Private Sub FormFaculty_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         _logger.LogInfo("FormFaculty - Form loaded, initializing default settings")
@@ -298,10 +290,6 @@ Public Class FormFaculty
         Finally
             Me.Cursor = Cursors.Default
         End Try
-    End Sub
-
-    Private Sub btnToggleStatus_Click(sender As Object, e As EventArgs)
-
     End Sub
 
     Private Function GetFacultyStatus(facultyId As Integer) As Integer
@@ -429,23 +417,6 @@ Public Class FormFaculty
         End Try
     End Sub
 
-    Private Sub btnEditRecord_Click(sender As Object, e As EventArgs) Handles btnEditRecord.Click
-        Dim facultyId As Integer = CInt(dgvTeachers.Tag)
-
-        If dgvTeachers.Tag > 0 Then
-            _logger.LogInfo($"FormFaculty - Edit button clicked for Faculty ID: {facultyId}")
-            If MessageBox.Show("Are you sure you want to edit this record?", "Edit Record", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                _logger.LogInfo($"FormFaculty - User confirmed edit for Faculty ID: {facultyId}")
-                EditRecord(Val(dgvTeachers.Tag))
-            Else
-                _logger.LogInfo($"FormFaculty - User cancelled edit for Faculty ID: {facultyId}")
-            End If
-        Else
-            _logger.LogWarning("FormFaculty - Edit attempted with no faculty selected")
-            MessageBox.Show("Please select a record you want to edit", "Edit Record", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
-    End Sub
-
     Private Async Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
         Try
             ' Cancel previous search if user is still typing
@@ -453,14 +424,14 @@ Public Class FormFaculty
                 _searchCancellationTokenSource.Cancel()
                 _searchCancellationTokenSource.Dispose()
             End If
-            
+
             ' Create new cancellation token for this search
             _searchCancellationTokenSource = New CancellationTokenSource()
             Dim token = _searchCancellationTokenSource.Token
-            
+
             ' Wait for debounce delay
             Await Task.Delay(_searchDelayMs, token)
-            
+
             ' If not cancelled, perform search
             If Not token.IsCancellationRequested Then
                 RefreshFacultyListAsync()
@@ -517,12 +488,12 @@ Public Class FormFaculty
                     If status = "Active" Then
                         btnToggleStat.Text = "&Disable Record"
                         btnToggleStat.ForeColor = Color.Red
-                        btnToggleStat.BackgroundImage = GetDisableIcon()
+                        'btnToggleStat.BackgroundImage = GetDisableIcon()
                         _logger.LogInfo($"FormFaculty - Toggle button set to 'Disable' for active faculty: {facultyName}")
                     Else
                         btnToggleStat.Text = "&Enable Record"
-                        btnToggleStat.ForeColor = Color.Green
-                        btnToggleStat.BackgroundImage = GetEnableIcon()
+                        btnToggleStat.ForeColor = Color.LimeGreen
+                        'btnToggleStat.BackgroundImage = GetEnableIcon()
                         _logger.LogInfo($"FormFaculty - Toggle button set to 'Enable' for inactive faculty: {facultyName}")
                     End If
 
@@ -537,7 +508,7 @@ Public Class FormFaculty
 
     Private Sub ResetToggleButtonToDefault()
         Try
-            btnToggleStat.BackgroundImage = My.Resources.enable_default_40x40
+            'btnToggleStat.BackgroundImage = My.Resources.enable_default_40x40
             btnToggleStat.Text = "&Select Faculty"
             btnToggleStat.ForeColor = Color.DimGray
             btnToggleStat.Enabled = False
@@ -715,68 +686,24 @@ Public Class FormFaculty
         End Try
     End Sub
 
-    Private Sub btnToggleStat_Click(sender As Object, e As EventArgs) Handles btnToggleStat.Click
-        Dim cmd As Odbc.OdbcCommand
-        Dim facultyId As Integer = 0
-
+    Private Sub btnFullDetails_Click(sender As Object, e As EventArgs) Handles btnFullDetails.Click
         Try
-            If dgvTeachers.Tag IsNot Nothing AndAlso IsNumeric(dgvTeachers.Tag) Then
-                facultyId = CInt(dgvTeachers.Tag)
+            Dim facultyId As Integer = CInt(dgvTeachers.Tag)
+
+            If dgvTeachers.Tag Is Nothing OrElse Not IsNumeric(dgvTeachers.Tag) OrElse facultyId <= 0 Then
+                _logger.LogWarning("FormFaculty - Full Details attempted with no faculty selected")
+                MessageBox.Show("Please select a faculty member to view full details.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
             End If
 
-            _logger.LogInfo($"FormFaculty - Toggle Status button clicked for Faculty ID: {facultyId}")
+            _logger.LogInfo($"FormFaculty - Opening Full Details for Faculty ID: {facultyId}")
+            Dim detailsForm As New FormFacultyDetails(facultyId)
+            detailsForm.ShowDialog()
+            _logger.LogInfo("FormFaculty - Returned from Full Details form")
 
-            If facultyId > 0 Then
-                Dim currentStatus As Integer = GetFacultyStatus(facultyId)
-                Dim action As String = If(currentStatus = 1, "disable", "enable")
-                Dim actionTitle As String = If(currentStatus = 1, "Disable", "Enable")
-
-                Dim facultyName As String = GetFacultyName(facultyId)
-
-                Dim result As DialogResult = MessageBox.Show(
-                    $"Are you sure you want to {action} '{facultyName}'?{Environment.NewLine}{Environment.NewLine}" &
-                    $"This will {If(currentStatus = 1, "deactivate the faculty member and they will no longer appear in active lists", "reactivate the faculty member and they will appear in active lists again")}.",
-                    $"Confirm {actionTitle}",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question)
-
-                If result = DialogResult.Yes Then
-                    _logger.LogInfo($"FormFaculty - User confirmed {action} for Faculty ID: {facultyId}")
-
-                    connectDB()
-                    cmd = New Odbc.OdbcCommand("UPDATE teacherinformation SET isActive = IF(isActive = 1, 0, 1) WHERE teacherID = ?", con)
-                    cmd.Parameters.Add("?", Odbc.OdbcType.Int).Value = facultyId
-                    cmd.ExecuteNonQuery()
-                    con.Close()
-
-                    Dim newStatus As String = If(currentStatus = 1, "disabled", "enabled")
-
-                    _auditLogger.LogUpdate(MainForm.currentUsername, "Faculty",
-                        $"{If(currentStatus = 1, "Disabled", "Enabled")} faculty member '{facultyName}' (ID: {facultyId})")
-
-                    _logger.LogInfo($"FormFaculty - Faculty status toggled successfully - Faculty ID: {facultyId}, Status: {newStatus}")
-                    MessageBox.Show($"Faculty member has been {newStatus} successfully.", "Status Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-                    ' Refresh faculty list asynchronously to prevent UI blocking
-                    RefreshFacultyListAsync()
-                Else
-                    _logger.LogInfo($"FormFaculty - User cancelled {action} for Faculty ID: {facultyId}")
-                End If
-            Else
-                _logger.LogWarning("FormFaculty - Toggle Status attempted with no faculty selected")
-                MessageBox.Show("Please select a faculty member to change their status.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            End If
         Catch ex As Exception
-            _logger.LogError($"FormFaculty - Error toggling faculty status (ID: {facultyId}): {ex.Message}")
-            MessageBox.Show("Error updating faculty status: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            Try
-                If con IsNot Nothing AndAlso con.State = ConnectionState.Open Then
-                    con.Close()
-                End If
-            Catch
-            End Try
-            ' Removed GC.Collect() - let .NET handle garbage collection automatically
+            _logger.LogError($"FormFaculty - Error opening Full Details: {ex.Message}")
+            MessageBox.Show("Error opening faculty details: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -979,4 +906,94 @@ Public Class FormFaculty
             Return ex.ToString()
         End Try
     End Function
+
+    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
+        _logger.LogInfo("FormFaculty - Add Faculty button clicked, opening AddFaculty form")
+        AddFaculty.ShowDialog()
+        ' Refresh faculty list asynchronously to prevent UI blocking
+        RefreshFacultyListAsync()
+        _logger.LogInfo("FormFaculty - Returned from AddFaculty form, faculty list refresh initiated")
+    End Sub
+
+    Private Sub btnEditRecord_Click(sender As Object, e As EventArgs) Handles btnEditRecord.Click
+        Dim facultyId As Integer = CInt(dgvTeachers.Tag)
+
+        If dgvTeachers.Tag > 0 Then
+            _logger.LogInfo($"FormFaculty - Edit button clicked for Faculty ID: {facultyId}")
+            If MessageBox.Show("Are you sure you want to edit this record?", "Edit Record", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                _logger.LogInfo($"FormFaculty - User confirmed edit for Faculty ID: {facultyId}")
+                EditRecord(Val(dgvTeachers.Tag))
+            Else
+                _logger.LogInfo($"FormFaculty - User cancelled edit for Faculty ID: {facultyId}")
+            End If
+        Else
+            _logger.LogWarning("FormFaculty - Edit attempted with no faculty selected")
+            MessageBox.Show("Please select a record you want to edit", "Edit Record", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+    End Sub
+
+    Private Sub btnToggleStat_Click(sender As Object, e As EventArgs) Handles btnToggleStat.Click
+        Dim cmd As Odbc.OdbcCommand
+        Dim facultyId As Integer = 0
+
+        Try
+            If dgvTeachers.Tag IsNot Nothing AndAlso IsNumeric(dgvTeachers.Tag) Then
+                facultyId = CInt(dgvTeachers.Tag)
+            End If
+
+            _logger.LogInfo($"FormFaculty - Toggle Status button clicked for Faculty ID: {facultyId}")
+
+            If facultyId > 0 Then
+                Dim currentStatus As Integer = GetFacultyStatus(facultyId)
+                Dim action As String = If(currentStatus = 1, "disable", "enable")
+                Dim actionTitle As String = If(currentStatus = 1, "Disable", "Enable")
+
+                Dim facultyName As String = GetFacultyName(facultyId)
+
+                Dim result As DialogResult = MessageBox.Show(
+                    $"Are you sure you want to {action} '{facultyName}'?{Environment.NewLine}{Environment.NewLine}" &
+                    $"This will {If(currentStatus = 1, "deactivate the faculty member and they will no longer appear in active lists", "reactivate the faculty member and they will appear in active lists again")}.",
+                    $"Confirm {actionTitle}",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question)
+
+                If result = DialogResult.Yes Then
+                    _logger.LogInfo($"FormFaculty - User confirmed {action} for Faculty ID: {facultyId}")
+
+                    connectDB()
+                    cmd = New Odbc.OdbcCommand("UPDATE teacherinformation SET isActive = IF(isActive = 1, 0, 1) WHERE teacherID = ?", con)
+                    cmd.Parameters.Add("?", Odbc.OdbcType.Int).Value = facultyId
+                    cmd.ExecuteNonQuery()
+                    con.Close()
+
+                    Dim newStatus As String = If(currentStatus = 1, "disabled", "enabled")
+
+                    _auditLogger.LogUpdate(MainForm.currentUsername, "Faculty",
+                        $"{If(currentStatus = 1, "Disabled", "Enabled")} faculty member '{facultyName}' (ID: {facultyId})")
+
+                    _logger.LogInfo($"FormFaculty - Faculty status toggled successfully - Faculty ID: {facultyId}, Status: {newStatus}")
+                    MessageBox.Show($"Faculty member has been {newStatus} successfully.", "Status Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                    ' Refresh faculty list asynchronously to prevent UI blocking
+                    RefreshFacultyListAsync()
+                Else
+                    _logger.LogInfo($"FormFaculty - User cancelled {action} for Faculty ID: {facultyId}")
+                End If
+            Else
+                _logger.LogWarning("FormFaculty - Toggle Status attempted with no faculty selected")
+                MessageBox.Show("Please select a faculty member to change their status.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            End If
+        Catch ex As Exception
+            _logger.LogError($"FormFaculty - Error toggling faculty status (ID: {facultyId}): {ex.Message}")
+            MessageBox.Show("Error updating faculty status: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            Try
+                If con IsNot Nothing AndAlso con.State = ConnectionState.Open Then
+                    con.Close()
+                End If
+            Catch
+            End Try
+            ' Removed GC.Collect() - let .NET handle garbage collection automatically
+        End Try
+    End Sub
 End Class

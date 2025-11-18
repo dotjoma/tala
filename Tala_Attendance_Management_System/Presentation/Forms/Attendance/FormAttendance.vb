@@ -70,7 +70,7 @@ Public Class FormAttendace
         Try
             ' Combined Status Filter
             cboStatus.Items.Clear()
-            cboStatus.Items.AddRange({"All Status", "Late", "On time", "Over time", "Early out", "Late - On time", "Late - Over time", "Late - Early out", "On time - On time", "On time - Over time", "On time - Early out"})
+            cboStatus.Items.AddRange({"All Status", "Late - On time", "Late - Over time", "Late - Early out", "On time - On time", "On time - Over time", "On time - Early out"})
             cboStatus.SelectedIndex = 0
 
             _logger.LogInfo("FormAttendance - Status filters initialized")
