@@ -211,7 +211,8 @@ Public Class FormFacultyDetails
             nameParts.Add(lastName.Trim())
         End If
 
-        If Not String.IsNullOrWhiteSpace(extName) Then
+        ' Only add suffix if it's not null, empty, or "--"
+        If Not String.IsNullOrWhiteSpace(extName) AndAlso extName.Trim() <> "--" Then
             nameParts.Add(extName.Trim())
         End If
 

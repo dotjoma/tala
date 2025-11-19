@@ -154,7 +154,7 @@ Partial Class FormDailyAttendance
         '
         'btnManualInput
         '
-        Me.btnManualInput.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnManualInput.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.btnManualInput.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
         Me.btnManualInput.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnManualInput.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
@@ -168,7 +168,7 @@ Partial Class FormDailyAttendance
         '
         'btnEdit
         '
-        Me.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.btnEdit.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(0, Byte), Integer))
         Me.btnEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnEdit.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)

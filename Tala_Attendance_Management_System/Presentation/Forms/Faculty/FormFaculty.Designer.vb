@@ -41,13 +41,13 @@ Partial Class FormFaculty
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtSearch = New System.Windows.Forms.TextBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.btnFullDetails = New System.Windows.Forms.Button()
+        Me.btnAdd = New System.Windows.Forms.Button()
+        Me.btnEditRecord = New System.Windows.Forms.Button()
+        Me.btnToggleStat = New System.Windows.Forms.Button()
         Me.btnGenerateReport = New System.Windows.Forms.Button()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.dgvTeachers = New System.Windows.Forms.DataGridView()
-        Me.btnToggleStat = New System.Windows.Forms.Button()
-        Me.btnEditRecord = New System.Windows.Forms.Button()
-        Me.btnAdd = New System.Windows.Forms.Button()
-        Me.btnFullDetails = New System.Windows.Forms.Button()
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -113,7 +113,7 @@ Partial Class FormFaculty
         '
         'Label5
         '
-        Me.Label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label5.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label5.ForeColor = System.Drawing.Color.Black
@@ -125,7 +125,7 @@ Partial Class FormFaculty
         '
         'cboStatusFilter
         '
-        Me.cboStatusFilter.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboStatusFilter.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cboStatusFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboStatusFilter.FormattingEnabled = True
         Me.cboStatusFilter.Items.AddRange(New Object() {"All", "Active", "Inactive"})
@@ -136,7 +136,7 @@ Partial Class FormFaculty
         '
         'Label4
         '
-        Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label4.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.ForeColor = System.Drawing.Color.Black
@@ -148,7 +148,7 @@ Partial Class FormFaculty
         '
         'cboDepartment
         '
-        Me.cboDepartment.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboDepartment.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cboDepartment.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboDepartment.FormattingEnabled = True
         Me.cboDepartment.Location = New System.Drawing.Point(681, 16)
@@ -170,7 +170,7 @@ Partial Class FormFaculty
         '
         'Label1
         '
-        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Segoe UI Semibold", 11.25!, System.Drawing.FontStyle.Bold)
         Me.Label1.ForeColor = System.Drawing.Color.Black
@@ -182,7 +182,7 @@ Partial Class FormFaculty
         '
         'txtSearch
         '
-        Me.txtSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtSearch.Location = New System.Drawing.Point(77, 16)
         Me.txtSearch.Name = "txtSearch"
@@ -203,6 +203,62 @@ Partial Class FormFaculty
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(1444, 69)
         Me.Panel1.TabIndex = 16
+        '
+        'btnFullDetails
+        '
+        Me.btnFullDetails.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.btnFullDetails.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.btnFullDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnFullDetails.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
+        Me.btnFullDetails.ForeColor = System.Drawing.Color.White
+        Me.btnFullDetails.Location = New System.Drawing.Point(393, 14)
+        Me.btnFullDetails.Name = "btnFullDetails"
+        Me.btnFullDetails.Size = New System.Drawing.Size(120, 38)
+        Me.btnFullDetails.TabIndex = 12
+        Me.btnFullDetails.Text = "Full Details"
+        Me.btnFullDetails.UseVisualStyleBackColor = False
+        '
+        'btnAdd
+        '
+        Me.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.btnAdd.BackColor = System.Drawing.Color.FromArgb(CType(CType(46, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(113, Byte), Integer))
+        Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnAdd.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
+        Me.btnAdd.ForeColor = System.Drawing.Color.White
+        Me.btnAdd.Location = New System.Drawing.Point(15, 14)
+        Me.btnAdd.Name = "btnAdd"
+        Me.btnAdd.Size = New System.Drawing.Size(120, 38)
+        Me.btnAdd.TabIndex = 11
+        Me.btnAdd.Text = "Add New"
+        Me.btnAdd.UseVisualStyleBackColor = False
+        '
+        'btnEditRecord
+        '
+        Me.btnEditRecord.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.btnEditRecord.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.btnEditRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnEditRecord.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
+        Me.btnEditRecord.ForeColor = System.Drawing.Color.White
+        Me.btnEditRecord.Location = New System.Drawing.Point(141, 14)
+        Me.btnEditRecord.Name = "btnEditRecord"
+        Me.btnEditRecord.Size = New System.Drawing.Size(120, 38)
+        Me.btnEditRecord.TabIndex = 10
+        Me.btnEditRecord.Text = "Edit Record"
+        Me.btnEditRecord.UseVisualStyleBackColor = False
+        '
+        'btnToggleStat
+        '
+        Me.btnToggleStat.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.btnToggleStat.BackColor = System.Drawing.Color.DodgerBlue
+        Me.btnToggleStat.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnToggleStat.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
+        Me.btnToggleStat.ForeColor = System.Drawing.Color.White
+        Me.btnToggleStat.Location = New System.Drawing.Point(267, 14)
+        Me.btnToggleStat.Name = "btnToggleStat"
+        Me.btnToggleStat.Size = New System.Drawing.Size(120, 38)
+        Me.btnToggleStat.TabIndex = 9
+        Me.btnToggleStat.Text = "Toggle Status"
+        Me.btnToggleStat.UseVisualStyleBackColor = False
         '
         'btnGenerateReport
         '
@@ -279,62 +335,6 @@ Partial Class FormFaculty
         Me.dgvTeachers.TabIndex = 19
         Me.dgvTeachers.TabStop = False
         '
-        'btnToggleStat
-        '
-        Me.btnToggleStat.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.btnToggleStat.BackColor = System.Drawing.Color.DodgerBlue
-        Me.btnToggleStat.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnToggleStat.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
-        Me.btnToggleStat.ForeColor = System.Drawing.Color.White
-        Me.btnToggleStat.Location = New System.Drawing.Point(267, 14)
-        Me.btnToggleStat.Name = "btnToggleStat"
-        Me.btnToggleStat.Size = New System.Drawing.Size(120, 38)
-        Me.btnToggleStat.TabIndex = 9
-        Me.btnToggleStat.Text = "Toggle Status"
-        Me.btnToggleStat.UseVisualStyleBackColor = False
-        '
-        'btnEditRecord
-        '
-        Me.btnEditRecord.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.btnEditRecord.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.btnEditRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnEditRecord.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
-        Me.btnEditRecord.ForeColor = System.Drawing.Color.White
-        Me.btnEditRecord.Location = New System.Drawing.Point(141, 14)
-        Me.btnEditRecord.Name = "btnEditRecord"
-        Me.btnEditRecord.Size = New System.Drawing.Size(120, 38)
-        Me.btnEditRecord.TabIndex = 10
-        Me.btnEditRecord.Text = "Edit Record"
-        Me.btnEditRecord.UseVisualStyleBackColor = False
-        '
-        'btnAdd
-        '
-        Me.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.btnAdd.BackColor = System.Drawing.Color.FromArgb(CType(CType(46, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(113, Byte), Integer))
-        Me.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnAdd.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
-        Me.btnAdd.ForeColor = System.Drawing.Color.White
-        Me.btnAdd.Location = New System.Drawing.Point(15, 14)
-        Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(120, 38)
-        Me.btnAdd.TabIndex = 11
-        Me.btnAdd.Text = "Add New"
-        Me.btnAdd.UseVisualStyleBackColor = False
-        '
-        'btnFullDetails
-        '
-        Me.btnFullDetails.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.btnFullDetails.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.btnFullDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnFullDetails.Font = New System.Drawing.Font("Segoe UI Semibold", 10.2!, System.Drawing.FontStyle.Bold)
-        Me.btnFullDetails.ForeColor = System.Drawing.Color.White
-        Me.btnFullDetails.Location = New System.Drawing.Point(393, 14)
-        Me.btnFullDetails.Name = "btnFullDetails"
-        Me.btnFullDetails.Size = New System.Drawing.Size(120, 38)
-        Me.btnFullDetails.TabIndex = 12
-        Me.btnFullDetails.Text = "Full Details"
-        Me.btnFullDetails.UseVisualStyleBackColor = False
-        '
         'Column1
         '
         Me.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
@@ -344,7 +344,7 @@ Partial Class FormFaculty
         Me.Column1.Name = "Column1"
         Me.Column1.ReadOnly = True
         Me.Column1.Visible = False
-        Me.Column1.Width = 46
+        Me.Column1.Width = 48
         '
         'Column2
         '
@@ -426,7 +426,7 @@ Partial Class FormFaculty
         Me.Column7.Name = "Column7"
         Me.Column7.ReadOnly = True
         Me.Column7.Visible = False
-        Me.Column7.Width = 135
+        Me.Column7.Width = 137
         '
         'Column9
         '
@@ -437,7 +437,7 @@ Partial Class FormFaculty
         Me.Column9.Name = "Column9"
         Me.Column9.ReadOnly = True
         Me.Column9.Visible = False
-        Me.Column9.Width = 140
+        Me.Column9.Width = 142
         '
         'ColumnDepartment
         '

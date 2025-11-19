@@ -83,6 +83,7 @@ Partial Class FormFacultyDetails
         Me.panelFooter.SuspendLayout()
         Me.panelMain.SuspendLayout()
         Me.panelRight.SuspendLayout()
+        Me.GroupBox6.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -166,6 +167,90 @@ Partial Class FormFacultyDetails
         Me.panelRight.Size = New System.Drawing.Size(660, 540)
         Me.panelRight.TabIndex = 0
         '
+        'GroupBox6
+        '
+        Me.GroupBox6.Controls.Add(Me.Label22)
+        Me.GroupBox6.Controls.Add(Me.lblShiftStartValue)
+        Me.GroupBox6.Controls.Add(Me.Label23)
+        Me.GroupBox6.Controls.Add(Me.lblShiftEndValue)
+        Me.GroupBox6.Controls.Add(Me.Label24)
+        Me.GroupBox6.Controls.Add(Me.lblShiftTypeValue)
+        Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupBox6.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox6.ForeColor = System.Drawing.Color.SteelBlue
+        Me.GroupBox6.Location = New System.Drawing.Point(10, 690)
+        Me.GroupBox6.Name = "GroupBox6"
+        Me.GroupBox6.Size = New System.Drawing.Size(623, 110)
+        Me.GroupBox6.TabIndex = 5
+        Me.GroupBox6.TabStop = False
+        Me.GroupBox6.Text = "Work Schedule"
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.Label22.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.Label22.Location = New System.Drawing.Point(20, 30)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(77, 19)
+        Me.Label22.TabIndex = 0
+        Me.Label22.Text = "Start Time:"
+        '
+        'lblShiftStartValue
+        '
+        Me.lblShiftStartValue.AutoSize = True
+        Me.lblShiftStartValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.lblShiftStartValue.ForeColor = System.Drawing.Color.Black
+        Me.lblShiftStartValue.Location = New System.Drawing.Point(180, 30)
+        Me.lblShiftStartValue.Name = "lblShiftStartValue"
+        Me.lblShiftStartValue.Size = New System.Drawing.Size(33, 19)
+        Me.lblShiftStartValue.TabIndex = 1
+        Me.lblShiftStartValue.Text = "N/A"
+        '
+        'Label23
+        '
+        Me.Label23.AutoSize = True
+        Me.Label23.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.Label23.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.Label23.Location = New System.Drawing.Point(20, 55)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(70, 19)
+        Me.Label23.TabIndex = 2
+        Me.Label23.Text = "End Time:"
+        '
+        'lblShiftEndValue
+        '
+        Me.lblShiftEndValue.AutoSize = True
+        Me.lblShiftEndValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.lblShiftEndValue.ForeColor = System.Drawing.Color.Black
+        Me.lblShiftEndValue.Location = New System.Drawing.Point(180, 55)
+        Me.lblShiftEndValue.Name = "lblShiftEndValue"
+        Me.lblShiftEndValue.Size = New System.Drawing.Size(33, 19)
+        Me.lblShiftEndValue.TabIndex = 3
+        Me.lblShiftEndValue.Text = "N/A"
+        '
+        'Label24
+        '
+        Me.Label24.AutoSize = True
+        Me.Label24.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
+        Me.Label24.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
+        Me.Label24.Location = New System.Drawing.Point(20, 80)
+        Me.Label24.Name = "Label24"
+        Me.Label24.Size = New System.Drawing.Size(42, 19)
+        Me.Label24.TabIndex = 4
+        Me.Label24.Text = "Shift:"
+        '
+        'lblShiftTypeValue
+        '
+        Me.lblShiftTypeValue.AutoSize = True
+        Me.lblShiftTypeValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.lblShiftTypeValue.ForeColor = System.Drawing.Color.Black
+        Me.lblShiftTypeValue.Location = New System.Drawing.Point(180, 80)
+        Me.lblShiftTypeValue.Name = "lblShiftTypeValue"
+        Me.lblShiftTypeValue.Size = New System.Drawing.Size(33, 19)
+        Me.lblShiftTypeValue.TabIndex = 5
+        Me.lblShiftTypeValue.Text = "N/A"
+        '
         'GroupBox5
         '
         Me.GroupBox5.Controls.Add(Me.Label20)
@@ -226,102 +311,20 @@ Partial Class FormFacultyDetails
         Me.lblDepartmentCodeValue.TabIndex = 3
         Me.lblDepartmentCodeValue.Text = "N/A"
         '
-        'GroupBox6
-        '
-        Me.GroupBox6.Controls.Add(Me.Label22)
-        Me.GroupBox6.Controls.Add(Me.lblShiftStartValue)
-        Me.GroupBox6.Controls.Add(Me.Label23)
-        Me.GroupBox6.Controls.Add(Me.lblShiftEndValue)
-        Me.GroupBox6.Controls.Add(Me.Label24)
-        Me.GroupBox6.Controls.Add(Me.lblShiftTypeValue)
-        Me.GroupBox6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupBox6.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
-        Me.GroupBox6.ForeColor = System.Drawing.Color.SteelBlue
-        Me.GroupBox6.Location = New System.Drawing.Point(10, 690)
-        Me.GroupBox6.Name = "GroupBox6"
-        Me.GroupBox6.Size = New System.Drawing.Size(623, 110)
-        Me.GroupBox6.TabIndex = 5
-        Me.GroupBox6.TabStop = False
-        Me.GroupBox6.Text = "Work Schedule"
-        '
-        'Label22
-        '
-        Me.Label22.AutoSize = True
-        Me.Label22.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.Label22.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Label22.Location = New System.Drawing.Point(20, 30)
-        Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(78, 19)
-        Me.Label22.TabIndex = 0
-        Me.Label22.Text = "Start Time:"
-        '
-        'lblShiftStartValue
-        '
-        Me.lblShiftStartValue.AutoSize = True
-        Me.lblShiftStartValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.lblShiftStartValue.ForeColor = System.Drawing.Color.Black
-        Me.lblShiftStartValue.Location = New System.Drawing.Point(180, 30)
-        Me.lblShiftStartValue.Name = "lblShiftStartValue"
-        Me.lblShiftStartValue.Size = New System.Drawing.Size(33, 19)
-        Me.lblShiftStartValue.TabIndex = 1
-        Me.lblShiftStartValue.Text = "N/A"
-        '
-        'Label23
-        '
-        Me.Label23.AutoSize = True
-        Me.Label23.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.Label23.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Label23.Location = New System.Drawing.Point(20, 55)
-        Me.Label23.Name = "Label23"
-        Me.Label23.Size = New System.Drawing.Size(70, 19)
-        Me.Label23.TabIndex = 2
-        Me.Label23.Text = "End Time:"
-        '
-        'lblShiftEndValue
-        '
-        Me.lblShiftEndValue.AutoSize = True
-        Me.lblShiftEndValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.lblShiftEndValue.ForeColor = System.Drawing.Color.Black
-        Me.lblShiftEndValue.Location = New System.Drawing.Point(180, 55)
-        Me.lblShiftEndValue.Name = "lblShiftEndValue"
-        Me.lblShiftEndValue.Size = New System.Drawing.Size(33, 19)
-        Me.lblShiftEndValue.TabIndex = 3
-        Me.lblShiftEndValue.Text = "N/A"
-        '
-        'Label24
-        '
-        Me.Label24.AutoSize = True
-        Me.Label24.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
-        Me.Label24.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Label24.Location = New System.Drawing.Point(20, 80)
-        Me.Label24.Name = "Label24"
-        Me.Label24.Size = New System.Drawing.Size(42, 19)
-        Me.Label24.TabIndex = 4
-        Me.Label24.Text = "Shift:"
-        '
-        'lblShiftTypeValue
-        '
-        Me.lblShiftTypeValue.AutoSize = True
-        Me.lblShiftTypeValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.lblShiftTypeValue.ForeColor = System.Drawing.Color.Black
-        Me.lblShiftTypeValue.Location = New System.Drawing.Point(180, 80)
-        Me.lblShiftTypeValue.Name = "lblShiftTypeValue"
-        Me.lblShiftTypeValue.Size = New System.Drawing.Size(33, 19)
-        Me.lblShiftTypeValue.TabIndex = 5
-        Me.lblShiftTypeValue.Text = "N/A"
-        '
         'GroupBox4
         '
         Me.GroupBox4.Controls.Add(Me.Label18)
         Me.GroupBox4.Controls.Add(Me.lblEmergencyContactValue)
         Me.GroupBox4.Controls.Add(Me.Label19)
         Me.GroupBox4.Controls.Add(Me.lblRelationshipValue)
+        Me.GroupBox4.Controls.Add(Me.Label12)
+        Me.GroupBox4.Controls.Add(Me.lblContactNoValue)
         Me.GroupBox4.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox4.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
         Me.GroupBox4.ForeColor = System.Drawing.Color.SteelBlue
-        Me.GroupBox4.Location = New System.Drawing.Point(10, 520)
+        Me.GroupBox4.Location = New System.Drawing.Point(10, 495)
         Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(623, 85)
+        Me.GroupBox4.Size = New System.Drawing.Size(623, 110)
         Me.GroupBox4.TabIndex = 1
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Emergency Contact"
@@ -353,7 +356,7 @@ Partial Class FormFacultyDetails
         Me.Label19.AutoSize = True
         Me.Label19.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
         Me.Label19.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Label19.Location = New System.Drawing.Point(20, 55)
+        Me.Label19.Location = New System.Drawing.Point(20, 56)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(90, 19)
         Me.Label19.TabIndex = 2
@@ -364,7 +367,7 @@ Partial Class FormFacultyDetails
         Me.lblRelationshipValue.AutoSize = True
         Me.lblRelationshipValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.lblRelationshipValue.ForeColor = System.Drawing.Color.Black
-        Me.lblRelationshipValue.Location = New System.Drawing.Point(180, 55)
+        Me.lblRelationshipValue.Location = New System.Drawing.Point(180, 56)
         Me.lblRelationshipValue.Name = "lblRelationshipValue"
         Me.lblRelationshipValue.Size = New System.Drawing.Size(33, 19)
         Me.lblRelationshipValue.TabIndex = 3
@@ -385,7 +388,7 @@ Partial Class FormFacultyDetails
         Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox3.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
         Me.GroupBox3.ForeColor = System.Drawing.Color.SteelBlue
-        Me.GroupBox3.Location = New System.Drawing.Point(10, 360)
+        Me.GroupBox3.Location = New System.Drawing.Point(10, 335)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(623, 160)
         Me.GroupBox3.TabIndex = 2
@@ -508,14 +511,12 @@ Partial Class FormFacultyDetails
         Me.GroupBox2.Controls.Add(Me.lblEmailValue)
         Me.GroupBox2.Controls.Add(Me.Label11)
         Me.GroupBox2.Controls.Add(Me.lblPhoneNoValue)
-        Me.GroupBox2.Controls.Add(Me.Label12)
-        Me.GroupBox2.Controls.Add(Me.lblContactNoValue)
         Me.GroupBox2.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox2.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
         Me.GroupBox2.ForeColor = System.Drawing.Color.SteelBlue
         Me.GroupBox2.Location = New System.Drawing.Point(10, 250)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(623, 110)
+        Me.GroupBox2.Size = New System.Drawing.Size(623, 85)
         Me.GroupBox2.TabIndex = 3
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Contact Information"
@@ -569,7 +570,7 @@ Partial Class FormFacultyDetails
         Me.Label12.AutoSize = True
         Me.Label12.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Bold)
         Me.Label12.ForeColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(73, Byte), Integer), CType(CType(94, Byte), Integer))
-        Me.Label12.Location = New System.Drawing.Point(20, 80)
+        Me.Label12.Location = New System.Drawing.Point(20, 84)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(84, 19)
         Me.Label12.TabIndex = 4
@@ -580,7 +581,7 @@ Partial Class FormFacultyDetails
         Me.lblContactNoValue.AutoSize = True
         Me.lblContactNoValue.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.lblContactNoValue.ForeColor = System.Drawing.Color.Black
-        Me.lblContactNoValue.Location = New System.Drawing.Point(180, 80)
+        Me.lblContactNoValue.Location = New System.Drawing.Point(180, 84)
         Me.lblContactNoValue.Name = "lblContactNoValue"
         Me.lblContactNoValue.Size = New System.Drawing.Size(33, 19)
         Me.lblContactNoValue.TabIndex = 5
