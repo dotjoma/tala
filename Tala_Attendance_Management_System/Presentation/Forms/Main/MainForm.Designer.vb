@@ -41,6 +41,7 @@ Partial Class MainForm
         Me.tsReports = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsFaculty = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DailyAttendanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
@@ -53,7 +54,7 @@ Partial Class MainForm
         Me.AuditLogsToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.SystemBackupToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DailyAttendanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ManageAttendanceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel5.SuspendLayout()
         Me.toolStripNav.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
@@ -224,6 +225,13 @@ Partial Class MainForm
         Me.tsFaculty.Size = New System.Drawing.Size(242, 28)
         Me.tsFaculty.Text = "FACULTY"
         '
+        'DailyAttendanceToolStripMenuItem
+        '
+        Me.DailyAttendanceToolStripMenuItem.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_schedule_30
+        Me.DailyAttendanceToolStripMenuItem.Name = "DailyAttendanceToolStripMenuItem"
+        Me.DailyAttendanceToolStripMenuItem.Size = New System.Drawing.Size(242, 28)
+        Me.DailyAttendanceToolStripMenuItem.Text = "Daily Attendance"
+        '
         'TableLayoutPanel1
         '
         Me.TableLayoutPanel1.BackColor = System.Drawing.Color.White
@@ -292,7 +300,7 @@ Partial Class MainForm
         '
         'AdminToolStripMenuItem
         '
-        Me.AdminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManageDepartmentToolStripMenuItem1, Me.AuditLogsToolStripMenuItem1, Me.SystemBackupToolStripMenuItem})
+        Me.AdminToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ManageAttendanceToolStripMenuItem, Me.ManageDepartmentToolStripMenuItem1, Me.AuditLogsToolStripMenuItem1, Me.SystemBackupToolStripMenuItem})
         Me.AdminToolStripMenuItem.Font = New System.Drawing.Font("Verdana", 9.75!)
         Me.AdminToolStripMenuItem.Name = "AdminToolStripMenuItem"
         Me.AdminToolStripMenuItem.Size = New System.Drawing.Size(112, 20)
@@ -301,19 +309,19 @@ Partial Class MainForm
         'ManageDepartmentToolStripMenuItem1
         '
         Me.ManageDepartmentToolStripMenuItem1.Name = "ManageDepartmentToolStripMenuItem1"
-        Me.ManageDepartmentToolStripMenuItem1.Size = New System.Drawing.Size(202, 22)
+        Me.ManageDepartmentToolStripMenuItem1.Size = New System.Drawing.Size(207, 22)
         Me.ManageDepartmentToolStripMenuItem1.Text = "ManageDepartment"
         '
         'AuditLogsToolStripMenuItem1
         '
         Me.AuditLogsToolStripMenuItem1.Name = "AuditLogsToolStripMenuItem1"
-        Me.AuditLogsToolStripMenuItem1.Size = New System.Drawing.Size(202, 22)
+        Me.AuditLogsToolStripMenuItem1.Size = New System.Drawing.Size(207, 22)
         Me.AuditLogsToolStripMenuItem1.Text = "Audit Logs"
         '
         'SystemBackupToolStripMenuItem
         '
         Me.SystemBackupToolStripMenuItem.Name = "SystemBackupToolStripMenuItem"
-        Me.SystemBackupToolStripMenuItem.Size = New System.Drawing.Size(202, 22)
+        Me.SystemBackupToolStripMenuItem.Size = New System.Drawing.Size(207, 22)
         Me.SystemBackupToolStripMenuItem.Text = "Backup && Restore"
         '
         'HelpToolStripMenuItem
@@ -323,12 +331,11 @@ Partial Class MainForm
         Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(47, 20)
         Me.HelpToolStripMenuItem.Text = "Help"
         '
-        'DailyAttendanceToolStripMenuItem
+        'ManageAttendanceToolStripMenuItem
         '
-        Me.DailyAttendanceToolStripMenuItem.Image = Global.Tala_Attendance_Management_System.My.Resources.Resources.icons8_schedule_30
-        Me.DailyAttendanceToolStripMenuItem.Name = "DailyAttendanceToolStripMenuItem"
-        Me.DailyAttendanceToolStripMenuItem.Size = New System.Drawing.Size(242, 28)
-        Me.DailyAttendanceToolStripMenuItem.Text = "Daily Attendance"
+        Me.ManageAttendanceToolStripMenuItem.Name = "ManageAttendanceToolStripMenuItem"
+        Me.ManageAttendanceToolStripMenuItem.Size = New System.Drawing.Size(207, 22)
+        Me.ManageAttendanceToolStripMenuItem.Text = "Manage Attendance"
         '
         'MainForm
         '
@@ -397,4 +404,5 @@ Partial Class MainForm
     Friend WithEvents AuditLogsToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents SystemBackupToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DailyAttendanceToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ManageAttendanceToolStripMenuItem As ToolStripMenuItem
 End Class

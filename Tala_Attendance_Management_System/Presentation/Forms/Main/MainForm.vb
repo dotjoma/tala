@@ -9,7 +9,7 @@ Public Class MainForm
     Private ReadOnly _updateManager As UpdateManager
     Public currentChild As Form
     Public currentButton As Button
-    Public currentUserRole As String = ""
+    Public Shared currentUserRole As String = ""
     Public Shared currentUsername As String = ""
     Private isLoggingOut As Boolean = False
 
@@ -128,15 +128,35 @@ Public Class MainForm
         Try
             _logger.LogInfo($"Applying role-based access control for role: {currentUserRole}")
 
-            If currentUserRole.ToLower() <> "admin" Then
-                AdminToolStripMenuItem.Visible = False
-                tsManageAccounts.Visible = False
-                _logger.LogInfo($"Administration menu hidden for role: {currentUserRole}")
-            Else
-                AdminToolStripMenuItem.Visible = True
-                tsManageAccounts.Visible = True
-                _logger.LogInfo($"Administration menu visible for admin role")
-            End If
+            Dim role As String = currentUserRole.ToLower()
+
+            Select Case role
+                Case "admin"
+                    ' Admin has full access to everything
+                    AdminToolStripMenuItem.Visible = True
+                    tsManageAccounts.Visible = True
+                    ManageAttendanceToolStripMenuItem.Visible = True
+                    ManageDepartmentToolStripMenuItem1.Visible = True
+                    AuditLogsToolStripMenuItem1.Visible = True
+                    SystemBackupToolStripMenuItem.Visible = True
+                    _logger.LogInfo("Full administration menu visible for admin role")
+
+                Case "hr"
+                    ' HR can see Administration menu but only Manage Attendance
+                    AdminToolStripMenuItem.Visible = True
+                    tsManageAccounts.Visible = False
+                    ManageAttendanceToolStripMenuItem.Visible = True
+                    ManageDepartmentToolStripMenuItem1.Visible = False
+                    AuditLogsToolStripMenuItem1.Visible = False
+                    SystemBackupToolStripMenuItem.Visible = False
+                    _logger.LogInfo("Limited administration menu visible for HR role (Manage Attendance only)")
+
+                Case Else
+                    ' Other roles have no access to Administration menu
+                    AdminToolStripMenuItem.Visible = False
+                    tsManageAccounts.Visible = False
+                    _logger.LogInfo($"Administration menu hidden for role: {currentUserRole}")
+            End Select
 
         Catch ex As Exception
             _logger.LogError($"Error applying role-based access control: {ex.Message}")
@@ -581,5 +601,11 @@ Public Class MainForm
 
     Private Sub DailyAttendanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DailyAttendanceToolStripMenuItem.Click
         FormDailyAttendance.ShowDialog()
+    End Sub
+
+    Private Sub ManageAttendanceToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ManageAttendanceToolStripMenuItem.Click
+        Using form As New FormAttendanceManagement()
+            form.ShowDialog()
+        End Using
     End Sub
 End Class

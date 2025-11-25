@@ -145,10 +145,28 @@
     <Compile Include="Presentation\Forms\Announcements\AddAnnouncement.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAdminApproval.Designer.vb">
+      <DependentUpon>FormAdminApproval.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAdminApproval.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendanceManagement.Designer.vb">
+      <DependentUpon>FormAttendanceManagement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormAttendanceManagement.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Presentation\Forms\Attendance\FormEditAttendance.Designer.vb">
       <DependentUpon>FormEditAttendance.vb</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Forms\Attendance\FormEditAttendance.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormManageAttendance.Designer.vb">
+      <DependentUpon>FormManageAttendance.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Forms\Attendance\FormManageAttendance.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Presentation\Forms\Attendance\FormManualAttendance.Designer.vb">
@@ -473,6 +491,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Presentation\Forms\Announcements\AddAnnouncement.resx">
       <DependentUpon>AddAnnouncement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormAttendanceManagement.resx">
+      <DependentUpon>FormAttendanceManagement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Presentation\Forms\Attendance\FormAdminApproval.resx">
+      <DependentUpon>FormAdminApproval.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Presentation\Forms\Attendance\FormEditAttendance.resx">
       <DependentUpon>FormEditAttendance.vb</DependentUpon>
