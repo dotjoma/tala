@@ -23,17 +23,19 @@ Partial Class FormAttendace
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormAttendace))
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.panelHeader = New System.Windows.Forms.Panel()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -59,6 +61,8 @@ Partial Class FormAttendace
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colDepartment = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colExpectedTimeIn = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colExpectedTimeOut = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colTimeIn = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colTimeOut = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colStatus = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -318,33 +322,33 @@ Partial Class FormAttendace
         Me.dgvAttendance.AllowUserToDeleteRows = False
         Me.dgvAttendance.AllowUserToResizeColumns = False
         Me.dgvAttendance.AllowUserToResizeRows = False
-        DataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
-        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.White
-        Me.dgvAttendance.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer), CType(CType(240, Byte), Integer))
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White
+        Me.dgvAttendance.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvAttendance.BackgroundColor = System.Drawing.Color.White
         Me.dgvAttendance.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvAttendance.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle13.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
-        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvAttendance.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(152, Byte), Integer), CType(CType(219, Byte), Integer))
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvAttendance.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvAttendance.ColumnHeadersHeight = 50
         Me.dgvAttendance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvAttendance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.attendanceID, Me.Column2, Me.Column1, Me.colDepartment, Me.colTimeIn, Me.colTimeOut, Me.colStatus, Me.colRemarks})
-        DataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle22.BackColor = System.Drawing.Color.White
-        DataGridViewCellStyle22.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle22.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle22.Padding = New System.Windows.Forms.Padding(5)
-        DataGridViewCellStyle22.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle22.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle22.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvAttendance.DefaultCellStyle = DataGridViewCellStyle22
+        Me.dgvAttendance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.attendanceID, Me.Column2, Me.Column1, Me.colDepartment, Me.colExpectedTimeIn, Me.colExpectedTimeOut, Me.colTimeIn, Me.colTimeOut, Me.colStatus, Me.colRemarks})
+        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle13.BackColor = System.Drawing.Color.White
+        DataGridViewCellStyle13.Font = New System.Drawing.Font("Segoe UI", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle13.Padding = New System.Windows.Forms.Padding(5)
+        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvAttendance.DefaultCellStyle = DataGridViewCellStyle13
         Me.dgvAttendance.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvAttendance.EnableHeadersVisualStyles = False
         Me.dgvAttendance.Location = New System.Drawing.Point(0, 122)
@@ -362,8 +366,8 @@ Partial Class FormAttendace
         'attendanceID
         '
         Me.attendanceID.DataPropertyName = "attendanceID"
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        Me.attendanceID.DefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        Me.attendanceID.DefaultCellStyle = DataGridViewCellStyle3
         Me.attendanceID.HeaderText = "ID"
         Me.attendanceID.Name = "attendanceID"
         Me.attendanceID.ReadOnly = True
@@ -373,8 +377,8 @@ Partial Class FormAttendace
         '
         Me.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Column2.DataPropertyName = "logdate"
-        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.Column2.DefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.Column2.DefaultCellStyle = DataGridViewCellStyle4
         Me.Column2.FillWeight = 20.0!
         Me.Column2.HeaderText = "DATE"
         Me.Column2.MinimumWidth = 6
@@ -385,9 +389,9 @@ Partial Class FormAttendace
         '
         Me.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Column1.DataPropertyName = "Name"
-        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        Me.Column1.DefaultCellStyle = DataGridViewCellStyle16
-        Me.Column1.FillWeight = 30.0!
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        Me.Column1.DefaultCellStyle = DataGridViewCellStyle5
+        Me.Column1.FillWeight = 35.0!
         Me.Column1.HeaderText = "NAME"
         Me.Column1.MinimumWidth = 6
         Me.Column1.Name = "Column1"
@@ -397,21 +401,45 @@ Partial Class FormAttendace
         '
         Me.colDepartment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colDepartment.DataPropertyName = "department"
-        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colDepartment.DefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colDepartment.DefaultCellStyle = DataGridViewCellStyle6
         Me.colDepartment.FillWeight = 19.43529!
         Me.colDepartment.HeaderText = "DEPARTMENT"
         Me.colDepartment.MinimumWidth = 6
         Me.colDepartment.Name = "colDepartment"
         Me.colDepartment.ReadOnly = True
         '
+        'colExpectedTimeIn
+        '
+        Me.colExpectedTimeIn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle7.ForeColor = System.Drawing.Color.Gray
+        Me.colExpectedTimeIn.DefaultCellStyle = DataGridViewCellStyle7
+        Me.colExpectedTimeIn.FillWeight = 18.0!
+        Me.colExpectedTimeIn.HeaderText = "EXPECTED IN"
+        Me.colExpectedTimeIn.MinimumWidth = 6
+        Me.colExpectedTimeIn.Name = "colExpectedTimeIn"
+        Me.colExpectedTimeIn.ReadOnly = True
+        '
+        'colExpectedTimeOut
+        '
+        Me.colExpectedTimeOut.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Gray
+        Me.colExpectedTimeOut.DefaultCellStyle = DataGridViewCellStyle8
+        Me.colExpectedTimeOut.FillWeight = 20.0!
+        Me.colExpectedTimeOut.HeaderText = "EXPECTED OUT"
+        Me.colExpectedTimeOut.MinimumWidth = 6
+        Me.colExpectedTimeOut.Name = "colExpectedTimeOut"
+        Me.colExpectedTimeOut.ReadOnly = True
+        '
         'colTimeIn
         '
         Me.colTimeIn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colTimeIn.DataPropertyName = "arrivalTime"
-        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colTimeIn.DefaultCellStyle = DataGridViewCellStyle18
-        Me.colTimeIn.FillWeight = 15.0!
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colTimeIn.DefaultCellStyle = DataGridViewCellStyle9
+        Me.colTimeIn.FillWeight = 18.0!
         Me.colTimeIn.HeaderText = "TIME IN"
         Me.colTimeIn.MinimumWidth = 6
         Me.colTimeIn.Name = "colTimeIn"
@@ -421,9 +449,9 @@ Partial Class FormAttendace
         '
         Me.colTimeOut.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colTimeOut.DataPropertyName = "departureTime"
-        DataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colTimeOut.DefaultCellStyle = DataGridViewCellStyle19
-        Me.colTimeOut.FillWeight = 15.0!
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colTimeOut.DefaultCellStyle = DataGridViewCellStyle10
+        Me.colTimeOut.FillWeight = 18.0!
         Me.colTimeOut.HeaderText = "TIME OUT"
         Me.colTimeOut.MinimumWidth = 6
         Me.colTimeOut.Name = "colTimeOut"
@@ -433,9 +461,9 @@ Partial Class FormAttendace
         '
         Me.colStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colStatus.DataPropertyName = "STATUS"
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.colStatus.DefaultCellStyle = DataGridViewCellStyle20
-        Me.colStatus.FillWeight = 18.0!
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.colStatus.DefaultCellStyle = DataGridViewCellStyle11
+        Me.colStatus.FillWeight = 22.0!
         Me.colStatus.HeaderText = "STATUS"
         Me.colStatus.MinimumWidth = 6
         Me.colStatus.Name = "colStatus"
@@ -445,9 +473,9 @@ Partial Class FormAttendace
         '
         Me.colRemarks.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colRemarks.DataPropertyName = "remarks"
-        DataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        Me.colRemarks.DefaultCellStyle = DataGridViewCellStyle21
-        Me.colRemarks.FillWeight = 58.30588!
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        Me.colRemarks.DefaultCellStyle = DataGridViewCellStyle12
+        Me.colRemarks.FillWeight = 45.0!
         Me.colRemarks.HeaderText = "REMARKS"
         Me.colRemarks.MinimumWidth = 6
         Me.colRemarks.Name = "colRemarks"
@@ -508,6 +536,8 @@ Partial Class FormAttendace
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents colDepartment As DataGridViewTextBoxColumn
+    Friend WithEvents colExpectedTimeIn As DataGridViewTextBoxColumn
+    Friend WithEvents colExpectedTimeOut As DataGridViewTextBoxColumn
     Friend WithEvents colTimeIn As DataGridViewTextBoxColumn
     Friend WithEvents colTimeOut As DataGridViewTextBoxColumn
     Friend WithEvents colStatus As DataGridViewTextBoxColumn

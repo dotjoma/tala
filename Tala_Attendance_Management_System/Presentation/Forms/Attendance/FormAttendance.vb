@@ -101,6 +101,8 @@ Public Class FormAttendace
                          CONCAT(ti.firstname, ' ', ti.lastname) AS NAME, 
                          COALESCE(d.department_name, 'N/A') AS department, 
                          DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                         ti.shift_start_time,
+                         ti.shift_end_time,
                          DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                          DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
                          " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
@@ -130,6 +132,8 @@ Public Class FormAttendace
                          CONCAT(ti.firstname, ' ', ti.lastname) AS NAME, 
                          COALESCE(d.department_name, 'N/A') AS department, 
                          DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                         ti.shift_start_time,
+                         ti.shift_end_time,
                          DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                          DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
                          " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
@@ -283,10 +287,77 @@ Public Class FormAttendace
             dgvAttendance.CurrentCell = Nothing
             dgvAttendance.ClearSelection()
             selectedAttendanceId = 0
+            
+            ' Populate Expected Time In/Out columns
+            PopulateExpectedTimeColumns()
+            
             _logger.LogInfo("Cleared selection after data binding; selectedAttendanceId reset to 0")
-        Catch
+        Catch ex As Exception
+            _logger.LogError($"Error in DataBindingComplete: {ex.Message}")
         End Try
     End Sub
+    
+    Private Sub PopulateExpectedTimeColumns()
+        Try
+            If TypeOf dgvAttendance.DataSource Is DataTable Then
+                Dim dt As DataTable = CType(dgvAttendance.DataSource, DataTable)
+                
+                ' Check if shift time columns exist in the DataTable
+                If Not dt.Columns.Contains("shift_start_time") OrElse Not dt.Columns.Contains("shift_end_time") Then
+                    _logger.LogWarning("shift_start_time or shift_end_time columns not found in DataTable")
+                    Return
+                End If
+                
+                For i As Integer = 0 To dgvAttendance.Rows.Count - 1
+                    Dim row As DataRow = dt.Rows(i)
+                    
+                    ' Get shift times from DataTable
+                    Dim shiftStartTime As Object = row("shift_start_time")
+                    Dim shiftEndTime As Object = row("shift_end_time")
+                    
+                    ' Format and populate Expected Time In
+                    If Not IsDBNull(shiftStartTime) AndAlso shiftStartTime IsNot Nothing Then
+                        Dim startTime As TimeSpan = CType(shiftStartTime, TimeSpan)
+                        dgvAttendance.Rows(i).Cells("colExpectedTimeIn").Value = FormatTimeSpanTo12Hour(startTime)
+                    Else
+                        dgvAttendance.Rows(i).Cells("colExpectedTimeIn").Value = "Not Set"
+                    End If
+                    
+                    ' Format and populate Expected Time Out
+                    If Not IsDBNull(shiftEndTime) AndAlso shiftEndTime IsNot Nothing Then
+                        Dim endTime As TimeSpan = CType(shiftEndTime, TimeSpan)
+                        dgvAttendance.Rows(i).Cells("colExpectedTimeOut").Value = FormatTimeSpanTo12Hour(endTime)
+                    Else
+                        dgvAttendance.Rows(i).Cells("colExpectedTimeOut").Value = "Not Set"
+                    End If
+                Next
+                
+                _logger.LogInfo($"Populated expected time columns for {dgvAttendance.Rows.Count} rows")
+            End If
+        Catch ex As Exception
+            _logger.LogError($"Error populating expected time columns: {ex.Message}")
+        End Try
+    End Sub
+    
+    Private Function FormatTimeSpanTo12Hour(timeValue As TimeSpan) As String
+        Try
+            Dim hours As Integer = timeValue.Hours
+            Dim minutes As Integer = timeValue.Minutes
+            Dim period As String = If(hours >= 12, "PM", "AM")
+            
+            ' Convert to 12-hour format
+            If hours = 0 Then
+                hours = 12
+            ElseIf hours > 12 Then
+                hours = hours - 12
+            End If
+            
+            Return $"{hours:D2}:{minutes:D2}:{timeValue.Seconds:D2} {period}"
+        Catch ex As Exception
+            _logger.LogError($"Error formatting time: {ex.Message}")
+            Return "Invalid Time"
+        End Try
+    End Function
 
     Private Sub cbFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
         UpdateDataBasedOnFilterAndSearch()
@@ -365,6 +436,8 @@ Public Class FormAttendace
                      CONCAT(ti.firstname, ' ', ti.lastname) AS NAME, 
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                     ti.shift_start_time,
+                     ti.shift_end_time,
                      DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                      DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
                      " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,
@@ -398,6 +471,8 @@ Public Class FormAttendace
                      CONCAT(ti.firstname, ' ', ti.lastname) AS Name, 
                      COALESCE(d.department_name, 'N/A') AS department, 
                      DATE_FORMAT(ar.logDate, '%M %d, %Y') AS logDate, 
+                     ti.shift_start_time,
+                     ti.shift_end_time,
                      DATE_FORMAT(ar.arrivalTime, '%h:%i:%s %p') AS arrivalTime, 
                      DATE_FORMAT(ar.departureTime, '%h:%i:%s %p') AS departureTime, 
                      " & GetCombinedStatusSQL("ar.arrivalTime", "ar.departureTime", "ti.shift_start_time", "ti.shift_end_time", "") & " AS STATUS,

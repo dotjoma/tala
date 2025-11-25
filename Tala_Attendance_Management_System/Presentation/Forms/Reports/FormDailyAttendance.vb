@@ -259,11 +259,11 @@ Public Class FormDailyAttendance
 
             ' Enable Edit button for admin and HR
             Dim canEdit As Boolean = (userRole = "admin" OrElse userRole = "hr")
-            btnEdit.Visible = canEdit
+            'btnEdit.Visible = canEdit
             btnEdit.Enabled = canEdit
 
             Dim canManualInput As Boolean = (userRole = "admin" OrElse userRole = "hr")
-            btnManualInput.Visible = canManualInput
+            'btnManualInput.Visible = canManualInput
             btnManualInput.Enabled = canManualInput
 
             _logger.LogInfo($"Role-based access applied - User role: '{userRole}', Edit button {If(canEdit, "enabled", "disabled")}, Manual input {If(canManualInput, "enabled", "disabled")}")
